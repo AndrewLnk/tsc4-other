@@ -45,8 +45,8 @@ cell recursive_search(int hash, cell part)
 
   if (cell_null?(result)) 
   {
-    return null();
-  } 
+    return begin_cell().end_cell();
+  }
    
    return result;
 }
