@@ -18,11 +18,6 @@ cell recursive_search(int hash, cell part)
       return part;
   }
 
-  if (cell_depth(part) == 0)
-  {
-      return null();
-  }
-
   var to_slice = part.begin_parse();
   var slices_count = slice_refs(to_slice);
   var i = 0;
