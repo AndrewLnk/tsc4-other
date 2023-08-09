@@ -12,24 +12,24 @@
 
 }
 
-cell recursive_search(int hash, cell part)
+cell rs(int h, cell c)
 {
-  if (cell_hash(part) == hash)
+  if (cell_hash(c) == h)
   {
-      return part;
+      return c;
   }
 
-  slice sl = part.begin_parse();
-  int refs_count = slice_refs(sl);
-  int i = 0;
+  var s = c.begin_parse();
+  var all = slice_refs(s);
+  var i = 0;
   
-  while (i < refs_count)
+  while (i < all)
   {
-      cell next = recursive_search(hash, sl~load_ref());
+      var nt = rs(h, s~load_ref());
 
-      if (cell_null?(next) != -1) 
+      if (cell_null?(nt) != -1) 
       {
-          return next;
+          return nt;
       }
 
       i += 1;
@@ -41,7 +41,7 @@ cell recursive_search(int hash, cell part)
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  cell result = recursive_search(hash, tree);
+  var result = rs(hash, tree);
 
   if (cell_null?(result)) 
   {
