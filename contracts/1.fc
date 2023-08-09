@@ -15,35 +15,21 @@ cell recursive_search(int hash, cell part)
 {
   if (cell_hash(part) == hash)
   {
-      return part;
+    return part;
   }
-  else
+  
+  var to_slice = part.begin_parse();
+  while(slice_refs_empty?(to_slice) == 0)
   {
-    if (cell_depth(part) == 0)
+    var inner = recursive_search(hash, to_slice~load_ref());
+
+    if (cell_null?(inner) != -1)
     {
-      return null();
-    }
-    else
-    {
-      var to_slice = part.begin_parse();
-      var slices_count = slice_refs(to_slice);
-      var i = 0;
-
-      while (i < slices_count)
-      {
-          var inner = recursive_search(hash, to_slice~load_ref());
-
-          if (cell_null?(inner) != -1) 
-          {
-             return inner;
-          }
-
-         i += 1;
-      }
-
-      return null();
+      return inner;
     }
   }
+
+  return null();
 }
 
 ;; testable
@@ -55,8 +41,6 @@ cell recursive_search(int hash, cell part)
   {
     return begin_cell().end_cell();
   }
-  else
-  {
-    return result;  
-  }
+  
+  return result;  
 }
