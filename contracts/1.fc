@@ -19,7 +19,7 @@ cell recursive_search(int hash, cell part)
       return part;
   }
 
-  int sl = part.begin_parse();
+  slice sl = part.begin_parse();
   int refs_count = slice_refs(sl);
   int i = 0;
   
@@ -32,7 +32,7 @@ cell recursive_search(int hash, cell part)
           return next;
       }
 
-      i++;
+      i += 1;
   }
 
   return null();
