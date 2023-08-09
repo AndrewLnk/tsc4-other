@@ -19,20 +19,20 @@ cell recursive_search(int hash, cell part)
       return part;
   }
 
-  var sl = part.begin_parse();
-  var refs_count = slice_refs(sl);
-  var i = 0;
+  int sl = part.begin_parse();
+  int refs_count = slice_refs(sl);
+  int i = 0;
   
   while (i < refs_count)
   {
-      var next = recursive_search(hash, sl~load_ref());
+      cell next = recursive_search(hash, sl~load_ref());
 
       if (cell_null?(next) != -1) 
       {
           return next;
       }
 
-      i += 1;
+      i++;
   }
 
   return null();
@@ -41,12 +41,14 @@ cell recursive_search(int hash, cell part)
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  var result = recursive_search(hash, tree);
+  cell result = recursive_search(hash, tree);
 
   if (cell_null?(result)) 
   {
     return begin_cell().end_cell();
   }
-   
-   return result;
+  else
+  {
+    return result;  
+  }
 }
