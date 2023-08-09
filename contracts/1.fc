@@ -13,6 +13,7 @@
 
 }
 
+;; testable
 (cell, int) recursive_search(int hash, cell part)
 {
   if (cell_hash(part) == hash)
@@ -39,6 +40,7 @@
   return (null(), 0);
 }
 
+;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
   (cell result, int success) = recursive_search(hash, tree);
