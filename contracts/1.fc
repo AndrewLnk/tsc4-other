@@ -4,7 +4,6 @@
   hash with the hash received in the first parameter. When the algorithm finds
   the subtree (branch) whose hash equals the received hash, the root cell of
   this branch should be returned. Return empty cell if the branch is not found.
-  Update in Actions...
 -}
 
 
@@ -13,7 +12,6 @@
 
 }
 
-;; testable
 (cell, int) recursive_search(int hash, cell part)
 {
   if (cell_hash(part) == hash)
@@ -29,9 +27,21 @@
   {
       (cell next, int success) = recursive_search(hash, sl~load_ref());
 
-      if (success) 
+      if (success == -1)
       {
-          return (next, -1);
+          if (refs_count != 1)
+          {
+            return (part, -2);
+          }
+          else
+          {
+            return (next, -1);
+          }
+      }
+
+      if (success == -2) 
+      {
+          return (next, -2);
       }
 
       i += 1;
@@ -45,12 +55,10 @@
 {
   (cell result, int success) = recursive_search(hash, tree);
 
-  if (success)
+  if (success != 0)
   {
       return result;
   }
-  else
-  {
-      return null();
-  }
+
+  return null();
 }
