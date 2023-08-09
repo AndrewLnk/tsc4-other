@@ -6,10 +6,48 @@
   this branch should be returned. Return empty cell if the branch is not found.
 -}
 
-() recv_internal() {
+
+() recv_internal() 
+{
+
 }
 
-;; testable
-(cell) find_branch_by_hash(int hash, cell tree) method_id {
-  return begin_cell().end_cell();
+(cell, int) recursive_search(int hash, cell part)
+{
+  if (cell_hash(part) == hash)
+  {
+      return (part, -1);
+  }
+
+  var sl = part.begin_parse();
+  var refs_count = slice_refs(sl);
+  var i = 0;
+  
+  while (i < refs_count)
+  {
+      (cell next, int success) = recursive_search(hash, sl~load_ref());
+
+      if (success) 
+      {
+          return (next, -1);
+      }
+
+      i += 1;
+  }
+
+  return (null(), 0);
+}
+
+(cell) find_branch_by_hash(int hash, cell tree) method_id 
+{
+  (cell result, int success) = recursive_search(hash, tree);
+
+  if (success)
+  {
+      return result;
+  }
+  else
+  {
+      return null();
+  }
 }
