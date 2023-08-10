@@ -23,23 +23,15 @@ int tlen(tuple t) asm "TLEN";
   while (tlen(list) > 0) 
   {
     var part = list~list_next();
-    
     if (cell_hash(part) == hash) 
     {
       return part;
     }
 
     var to_slice = part.begin_parse();
-
     while (~ slice_refs_empty?(to_slice)) 
     {
-      var next_ref = to_slice~load_ref();
-      if (cell_hash(next_ref) == hash) 
-      {
-        return next_ref;
-      }
-      
-      list = cons(next_ref, list);
+      list = cons(to_slice~load_ref(), list);
     }
   }
 
