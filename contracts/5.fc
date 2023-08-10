@@ -19,8 +19,6 @@
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
-  var list = empty_tuple();
-
   var F_n = n;
   var F_nk = n + k;
 
@@ -28,10 +26,7 @@
   var current = 1;
   var i = 1;
 
-  if (F_n == F_nk)
-  {
-    return list;
-  }
+  var list = empty_tuple();
 
   if (F_n == 0)
   {
@@ -48,6 +43,14 @@
     list = tpush(list, 1);
   }
 
+  while (i < F_n - 1)
+  {
+    var next = previous + current;
+    previous = current;
+    current = next;
+    i += 1;
+  }
+
   while (i < F_nk - 1)
   {
     var next = previous + current;
@@ -55,10 +58,7 @@
     current = next;
     i += 1;
 
-    if (i >= F_n)
-    {
-      list = tpush(list, current);
-    }
+    list = tpush(list, current);
   }
 
   return list;
