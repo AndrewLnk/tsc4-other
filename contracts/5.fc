@@ -13,34 +13,36 @@
   1923063428480944139667114773918309212080528]
 -}
 
-() recv_internal() {
-}
+() recv_internal() {}
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
   var list = empty_tuple();
 
-  if (n == 0)
+  if (n <= 1)
   {
-    list = tpush(list, 0);
-    
-    if (k >= 1)
+    if (n == 0)
+    {
+      list = tpush(list, 0);
+
+      if (k >= 1)
+      {
+       list = tpush(list, 1);
+      }
+    }
+    else
     {
       list = tpush(list, 1);
     }
-  }
-
-  if (n == 1)
-  {
-    list = tpush(list, 1);
   }
 
   var previous = 0;
   var current = 1;
   var i = 1;
 
-  while (i < n - 1)
+  var from = n - 1;
+  while (i < from)
   {
     var next = previous + current;
     previous = current;
@@ -48,7 +50,8 @@
     i += 1;
   }
 
-  while (i < n + k - 1)
+  var lim = n + k - 1;
+  while (i < lim)
   {
     var next = previous + current;
     previous = current;
