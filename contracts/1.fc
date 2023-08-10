@@ -17,23 +17,22 @@ int tlen(tuple t) asm "TLEN";
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  var list = empty_tuple();
-  list = cons(tree, list);
+  var list = cons(tree, empty_tuple());
 
-  while (tlen(list) > 0) 
+  while (tlen(list) > 0)
   {
     var part = list~list_next();
-    if (cell_hash(part) == hash) 
+    if (cell_hash(part) == hash)
     {
       return part;
     }
 
     var to_slice = part.begin_parse();
-    while (~ slice_refs_empty?(to_slice)) 
+    while (~ slice_refs_empty?(to_slice))
     {
       list = cons(to_slice~load_ref(), list);
     }
   }
 
-  return begin_cell().end_cell(); 
+  return begin_cell().end_cell();
 }
