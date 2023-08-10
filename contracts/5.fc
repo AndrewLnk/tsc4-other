@@ -20,26 +20,34 @@
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
   var list = empty_tuple();
-  var f = n + k;
+
+  var F_n = n;
+  var F_nk = n + k;
 
   var previous = 0;
   var current = 1;
   var i = 1;
-  while (i <= f)
+
+  if (F_n == 0)
+  {
+    list = tpush(list, previous);
+  }
+
+  if (F_nk >= 1)
+  {
+    list = tpush(list, current);
+  }
+
+  while (i < F_nk)
   {
     var next = previous + current;
     previous = current;
     current = next;
     i += 1;
 
-    if (i >= n)
+    if (i >= F_n)
     {
       list = tpush(list, current);
-    }
-
-    if (i >= f)
-    {
-      return list;
     }
   }
 
