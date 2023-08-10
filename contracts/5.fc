@@ -28,17 +28,22 @@
   var current = 1;
   var i = 1;
 
-  if (F_n >= 0)
+  if (F_n == F_nk)
   {
-    list = tpush(list, 0);
-
-    if (F_nk >= 1)
-    {
-      list = tpush(list, 1);
-    }
+    return list;
   }
 
-  while (i < F_nk)
+  if (F_n == 0)
+  {
+    list = tpush(list, 0);
+  }
+
+  if (F_nk >= 1)
+  {
+    list = tpush(list, 1);
+  }
+
+  while (i < F_nk - 1)
   {
     var next = previous + current;
     previous = current;
