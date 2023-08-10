@@ -28,14 +28,14 @@
   var current = 1;
   var i = 1;
 
-  if (F_n == 0)
+  if (F_n >= 0)
   {
-    list = tpush(list, previous);
-  }
+    list = tpush(list, 0);
 
-  if (F_nk >= 1)
-  {
-    list = tpush(list, current);
+    if (F_nk >= 1)
+    {
+      list = tpush(list, 1);
+    }
   }
 
   while (i < F_nk)
@@ -53,4 +53,3 @@
 
   return list;
 }
-
