@@ -44,8 +44,8 @@
   var current = 1;
   var i = 1;
 
-  var from = n - 1;
-  while (i < from)
+  var cycle_stop = n - 1;
+  while (i < cycle_stop)
   {
     var next = previous + current;
     previous = current;
@@ -53,8 +53,8 @@
     i += 1;
   }
 
-  var lim = n + k - 1;
-  while (i < lim)
+  cycle_stop = n + k - 1;
+  while (i < cycle_stop)
   {
     var next = previous + current;
     previous = current;
