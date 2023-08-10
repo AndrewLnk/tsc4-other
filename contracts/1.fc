@@ -11,36 +11,42 @@
 {
 }
 
-cell recursive_search(int hash, cell part)
-{
-  if (cell_hash(part) == hash)
-  {
-    return part;
-  }
-  
-  var to_slice = part.begin_parse();
-  while(slice_refs_empty?(to_slice) == 0)
-  {
-    var inner = recursive_search(hash, to_slice~load_ref());
-
-    if (cell_null?(inner) != -1)
-    {
-      return inner;
-    }
-  }
-
-  return null();
-}
+;; From telegram chat (get length of tuple)
+int tlen(tuple t) asm "TLEN"; 
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  var result = recursive_search(hash, tree);
+  ;; Create empty tuple
+  var list = empty_tuple();
+  ;; Create tuple with tree
+  list = cons(tree, list);
 
-  if (cell_null?(result)) 
+  ;; Check for cell with hash or when all tree checked
+  while (tlen(list) > 0) 
   {
-    return begin_cell().end_cell();
+    ;; Load next item from list 
+    var part = list~list_next();
+    
+    ;; Check if fould
+    if (cell_hash(part) == hash) 
+    {
+      return part;
+    }
+
+    ;; Start parse current cell
+    var to_slice = part.begin_parse();
+
+    ;; Check each reference of cell
+    while (~ slice_refs_empty?(to_slice)) 
+    {
+      ;; Load ref in cell
+      var next_ref = to_slice~load_ref();
+      ;; Add loaded ref to list for future checking
+      list = cons(next_ref, list);
+    }
   }
-  
-  return result;  
+
+  ;; Return empty cell if not found
+  return begin_cell().end_cell(); 
 }
