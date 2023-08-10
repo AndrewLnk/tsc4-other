@@ -16,17 +16,20 @@
 int tlen(tuple t) asm "TLEN"; 
 
 ;; From telegram chat (get element from a tuple at position) cell -> tuple
-tuple t_id(tuple t, int index) asm "INDEXVAR";
+tuple tuple_at_index(tuple t, int index) asm "INDEXVAR";
 
 ;; From telegram chat (get element from a tuple at position) cell -> int
-int v_id(tuple t, int index) asm "INDEXVAR";
+int value_at_index(tuple t, int index) asm "INDEXVAR";
 
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id 
 {
   var matrixC = empty_tuple();
 
+  var mC_x_lenth = tlen(tuple_at_index(matrixB, 0));
   var mC_y_lenth = tlen(matrixA);
+  var mA_y_lenth = tlen(tuple_at_index(matrixA, 0));
+ 
   var y = 0;
 
   while(y < mC_y_lenth)
@@ -34,17 +37,14 @@ int v_id(tuple t, int index) asm "INDEXVAR";
     var rowC = empty_tuple();
 
     var target_y_C = 0;
-    var mC_x_lenth = tlen(t_id(matrixB, 0));
-
     while (target_y_C < mC_x_lenth)
     {
       var x = 0;
       var temp = 0;
-      var mA_y_lenth = tlen(t_id(matrixA, 0));
 
       while(x < mA_y_lenth)
       {
-        temp += v_id(t_id(matrixA, y), x) * v_id(t_id(matrixB, x), target_y_C);
+        temp += value_at_index(tuple_at_index(matrixA, y), x) * value_at_index(tuple_at_index(matrixB, x), target_y_C);
         x += 1;
       }
 
