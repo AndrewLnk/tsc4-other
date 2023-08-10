@@ -17,7 +17,32 @@
 }
 
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) method_id {
-  return null();
+(tuple) fibonacci_sequence (int n, int k) method_id 
+{
+  var list = empty_tuple();
+  var f = n + k;
+
+  var previous = 0;
+  var current = 1;
+  var i = 1;
+  while (i <= f)
+  {
+    var next = previous + current;
+    previous = current;
+    current = next;
+    i += 1;
+
+    if (i >= n)
+    {
+      list = tpush(list, current);
+    }
+
+    if (i >= f)
+    {
+      return list;
+    }
+  }
+
+  return list;
 }
 
