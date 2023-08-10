@@ -36,9 +36,14 @@
   if (F_n == 0)
   {
     list = tpush(list, 0);
+    
+    if (k >= 1)
+    {
+      list = tpush(list, 1);
+    }
   }
 
-  if (F_nk >= 1)
+  if (F_n == 1)
   {
     list = tpush(list, 1);
   }
