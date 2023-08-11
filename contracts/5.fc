@@ -24,6 +24,26 @@
   {
     return empty_tuple();
   }
+  
+  var list = empty_tuple();
+
+  if (n < 0)
+  {
+    return empty_tuple();
+  }
+
+  if (n <= 1)
+  {
+    if (n == 0)
+    {
+      list = tpush(list, 0);
+      list = tpush(list, 1);
+    }
+    else
+    {
+      list = tpush(list, 1);
+    }
+  }
 
   var previous = 0;
   var current = 1;
@@ -33,19 +53,6 @@
     var tmp = previous + current;
     previous = current;
     current = tmp;
-  }
-
-  var list = empty_tuple();
-  
-  if (n == 0)
-  {
-    list = tpush(list, 0);
-    list = tpush(list, 1);
-  }
-
-  if (n == 1)
-  {
-    list = tpush(list, 1);
   }
 
   var i = n - 2;
