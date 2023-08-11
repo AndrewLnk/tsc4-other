@@ -27,11 +27,14 @@
 
   var previous = 0;
   var current = 1;
+  var tmp = 0;
   n -= 2;
-  
+
   repeat (n)
   {
-    (previous, current) = (current, current + previous);
+    tmp = previous + current;
+    previous = current;
+    current = tmp;
   }
 
   var list = empty_tuple();
@@ -48,7 +51,10 @@
 
   repeat (k)
   {
-    (previous, current) = (current, current + previous);
+    tmp = previous + current;
+    previous = current;
+    current = tmp;
+
     list = tpush(list, current);
   }
 
