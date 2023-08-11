@@ -26,30 +26,30 @@
   }
   
   var list = empty_tuple();
-  var i = n - 2;
-
-  if (n == 0)
-  {
-    list = tpush(list, 0);
-    list = tpush(list, 1);
-    i = 0;
-  }
-
-  if (n == 1)
-  {
-    list = tpush(list, 1);
-    i = 0;
-  }
-
+  n -= 2; 
   var previous = 0;
   var current = 1;
-  n -= 2;
-
+  
   repeat (n)
   {
     var tmp = previous + current;
     previous = current;
     current = tmp;
+  }
+
+  var i = n;
+  if (n < 0)
+  {
+    i = 0;
+    if (n == -2)
+    {
+      list = tpush(list, 0);
+      list = tpush(list, 1);
+    }
+    else
+    {
+      list = tpush(list, 1);
+    }
   }
 
   repeat (n + k - i)
