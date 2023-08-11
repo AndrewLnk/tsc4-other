@@ -34,7 +34,7 @@
     list = tpush(list, 1);
     i = 0;
   }
-  
+
   if (n == 1)
   {
     list = tpush(list, 1);
@@ -43,15 +43,16 @@
 
   var previous = 0;
   var current = 1;
+  n -= 2;
 
-  repeat (n - 2)
+  repeat (n)
   {
     var tmp = previous + current;
     previous = current;
     current = tmp;
   }
 
-  repeat (n + k - 2 - i)
+  repeat (n + k - i)
   {
     var tmp = previous + current;
     previous = current;
