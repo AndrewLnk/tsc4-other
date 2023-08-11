@@ -29,7 +29,6 @@
   var previous = 0;
   var current = 1;
   
-  
   repeat (n)
   {
     var tmp = previous + current;
@@ -40,7 +39,7 @@
   var list = empty_tuple();
   while (n < 0)
   {
-    list = tpush(list, n + 2);
+    list~tpush(n + 2);
     n += 1;
     k -= 1;
   }
@@ -51,7 +50,7 @@
     previous = current;
     current = tmp;
 
-    list = tpush(list, current);
+    list~tpush(current);
   }
 
   return list;
