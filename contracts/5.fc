@@ -38,11 +38,12 @@
   var list = empty_tuple();
   list = tpush(list, previous);
 
-  var rep = k - n - 1;
-  if (rep < 0)
+  if (n < 0)
   {
-    rep = 0;
+    n = 0;
   }
+
+  var rep = k - n - 1;
 
   repeat(rep)
   {
