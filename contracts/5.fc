@@ -24,31 +24,47 @@
   {
     return empty_tuple();
   }
+  
+  var list = empty_tuple();
 
-  if (n < 0)
+  if (n <= 1)
   {
-    return empty_tuple();
+    if (n == 0)
+    {
+      list = tpush(list, 0);
+      list = tpush(list, 1);
+    }
+    else
+    {
+      list = tpush(list, 1);
+    }
   }
 
   var previous = 0;
   var current = 1;
 
-  repeat(n)
+  repeat (n - 2)
   {
     var tmp = previous + current;
     previous = current;
     current = tmp;
   }
 
-  var list = empty_tuple();
-
-  repeat(k)
+  var i = n - 2;
+  if (i < 0)
   {
-    list = tpush(list, previous);
+    i = 0;
+  }
 
+  var rep = n + k - 2 - i;
+
+  repeat (rep)
+  {
     var tmp = previous + current;
     previous = current;
     current = tmp;
+
+    list = tpush(list, current);
   }
 
   return list;
