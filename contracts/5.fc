@@ -43,20 +43,22 @@
   var previous = 0;
   var current = 1;
 
-  repeat (n - 1)
+  repeat (n - 2)
   {
     var tmp = previous + current;
     previous = current;
     current = tmp;
   }
 
-  var i = 0;
-  repeat (n - 1)
+  var i = n - 2;
+  if (i < 0)
   {
-    i += 1;
+    i = 0;
   }
 
-  repeat (n + k - 3 - i)
+  var rep = n + k - 2 - i;
+
+  repeat (rep)
   {
     var tmp = previous + current;
     previous = current;
