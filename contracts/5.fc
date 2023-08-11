@@ -30,18 +30,21 @@
 
   repeat(n)
   {
-    current += previous;
-    previous = current - previous;
+    var tmp = previous + current;
+    previous = current;
+    current = tmp;
   }
 
   var list = empty_tuple();
   list = tpush(list, previous);
 
-  repeat(k - n - 1)
+  repeat(k - n)
   {
     list = tpush(list, current);
-    current += previous;
-    previous = current - previous;
+
+    var tmp = previous + current;
+    previous = current;
+    current = tmp;
   }
 
   return list;
