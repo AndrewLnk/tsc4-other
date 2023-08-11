@@ -25,24 +25,21 @@ int value_at_index(tuple t, int index) asm "INDEXVAR";
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id 
 {
   var matrixC = empty_tuple();
-
   var mC_x_lenth = tlen(tuple_at_index(matrixB, 0));
   var mC_y_lenth = tlen(matrixA);
   var mA_y_lenth = tlen(tuple_at_index(matrixA, 0));
  
   var y = 0;
-
-  while(y < mC_y_lenth)
+  repeat(mC_y_lenth)
   {
     var rowC = empty_tuple();
-
+    
     var target_y_C = 0;
-    while (target_y_C < mC_x_lenth)
+    repeat (mC_x_lenth)
     {
       var x = 0;
       var temp = 0;
-
-      while(x < mA_y_lenth)
+      repeat(mA_y_lenth)
       {
         temp += value_at_index(tuple_at_index(matrixA, y), x) * value_at_index(tuple_at_index(matrixB, x), target_y_C);
         x += 1;
@@ -58,4 +55,3 @@ int value_at_index(tuple t, int index) asm "INDEXVAR";
 
   return matrixC;
 }
-
