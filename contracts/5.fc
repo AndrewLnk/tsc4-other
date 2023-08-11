@@ -38,19 +38,11 @@
   }
 
   var list = empty_tuple();
-  if (n < 0)
+  while (n < 0)
   {
-    if (n == -2)
-    {
-      list = tpush(list, 0);
-      list = tpush(list, 1);
-    }
-    else
-    {
-      list = tpush(list, 1);
-    }
-
-    k += n;
+    list = tpush(list, n + 2);
+    n += 1;
+    k -= 1;
   }
 
   repeat (k)
