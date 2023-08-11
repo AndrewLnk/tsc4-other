@@ -30,6 +30,12 @@
     return empty_tuple();
   }
 
+  if (n < 0)
+  {
+    return empty_tuple();
+  }
+
+
   var list = empty_tuple();
 
   if (n == 0)
