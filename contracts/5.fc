@@ -24,7 +24,7 @@
   {
     return empty_tuple();
   }
-  
+
   var list = empty_tuple();
 
   if (n <= 1)
@@ -51,18 +51,16 @@
   var from = n - 1;
   while (i < from)
   {
-    var next = previous + current;
-    previous = current;
-    current = next;
+    current += previous;
+    previous = current - previous;
     i += 1;
   }
 
   var lim = n + k - 1;
   while (i < lim)
   {
-    var next = previous + current;
-    previous = current;
-    current = next;
+    current += previous;
+    previous = current - previous;
     i += 1;
 
     list = tpush(list, current);
