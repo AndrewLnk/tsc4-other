@@ -25,6 +25,31 @@
     return empty_tuple();
   }
 
+  if (n < 0)
+  {
+    return empty_tuple();
+  }
+
+  if (n > 370)
+  {
+    return empty_tuple();
+  }
+
+  if (k < 0)
+  {
+    return empty_tuple();
+  }
+
+  if (k > 255)
+  {
+    return empty_tuple();
+  }
+
+  if (n + k > 371)
+  {
+    return empty_tuple();
+  }
+
   var previous = 0;
   var current = 1;
 
