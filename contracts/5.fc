@@ -24,16 +24,6 @@
   {
     return empty_tuple();
   }
-
-  if (n < 0)
-  {
-     return empty_tuple();
-  }
-
-  if (n + k > 371)
-  {
-    return empty_tuple();
-  }
   
   var list = empty_tuple();
 
@@ -52,17 +42,19 @@
 
   var previous = 0;
   var current = 1;
-  var i = 1;
 
   repeat (n - 2)
   {
     var tmp = previous + current;
     previous = current;
     current = tmp;
-    i += 1;
   }
 
-  i = n + 1;
+  var i = 1;
+  repeat (n - 2)
+  {
+    i += 1;
+  }
 
   var lim = n + k - 1;
   while (i < lim)
