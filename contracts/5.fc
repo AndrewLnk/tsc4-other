@@ -25,54 +25,23 @@
     return empty_tuple();
   }
 
-  if (n + k > 371)
-  {
-    return empty_tuple();
-  }
-
-  if (n < 0)
-  {
-    return empty_tuple();
-  }
-
-
-  var list = empty_tuple();
-
-  if (n == 0)
-  {
-    list = tpush(list, 0);
-    list = tpush(list, 1);
-  }
-  if (n == 1)
-  {
-    list = tpush(list, 1);
-  }
-  
   var previous = 0;
   var current = 1;
 
-  repeat (n - 2)
+  repeat(n)
   {
-    var tmp = previous + current;
-    previous = current;
-    current = tmp;
+    current += previous;
+    previous = current - previous;
   }
 
-  var i = n - 2;
-  if (i < 0)
+  var list = empty_tuple();
+  list = tpush(list, previous);
+
+  repeat(k - n - 1)
   {
-    i = 0;
-  }
-
-  var rep = n + k - 2 - i;
-
-  repeat (rep)
-  {
-    var tmp = previous + current;
-    previous = current;
-    current = tmp;
-
     list = tpush(list, current);
+    current += previous;
+    previous = current - previous;
   }
 
   return list;
