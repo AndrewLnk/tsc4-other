@@ -26,20 +26,6 @@
   }
   
   var list = empty_tuple();
-
-  if (n <= 1)
-  {
-    if (n == 0)
-    {
-      list = tpush(list, 0);
-      list = tpush(list, 1);
-    }
-    else
-    {
-      list = tpush(list, 1);
-    }
-  }
-
   var previous = 0;
   var current = 1;
 
@@ -56,9 +42,17 @@
     i = 0;
   }
 
-  var rep = n + k - 2 - i;
+  if (n == 0)
+  {
+    list = tpush(list, 0);
+  }
 
-  repeat (rep)
+  if (n == 1)
+  {
+    list = tpush(list, 1);
+  }
+
+  repeat (n + k - 2 - i)
   {
     var tmp = previous + current;
     previous = current;
