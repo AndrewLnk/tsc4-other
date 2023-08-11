@@ -25,9 +25,10 @@
     return empty_tuple();
   }
 
+  n -= 2;
   var previous = 0;
   var current = 1;
-  n -= 2;
+  
   
   repeat (n)
   {
@@ -42,9 +43,13 @@
     if (n == -2)
     {
       list = tpush(list, 0);
+      list = tpush(list, 1);
+    }
+    else
+    {
+      list = tpush(list, 1);
     }
 
-    list = tpush(list, 1);
     k += n;
   }
 
