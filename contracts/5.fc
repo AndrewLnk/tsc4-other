@@ -56,8 +56,7 @@
     i += 1;
   }
 
-  var lim = n + k - 2;
-  repeat (lim - i)
+  repeat (n + k - 2 - i)
   {
     var tmp = previous + current;
     previous = current;
