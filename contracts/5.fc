@@ -25,6 +25,11 @@
     return empty_tuple();
   }
 
+  if (n < 0)
+  {
+    return empty_tuple();
+  }
+
   var previous = 0;
   var current = 1;
 
@@ -36,11 +41,11 @@
   }
 
   var list = empty_tuple();
-  list = tpush(list, previous);
 
-  repeat(k - 1)
+  repeat(k)
   {
-    list = tpush(list, current);
+    list = tpush(list, previous);
+
     var tmp = previous + current;
     previous = current;
     current = tmp;
