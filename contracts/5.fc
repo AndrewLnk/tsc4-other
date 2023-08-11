@@ -59,7 +59,7 @@
   i += 1;
 
   var lim = n + k - 1;
-  repeat (i < lim)
+  while (i < lim)
   {
     var tmp = previous + current;
     previous = current;
