@@ -38,10 +38,15 @@
   var list = empty_tuple();
   list = tpush(list, previous);
 
-  repeat(k - n)
+  var rep = k - n - 1;
+  if (rep < 0)
+  {
+    rep = 0;
+  }
+
+  repeat(rep)
   {
     list = tpush(list, current);
-
     var tmp = previous + current;
     previous = current;
     current = tmp;
