@@ -27,12 +27,11 @@
 
   var previous = 0;
   var current = 1;
-  var tmp = 0;
   n -= 2;
-
+  
   repeat (n)
   {
-    tmp = previous + current;
+    var tmp = previous + current;
     previous = current;
     current = tmp;
   }
@@ -51,7 +50,7 @@
 
   repeat (k)
   {
-    tmp = previous + current;
+    var tmp = previous + current;
     previous = current;
     current = tmp;
 
