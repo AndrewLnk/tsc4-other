@@ -51,12 +51,12 @@
   }
 
   var i = 0;
-  repeat (n - 2)
+  repeat (n)
   {
     i += 1;
   }
 
-  repeat (n + k - 2 - i)
+  repeat (n + k - 4 - i)
   {
     var tmp = previous + current;
     previous = current;
