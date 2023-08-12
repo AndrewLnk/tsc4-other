@@ -26,4 +26,13 @@ export class Task3 implements Contract {
             body: beginCell().endCell(),
         });
     }
+
+    async getBitOfInt(provider: ContractProvider, v: number, i: number): Promise<bigint> {
+        const {stack} = await provider.get('debug_second_int_bit', 
+        [
+            {type: 'int', value: BigInt(v)},
+            {type: 'int', value: BigInt(i)}    
+        ]);
+        return BigInt(stack.readNumber());
+    }
 }
