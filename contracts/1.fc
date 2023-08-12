@@ -26,11 +26,12 @@ forall X -> int is_null (X x) asm "ISNULL";
       return part;
     }
 
-    var to_slice = part.begin_parse();
-    repeat (slice_refs(to_slice))
+    var s = part.begin_parse();
+    repeat (slice_refs(s))
     {
-      list = cons(to_slice~load_ref(), list);
-    }    
+      var sl = s~load_ref();
+      list = cons(sl, list);
+    }
   }
 
   return begin_cell().end_cell();
