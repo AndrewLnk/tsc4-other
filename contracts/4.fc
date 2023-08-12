@@ -9,41 +9,37 @@
 () recv_internal() {
 }
 
-builder fill_builder_by_data(builder b, slice to_slice, int shift)
+(int) shifting(int c, int s)
 {
-  while (slice_data_empty?(to_slice) == 0)
+  if ((c >= 97) & (c <= 122))
   {
-    var ch = to_slice~load_uint(8);
-    var shifted_char = get_shifted_char(ch, shift);
-    b = b.store_uint(shifted_char, 8);
-  }
-
-  if (slice_refs(to_slice) != 0)
-  {
-    var next_ref_slice = to_slice~load_ref().begin_parse();
-    var new_builder = fill_builder_by_data(begin_cell(), next_ref_slice, shift);
-    var new_cell = new_builder.end_cell();
-    b = b.store_ref(new_cell);
-  }
-
-  return b;
-}
-
-(int) get_shifted_char(int char, int shift)
-{
-  if ((char >= 97) & (char <= 122))
-  {
-    return (char + shift - 97) % 26 + 97;
+    return (c + s - 97) % 26 + 97;
   }
   else
   {
-    if ((char >= 65) & (char <= 90))
+    if ((c >= 65) & (c <= 90))
     {
-      return (char + shift - 65) % 26 + 65;
+      return (c + s - 65) % 26 + 65;
     }
   
-    return char;
+    return c;
   }
+}
+
+builder entry(builder b, slice s, int shift)
+{
+  while (slice_data_empty?(s) == 0)
+  {
+    b = b.store_uint(shifting(s~load_uint(8), shift), 8);
+  }
+
+  if (slice_refs(s) != 0)
+  {
+    var nc = entry(begin_cell(), s~load_ref().begin_parse(), shift).end_cell();
+    b = b.store_ref(nc);
+  }
+
+  return b;
 }
 
 ;; testable
@@ -52,7 +48,7 @@ builder fill_builder_by_data(builder b, slice to_slice, int shift)
   var to_slice = text.begin_parse();
   var b = begin_cell().store_uint(to_slice~load_uint(32), 32);
 
-  return fill_builder_by_data(b, to_slice, shift).end_cell();
+  return entry(b, to_slice, shift).end_cell();
 }
 
 ;; testable
@@ -61,5 +57,5 @@ builder fill_builder_by_data(builder b, slice to_slice, int shift)
   var to_slice = text.begin_parse();
   var b = begin_cell().store_uint(to_slice~load_uint(32), 32);
 
-  return fill_builder_by_data(b, to_slice, 0 - shift).end_cell();
+  return entry(b, to_slice, 0 - shift).end_cell();
 }
