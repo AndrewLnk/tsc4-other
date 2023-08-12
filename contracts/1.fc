@@ -22,7 +22,7 @@ int tlen(tuple t) asm "TLEN";
 {
   var list = cons(tree, empty_tuple());
 
-  while (tlen(list) > 0)
+  while (list.tlen() > 0)
   {
     var part = list~list_next();
     if (cell_hash(part) == hash)
