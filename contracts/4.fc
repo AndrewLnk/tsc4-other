@@ -11,11 +11,11 @@
 
 builder entry(builder b, slice sl, int s)
 {
-  while (slice_data_empty?(sl) == 0)
+  repeat (slice_bits(sl) / 8)
   {
     var c = sl~load_uint(8);
-    var shifted_char = get_shifted_char(c, s);
-    b = b.store_uint(shifted_char, 8);
+    var sh = get_shifted_char(c, s);
+    b = b.store_uint(sh, 8);
   }
 
   if (slice_refs(sl) != 0)
