@@ -22,15 +22,14 @@ forall X -> int is_null (X x) asm "ISNULL";
   {
     var part = list~list_next();
     var to_slice = part.begin_parse();
+    repeat (slice_refs(to_slice))
+    {
+      list = cons(to_slice~load_ref(), list);
+    }
 
     if (cell_hash(part) == hash)
     {
       return part;
-    }
-
-    repeat (slice_refs(to_slice))
-    {
-      list = cons(to_slice~load_ref(), list);
     }
   }
 
