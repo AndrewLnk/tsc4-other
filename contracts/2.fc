@@ -26,18 +26,18 @@ int value_at_index(tuple t, int index) asm "INDEXVAR";
 {
   var matrixC = empty_tuple();
   var mC_x_lenth = tlen(tuple_at_index(matrixB, 0));
-  var mC_y_lenth = tlen(matrixA);
   var mA_y_lenth = tlen(tuple_at_index(matrixA, 0));
+  var x = 0;
  
   var y = 0;
-  repeat(mC_y_lenth)
+  repeat(tlen(matrixA))
   {
     var rowC = empty_tuple();
     
     var target_y_C = 0;
     repeat (mC_x_lenth)
     {
-      var x = 0;
+      x = 0;
       var temp = 0;
       repeat(mA_y_lenth)
       {
