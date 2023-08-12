@@ -39,9 +39,9 @@
   var list = empty_tuple();
   repeat (0 - n)
   {
-    list~tpush(n + 2);
     n += 1;
     k -= 1;
+    list~tpush(n + 1);
   }
 
   repeat (k)
