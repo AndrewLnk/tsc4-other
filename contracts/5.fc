@@ -37,13 +37,10 @@
   }
 
   var list = empty_tuple();
-  if (n < 0)
-  {
-      k += n;
-  }
   repeat (0 - n)
   {
     n += 1;
+    k -= 1;
     list~tpush(n + 1);
   }
 
