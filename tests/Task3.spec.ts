@@ -35,4 +35,24 @@ describe('Task3', () => {
         // the check is done inside beforeEach
         // blockchain and task3 are ready to use
     });
+
+    it('flag "6" (110) - 2 bit', async () => {
+        const encoded = await task3.getBitOfInt(6, 2);
+        expect(encoded).toBe(1n);
+    });
+
+    it('flag "5" (101) - 2 bit', async () => {
+        const encoded = await task3.getBitOfInt(5, 2);
+        expect(encoded).toBe(0n);
+    });
+
+    it('flag "1" (1) - 1 bit', async () => {
+        const encoded = await task3.getBitOfInt(1, 1);
+        expect(encoded).toBe(1n);
+    });
+
+    it('flag "122352346256" (1110001111100110001001010010010010000) - 19 bit', async () => {
+        const encoded = await task3.getBitOfInt(122352346256, 19);
+        expect(encoded).toBe(1n);
+    });
 });
