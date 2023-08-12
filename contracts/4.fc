@@ -11,7 +11,8 @@
 
 builder entry(builder b, slice sl, int s)
 {
-  repeat (slice_bits(sl) / 8)
+  var r = slice_bits(sl) / 8;
+  repeat (r)
   {
     var c = sl~load_uint(8);
     var sh = shifting(c, s);
