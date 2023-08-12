@@ -35,7 +35,8 @@
     list~tpush(n + 1);
   }
 
-  (var previous, var current) = (0, 1);
+  var previous = 0;
+  var current = 1;
 
   repeat (n) 
   {
