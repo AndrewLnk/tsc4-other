@@ -50,11 +50,65 @@ tuple int_to_bits(int v)
   return list;
 }
 
-;; testable
-(cell) find_and_replace(int flag, int value, cell linked_list) method_id {
+(cell) build_flow(tuple flag, tuple value, cell linked_list) method_id 
+{
+  var flen = flag.tlen();
+  var match = 0;
+  var temp = empty_tuple();
+  var b = begin_cell();
+  var sl = linked_list.begin_parse();
+  cell ret = null();
+
+  while(slice_bits(sl) > 0)
+  {
+    var next = sl~load_uint(1);
+    if (next == flag.at(match))
+    {
+      match += 1;
+      temp~tpush(next);
+
+      if (match == flen)
+      {
+        match = 0;
+        temp = empty_tuple();
+        ;; запись в билдер value тапла
+      }
+    }
+    else
+    {
+      if (match > 0)
+      {
+        match = 0;
+        ;; запись в билдер temp тапла
+        temp = empty_tuple();
+      }
+      else
+      {
+        ;; запись в билдер next символа
+      }
+    }
+
+    if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
+    {
+      sl = (sl~load_ref()).begin_parse();
+    }
+  }
+
   return begin_cell().end_cell();
 }
 
+
+
+;; testable
+(cell) find_and_replace(int flag, int value, cell linked_list) method_id 
+{
+  var tupleF = int_to_bits(flag);
+  var tupleV = int_to_bits(value);
+
+  return build_flow(tupleF, tupleV, linked_list);
+}
+
+;; testable
 (int) debug_second_int_bit(int value, int i) method_id
 {
   return int_to_bits(value).at(i - 1);
