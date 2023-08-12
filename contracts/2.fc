@@ -27,26 +27,29 @@ int value_at_index(tuple t, int index) asm "INDEXVAR";
   var matrixC = empty_tuple();
   var mC_x_lenth = tlen(tuple_at_index(matrixB, 0));
   var mA_y_lenth = tlen(tuple_at_index(matrixA, 0));
+
   var x = 0;
+  var t = 0;
+  var c = 0;
  
   var y = 0;
   repeat(tlen(matrixA))
   {
     var rowC = empty_tuple();
     
-    var target_y_C = 0;
+    c = 0;
     repeat (mC_x_lenth)
     {
       x = 0;
-      var temp = 0;
+      t = 0;
       repeat(mA_y_lenth)
       {
-        temp += value_at_index(tuple_at_index(matrixA, y), x) * value_at_index(tuple_at_index(matrixB, x), target_y_C);
+        t += value_at_index(tuple_at_index(matrixA, y), x) * value_at_index(tuple_at_index(matrixB, x), c);
         x += 1;
       }
 
-      rowC~tpush(temp);
-      target_y_C += 1;
+      rowC~tpush(t);
+      c += 1;
     }
 
     matrixC~tpush(rowC);
