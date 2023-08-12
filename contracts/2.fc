@@ -12,14 +12,8 @@
 () recv_internal() {
 }
 
-;; From telegram chat (get length of a tuple)
-int tlen(tuple t) asm "TLEN"; 
-
-;; From telegram chat (get element from a tuple at position) cell -> tuple
-tuple tuple_at_index(tuple t, int index) asm "INDEXVAR";
-
-;; From telegram chat (get element from a tuple at position) cell -> int
-int value_at_index(tuple t, int index) asm "INDEXVAR";
+int tlen(tuple t) asm "TLEN";
+forall X -> (tuple) to_tuple (X x) asm "NOP";
 
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id 
