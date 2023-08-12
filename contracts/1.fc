@@ -31,7 +31,7 @@ int tlen(tuple t) asm "TLEN";
     }
 
     var to_slice = part.begin_parse();
-    while (~ slice_refs_empty?(to_slice))
+    repeat (slice_refs(to_slice))
     {
       list = cons(to_slice~load_ref(), list);
     }
