@@ -9,57 +9,57 @@
 () recv_internal() {
 }
 
-builder entry(builder b, slice to_slice, int shift)
+builder entry(builder b, slice sl, int s)
 {
-  while (slice_data_empty?(to_slice) == 0)
+  while (slice_data_empty?(sl) == 0)
   {
-    var ch = to_slice~load_uint(8);
-    var shifted_char = get_shifted_char(ch, shift);
+    var c = sl~load_uint(8);
+    var shifted_char = get_shifted_char(c, s);
     b = b.store_uint(shifted_char, 8);
   }
 
-  if (slice_refs(to_slice) != 0)
+  if (slice_refs(sl) != 0)
   {
-    var next_ref_slice = to_slice~load_ref().begin_parse();
-    var new_builder = entry(begin_cell(), next_ref_slice, shift);
-    var new_cell = new_builder.end_cell();
-    b = b.store_ref(new_cell);
+    var ns = sl~load_ref().begin_parse();
+    var nb = entry(begin_cell(), ns, s);
+    var nc = nb.end_cell();
+    b = b.store_ref(nc);
   }
 
   return b;
 }
 
-(int) get_shifted_char(int char, int shift)
+(int) get_shifted_char(int c, int s)
 {
-  if ((char >= 97) & (char <= 122))
+  if ((c >= 97) & (c <= 122))
   {
-    return (char + shift - 97) % 26 + 97;
+    return (c + s - 97) % 26 + 97;
   }
   else
   {
-    if ((char >= 65) & (char <= 90))
+    if ((c >= 65) & (c <= 90))
     {
-      return (char + shift - 65) % 26 + 65;
+      return (c + s - 65) % 26 + 65;
     }
   
-    return char;
+    return c;
   }
 }
 
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id 
 {
-  var to_slice = text.begin_parse();
-  var b = begin_cell().store_uint(to_slice~load_uint(32), 32);
+  var s = text.begin_parse();
+  var b = begin_cell().store_uint(s~load_uint(32), 32);
 
-  return entry(b, to_slice, shift).end_cell();
+  return entry(b, s, shift).end_cell();
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id 
 {
-  var to_slice = text.begin_parse();
-  var b = begin_cell().store_uint(to_slice~load_uint(32), 32);
+  var s = text.begin_parse();
+  var b = begin_cell().store_uint(s~load_uint(32), 32);
 
-  return entry(b, to_slice, 0 - shift).end_cell();
+  return entry(b, s, 0 - shift).end_cell();
 }
