@@ -50,18 +50,22 @@ tuple int_to_bits(int v)
   return list;
 }
 
-(cell) build_flow(tuple flag, tuple value, cell linked_list) method_id 
+(tuple) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
+  var vlen = value.tlen();
+
   var match = 0;
   var temp = empty_tuple();
-  var b = begin_cell();
   var sl = linked_list.begin_parse();
-  cell ret = null();
+
+  var slices = empty_tuple();
+  var b = begin_cell();
 
   while(slice_bits(sl) > 0)
   {
     var next = sl~load_uint(1);
+
     if (next == flag.at(match))
     {
       match += 1;
@@ -71,7 +75,13 @@ tuple int_to_bits(int v)
       {
         match = 0;
         temp = empty_tuple();
-        ;; запись в билдер value тапла
+
+        var i = 0;
+        while (i < vlen)
+        {
+          (slices, b) = write_data(slices, b, value.at(i));
+          i += 1;
+        }
       }
     }
     else
@@ -79,12 +89,20 @@ tuple int_to_bits(int v)
       if (match > 0)
       {
         match = 0;
-        ;; запись в билдер temp тапла
+        
+        var i = 0;
+        var temp_l = temp.tlen();
+        while (i < temp_l)
+        {
+          (slices, b) = write_data(slices, b, temp.at(i));
+          i += 1;
+        }
+
         temp = empty_tuple();
       }
       else
       {
-        ;; запись в билдер next символа
+        (slices, b) = write_data(slices, b, next);
       }
     }
 
@@ -94,10 +112,64 @@ tuple int_to_bits(int v)
     }
   }
 
-  return begin_cell().end_cell();
+  if (match > 0)
+  {  
+    var i = 0;
+    var temp_l = temp.tlen();
+    while (i < temp_l)
+    {
+      (slices, b) = write_data(slices, b, temp.at(i));
+      i += 1;
+    }
+  }
+
+  if (builder_bits(b) > 0)
+  {
+    var s = b.end_cell().begin_parse();
+    slices~tpush(s);
+  }
+
+  return slices;
 }
 
+(tuple, builder) write_data(tuple slices, builder b, int next)
+{
+  if (builder_bits(b) < 1023)
+  {
+    b = b.store_uint(next, 1);
+  }
+  else
+  {
+    var s = b.end_cell().begin_parse();
+    slices~tpush(s);
+    b = begin_cell();
+    b = b.store_uint(next, 1);
+  }
 
+  return (slices, b);
+}
+
+(cell) slices_to_linked(tuple slices)
+{
+  var len = slices.tlen();
+
+  if (len == 0)
+  {
+    return null();
+  }
+  else
+  {
+    var i = len - 1;
+    var last = begin_cell().store_slice(slices.at(i)).end_cell();
+    while (i > 0)
+    {
+      i -= 1;
+      last = begin_cell().store_slice(slices.at(i)).store_ref(last).end_cell();
+    }
+
+    return last;
+  }
+}
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
@@ -105,7 +177,17 @@ tuple int_to_bits(int v)
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
 
-  return build_flow(tupleF, tupleV, linked_list);
+  var built_slices = build_flow(tupleF, tupleV, linked_list);
+  var result = slices_to_linked(built_slices);
+
+  if (result == null())
+  {
+    return linked_list;
+  }
+  else
+  {
+    return result;
+  }
 }
 
 ;; testable
