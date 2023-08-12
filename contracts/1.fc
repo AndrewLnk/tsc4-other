@@ -14,12 +14,15 @@
 ;; From telegram chat (get length of tuple)
 int tlen(tuple t) asm "TLEN"; 
 
+;; From telegram chat (get length of tuple)
+int tlen(tuple t) asm "TLEN";
+
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  var list = cons(tree, empty_tuple());
+  var list = cons(tree, null());
 
-  while (tlen(list) > 0)
+  while (cell_null?(car(list)) == 0)
   {
     var part = list~list_next();
     if (cell_hash(part) == hash)
