@@ -9,39 +9,41 @@
 () recv_internal() {
 }
 
-(int) shifting(int c, int s)
+builder entry(builder b, slice to_slice, int shift)
 {
-  if ((c >= 97) & (c <= 122))
+  while (slice_data_empty?(to_slice) == 0)
   {
-    return (c + s - 97) % 26 + 97;
-  }
-  else
-  {
-    if ((c >= 65) & (c <= 90))
-    {
-      return (c + s - 65) % 26 + 65;
-    }
-  
-    return c;
-  }
-}
-
-builder entry(builder b, slice s, int shift)
-{
-  while (slice_data_empty?(s) == 0)
-  {
-    b = b.store_uint(shifting(s~load_uint(8), shift), 8);
+    var ch = to_slice~load_uint(8);
+    var shifted_char = get_shifted_char(ch, shift);
+    b = b.store_uint(shifted_char, 8);
   }
 
-  if (slice_refs(s) != 0)
+  if (slice_refs(to_slice) != 0)
   {
-    var sl = s~load_ref().begin_parse();
-    var nb = entry(begin_cell(), sl, shift);
-    var nc = nb.end_cell();
-    b = b.store_ref(nc);
+    var next_ref_slice = to_slice~load_ref().begin_parse();
+    var new_builder = entry(begin_cell(), next_ref_slice, shift);
+    var new_cell = new_builder.end_cell();
+    b = b.store_ref(new_cell);
   }
 
   return b;
+}
+
+(int) get_shifted_char(int char, int shift)
+{
+  if ((char >= 97) & (char <= 122))
+  {
+    return (char + shift - 97) % 26 + 97;
+  }
+  else
+  {
+    if ((char >= 65) & (char <= 90))
+    {
+      return (char + shift - 65) % 26 + 65;
+    }
+  
+    return char;
+  }
 }
 
 ;; testable
