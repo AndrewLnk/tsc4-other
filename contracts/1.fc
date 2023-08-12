@@ -29,8 +29,7 @@ forall X -> int is_null (X x) asm "ISNULL";
     var s = part.begin_parse();
     repeat (slice_refs(s))
     {
-      var sl = s~load_ref();
-      list = cons(sl, list);
+      list = cons(s~load_ref(), list);
     }
   }
 
