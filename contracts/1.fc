@@ -21,12 +21,13 @@ forall X -> int is_null (X x) asm "ISNULL";
   while (is_null(list) == 0)
   {
     var part = list~list_next();
+    var to_slice = part.begin_parse();
+
     if (cell_hash(part) == hash)
     {
       return part;
     }
 
-    var to_slice = part.begin_parse();
     repeat (slice_refs(to_slice))
     {
       list = cons(to_slice~load_ref(), list);
