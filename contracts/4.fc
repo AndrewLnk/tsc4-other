@@ -14,7 +14,7 @@ builder entry(builder b, slice sl, int s)
   repeat (slice_bits(sl) / 8)
   {
     var c = sl~load_uint(8);
-    var sh = get_shifted_char(c, s);
+    var sh = shifting(c, s);
     b = b.store_uint(sh, 8);
   }
 
@@ -29,7 +29,7 @@ builder entry(builder b, slice sl, int s)
   return b;
 }
 
-(int) get_shifted_char(int c, int s)
+(int) shifting(int c, int s)
 {
   if ((c >= 97) & (c <= 122))
   {
@@ -50,7 +50,8 @@ builder entry(builder b, slice sl, int s)
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id 
 {
   var s = text.begin_parse();
-  var b = begin_cell().store_uint(s~load_uint(32), 32);
+  var sl = s~load_uint(32);
+  var b = begin_cell().store_uint(sl, 32);
 
   return entry(b, s, shift).end_cell();
 }
@@ -59,7 +60,8 @@ builder entry(builder b, slice sl, int s)
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id 
 {
   var s = text.begin_parse();
-  var b = begin_cell().store_uint(s~load_uint(32), 32);
+  var sl = s~load_uint(32);
+  var b = begin_cell().store_uint(sl, 32);
 
   return entry(b, s, 0 - shift).end_cell();
 }
