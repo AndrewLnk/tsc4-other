@@ -37,7 +37,7 @@
   }
 
   var list = empty_tuple();
-  while (n < 0)
+  repeat (0 - n)
   {
     list~tpush(n + 2);
     n += 1;
