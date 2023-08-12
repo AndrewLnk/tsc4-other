@@ -26,22 +26,22 @@
   }
 
   n -= 2;
-  var previous = 0;
-  var current = 1;
   
-  repeat (n)
-  {
-    var tmp = previous + current;
-    previous = current;
-    current = tmp;
-  }
-
   var list = empty_tuple();
   repeat (0 - n)
   {
     n += 1;
     k -= 1;
     list~tpush(n + 1);
+  }
+
+  (var previous, var current) = (0, 1);
+
+  repeat (n) 
+  {
+    var tmp = previous + current;
+    previous = current;
+    current = tmp;
   }
 
   repeat (k)
