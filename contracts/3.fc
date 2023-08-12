@@ -149,13 +149,13 @@ tuple int_to_bits(int v)
   return (slices, b);
 }
 
-(cell) slices_to_linked(tuple slices)
+(cell, int) slices_to_linked(tuple slices)
 {
   var len = slices.tlen();
 
   if (len == 0)
   {
-    return null();
+    return (null(), 0);
   }
   else
   {
@@ -167,7 +167,7 @@ tuple int_to_bits(int v)
       last = begin_cell().store_slice(slices.at(i)).store_ref(last).end_cell();
     }
 
-    return last;
+    return (last, -1);
   }
 }
 
@@ -178,9 +178,9 @@ tuple int_to_bits(int v)
   var tupleV = int_to_bits(value);
 
   var built_slices = build_flow(tupleF, tupleV, linked_list);
-  var result = slices_to_linked(built_slices);
+  (var result, var success) = slices_to_linked(built_slices);
 
-  if (result == null())
+  if (success == 0)
   {
     return linked_list;
   }
