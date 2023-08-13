@@ -145,7 +145,11 @@ tuple int_to_bits(int v)
           }
 
           temp = empty_tuple();
-          prev_count = 0;
+          if (prev_count > 0)
+          {
+            prev_count = 0;
+            (slices, b) = write_break_builder(slices, b);
+          }
         }
       }
 
@@ -174,7 +178,11 @@ tuple int_to_bits(int v)
             i += 1;
           }
 
-          prev_count = 0;
+          if (prev_count > 0)
+          {
+            prev_count = 0;
+            (slices, b) = write_break_builder(slices, b);
+          }
         }
       }
       else
@@ -315,11 +323,6 @@ int is_true(tuple t)
   {
     return linked_list;
   }
-  else
-  {
-    return result;
-  }
-}
   else
   {
     return result;
