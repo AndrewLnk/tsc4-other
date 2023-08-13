@@ -1,5 +1,4 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
-import { DefaultDeserializer } from 'v8';
 
 export type Task3Config = {};
 
@@ -26,77 +25,5 @@ export class Task3 implements Contract {
             sendMode: SendMode.PAY_GAS_SEPARATELY,
             body: beginCell().endCell(),
         });
-    }
-
-    async getBitOfInt(provider: ContractProvider, v: number, i: number): Promise<bigint> {
-        const {stack} = await provider.get('debug_int_bit', 
-        [
-            {type: 'int', value: BigInt(v)},
-            {type: 'int', value: BigInt(i)}    
-        ]);
-        return BigInt(stack.readNumber());
-    }
-
-    async getBitsLengthOfInt(provider: ContractProvider, v: number): Promise<bigint> {
-        const {stack} = await provider.get('debug_int_bit_length', 
-        [
-            {type: 'int', value: BigInt(v)} 
-        ]);
-        return BigInt(stack.readNumber());
-    }
-
-    async getResult(provider: ContractProvider, flag: number, value: number, root: Cell): Promise<Cell> {
-        const {stack} = await provider.get('find_and_replace', [
-            {type: 'int', value: BigInt(flag)},
-            {type: 'int', value: BigInt(value)},
-            {type: 'cell', cell: root}
-        ]);
-
-        return stack.readCell();
-    }
-
-    async getBitsLine(provider: ContractProvider, arr: Cell): Promise<string> {
-        var result = "";
-        var bits = arr.bits;
-        var cell = arr;
-        var i = 0;
-
-        while(i < bits.length)
-        {
-            result += bits.at(i) == true ? 1: 0;
-            i += 1;
-
-            if (i == bits.length && cell.refs.length > 0)
-            {
-                var newCell = cell.refs.at(0);
-                if (newCell != null)
-                {
-                    i = 0;
-                    cell = newCell;
-                    bits = cell.bits;
-                    result += " ";
-                }
-            }
-        }
-
-        return result;
-    }
-
-    async getRefsDepth(provider: ContractProvider, arr: Cell): Promise<bigint> {
-        var cell = arr;
-        var count = 0;
-
-        while(cell.refs.length > 0)
-        {
-            count += 1;
-            
-            var newCell = cell.refs.at(0);
-            if (newCell != null)
-            {
-                cell = newCell;
-            }
-        }
-
-        return BigInt(count);
     }
 }
