@@ -33,7 +33,7 @@ tuple int_to_bits(int v)
 
   var list = empty_tuple();
   var started = 0;
-  var max = 129;
+  var max = 128;
   repeat (slice_bits(s))
   {
     int b = s~load_int(1);
@@ -290,7 +290,7 @@ int is_true(tuple t)
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
 
-  if (tupleF.tlen() > 128)
+  if (tupleF.tlen() > 127)
   {
     return linked_list;
   }
