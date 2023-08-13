@@ -259,16 +259,20 @@ int is_true(tuple t)
 
 (cell) revert_tree(cell tree)
 {
-  var reverted = begin_cell();
   var s = tree.begin_parse();
-  reverted.store_slice(s);
+  builder reverted = null();
+
+  var reverted = begin_cell().store_slice(s);
   
-  while (s.slice_refs() > 0)
+  while (slice_empty?(s) == 0)
   {
-    var ns = s~load_ref();
-    var finishedSlice = reverted.store_ref(ns).end_cell().begin_parse();
-    reverted = begin_cell().store_slice(finishedSlice);
-    s = ns.begin_parse();
+    if (s.slice_refs() > 0)
+    {
+      var ref = (s~load_ref()).begin_parse();
+    }
+    reverted = begin_cell().store_slice(ref).store_ref(reverted.end_cell());
+    var next = ref~load_ref();
+    ref = next.begin_parse();
   }
 
   return reverted.end_cell();
@@ -291,5 +295,5 @@ int is_true(tuple t)
   var tupleV = int_to_bits(value);
 
   var tree = build_flow(tupleF, tupleV, linked_list);
-  return tree;
+  return revert_tree(tree);
 }

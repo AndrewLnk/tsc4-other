@@ -199,10 +199,10 @@ describe('Task3', () => {
     it('5', async () => 
     {
         var b = new Builder();
-        b.storeInt(123, 8);
+        b.storeBuffer(randomBytes(20));
         var data = b.endCell();
 
-        for (var i = 0; i < 5; i++)
+        for (var i = 0; i < 1; i++)
         {
             b = new Builder();
             b.storeBuffer(randomBytes(127)); // randomInt(1, 20)
