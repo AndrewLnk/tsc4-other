@@ -33,19 +33,19 @@ tuple int_to_bits(int v)
 
   var list = empty_tuple();
   var started = 0;
-  var max = 129;
+  var max = 128;
   repeat (slice_bits(s))
   {
-    int b = s~load_int(1);
+    int b = s~load_uint(1);
 
-    if (b == -1)
+    if (b == 1)
     {
       started = -1;
     }
 
-    if ((started == -1) & (max > 0))
+    if (started & (max > 0))
     {
-      list~tpush(b * -1);
+      list~tpush(b);
       max -= 1;
     }
   }
@@ -289,16 +289,6 @@ int is_true(tuple t)
 
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
-
-  if (tupleF.tlen() > 128)
-  {
-    return linked_list;
-  }
-
-if (tupleV.tlen() > 128)
-  {
-    return linked_list;
-  }
 
   var built_slices = build_flow(tupleF, tupleV, linked_list);
   (var result, var success) = slices_to_linked(built_slices);
