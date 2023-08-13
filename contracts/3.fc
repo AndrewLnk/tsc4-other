@@ -327,16 +327,3 @@ int is_true(tuple t)
     return result;
   }
 }
-
-
-;; testable
-(int) debug_int_bit(int value, int i) method_id
-{
-  return int_to_bits(value).at(i - 1);
-}
-
-;; testable
-(int) debug_int_bit_length(int value) method_id
-{
-  return int_to_bits(value).tlen();
-}
