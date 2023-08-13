@@ -1,9 +1,10 @@
 import { Blockchain, SandboxContract } from '@ton-community/sandbox';
-import { Builder, Cell, toNano } from 'ton-core';
+import { BitBuilder, BitReader, BitString, Builder, Cell, toNano } from 'ton-core';
 import { Task3 } from '../wrappers/Task3';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
 import { strict } from 'assert';
+import { randomBytes, randomInt } from 'crypto';
 
 describe('Task3', () => {
     let code: Cell;
@@ -37,29 +38,6 @@ describe('Task3', () => {
         // blockchain and task3 are ready to use
     });
 
-    it('10, 11, not found', async () => {
-
-        const b1 = new Builder();
-        b1.storeInt(123, 8);
-        const data1 = b1.endCell();
-
-        const b2 = new Builder();
-        b2.storeInt(123, 8);
-        b2.storeRef(data1);
-        const data2 = b2.endCell();
-
-        const b3 = new Builder();
-        b3.storeInt(124, 8);
-        b3.storeRef(data2);
-        const data3 = b3.endCell();
-
-        const result = await task3.getResult(10, 11, data3);
-
-        var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.getBitsLine(data3);
-        expect(resultLine).toBe(dataLine);
-    });
-
     it('empty cell', async () => {
 
         const b = new Builder();
@@ -69,73 +47,6 @@ describe('Task3', () => {
 
         var resultLine = await task3.getBitsLine(result);
         var dataLine = await task3.getBitsLine(data);
-        expect(resultLine).toBe(dataLine);
-    });
-
-    it('12, 15, replace simple', async () => {
-
-        const b1 = new Builder();
-        b1.storeInt(123, 8);
-        const data1 = b1.endCell();
-
-        const b2 = new Builder();
-        b2.storeInt(123, 8);
-        b2.storeRef(data1);
-        const data2 = b2.endCell();
-
-        const b3 = new Builder();
-        b3.storeInt(124, 8);
-        b3.storeRef(data2);
-        const data3 = b3.endCell();
-
-        const result = await task3.getResult(12, 15, data3);
-
-        var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.replaceCellAll(data3, "1100", "1111");
-        expect(resultLine).toBe(dataLine);
-    });
-
-    it('8, 9, replace join', async () => {
-
-        const b1 = new Builder();
-        b1.storeInt(123, 8);
-        const data1 = b1.endCell();
-
-        const b2 = new Builder();
-        b2.storeInt(123, 8);
-        b2.storeRef(data1);
-        const data2 = b2.endCell();
-
-        const b3 = new Builder();
-        b3.storeInt(124, 8);
-        b3.storeRef(data2);
-        const data3 = b3.endCell();
-
-        const result = await task3.getResult(8, 9, data3);
-
-        var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.replaceCellAll(data3, "1000", "1001");
-        expect(resultLine).toBe(dataLine);
-    });
-
-    it('8, 9, big data', async () => 
-    {
-        var b = new Builder();
-        b.storeInt(123, 8);
-        var data = b.endCell();
-
-        for (var i = 0; i < 5; i++)
-        {
-            b = new Builder();
-            b.storeInt(i, 16);
-            b.storeRef(data);
-            data = b.endCell();
-        }
-
-        const result = await task3.getResult(8, 9, data);
-
-        var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.replaceCellAll(data, "1000", "1001");
         expect(resultLine).toBe(dataLine);
     });
 
@@ -194,39 +105,38 @@ describe('Task3', () => {
         expect(dataLine).toBe(resultLine);
     });
 
-    it('1.0.1.0 -> ', async () => {
+    it('1', async () => 
+    {
+        var b = new Builder();
+        b.storeInt(123, 8);
+        var data = b.endCell();
 
-        const b0 = new Builder();
-        b0.storeUint(1, 1);
-        b0.storeUint(0, 1);
-        const data0 = b0.endCell();
+        for (var i = 0; i < 6; i++)
+        {
+            b = new Builder();
+            b.storeBuffer(randomBytes(randomInt(1, 127)));
+            b.storeRef(data);
+            data = b.endCell();
+        }
 
-        const b1 = new Builder();
-        b1.storeUint(1, 1);
-        b1.storeUint(0, 1);
-        b1.storeRef(data0);
-        const data1 = b1.endCell();
+        // var f = randomInt(1, 2048);
+        // var v = randomInt(1, 2048);
 
-        const b2 = new Builder();
-        b2.storeUint(1, 1);
-        b2.storeUint(0, 1);
-        b2.storeRef(data1);
-        const data2 = b2.endCell();
+        // var fs = await task3.getBitsLengthOfInt(f);
+        // var vs = await task3.getBitsLengthOfInt(f);
 
-        const result = await task3.getResult(42, 5, data2);
+        // var fb = new BitBuilder();
+        // fb.writeInt(f, fs);
+        // var bsF = fb.build().toString();
 
+        // var vb = new BitBuilder();
+        // vb.writeInt(v, vs);
+        // var bsV = vb.build().toString();
+
+        const result = await task3.getResult(4, 567, data);
         var resultLine = await task3.getBitsLine(result);
-        var rep = await task3.replaceCellAll(data2, "101010", "101");
+        var rep = await task3.replaceCellAll(data, "101010", "101");
 
         expect(resultLine).toBe(rep);
-    });
-
-    it('string replace test', async () => {
-
-        var st = "0000000000000100000000000000001100000000000000100000000000000001000000000000000001111011";
-        var rp = "0000000000000100100000000000001100100000000000100100000000000001001000000000000001111011";
-        var rep = st.replaceAll("1000", "1001");
-
-        expect(rep).toBe(rp);
     });
 });

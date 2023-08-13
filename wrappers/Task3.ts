@@ -37,12 +37,12 @@ export class Task3 implements Contract {
         return BigInt(stack.readNumber());
     }
 
-    async getBitsLengthOfInt(provider: ContractProvider, v: number): Promise<bigint> {
+    async getBitsLengthOfInt(provider: ContractProvider, v: number): Promise<number> {
         const {stack} = await provider.get('debug_int_bit_length', 
         [
             {type: 'int', value: BigInt(v)} 
         ]);
-        return BigInt(stack.readNumber());
+        return stack.readNumber();
     }
 
     async getResult(provider: ContractProvider, flag: number, value: number, root: Cell): Promise<Cell> {
