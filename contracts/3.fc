@@ -97,7 +97,24 @@ tuple int_to_bits(int v)
             }
           }
 
-          (slices, b, writed_bits) = write_data(slices, b, writed_bits, value.at(i));
+;; Important
+
+            if (writed_bits < 1023)
+            {
+              b = b.store_uint(value.at(i), 1);
+              writed_bits += 1;
+            }
+            else
+            {
+              var s = b.end_cell().begin_parse();
+              slices~tpush(s);
+              b = begin_cell();
+              b = b.store_uint(value.at(i), 1);
+              writed_bits = 1;
+            }
+
+  ;; Important end
+          
           i += 1;
         }
 
@@ -131,7 +148,7 @@ tuple int_to_bits(int v)
               writed_bits = 1;
             }
 
-  ;; Important end
+;; Important end
 
           var overwrite = empty_tuple();
           var i = 1;
@@ -174,7 +191,7 @@ tuple int_to_bits(int v)
               writed_bits = 1;
             }
 
-  ;; Important end
+;; Important end
             
             i += 1;
           }
@@ -209,7 +226,24 @@ tuple int_to_bits(int v)
               }
             }
 
-            (slices, b, writed_bits) = write_data(slices, b, writed_bits, value.at(i));
+;; Important
+
+            if (writed_bits < 1023)
+            {
+              b = b.store_uint(value.at(i), 1);
+              writed_bits += 1;
+            }
+            else
+            {
+              var s = b.end_cell().begin_parse();
+              slices~tpush(s);
+              b = begin_cell();
+              b = b.store_uint(value.at(i), 1);
+              writed_bits = 1;
+            }
+
+;; Important end
+
             i += 1;
           }
 
@@ -222,7 +256,23 @@ tuple int_to_bits(int v)
       }
       else
       {
-        (slices, b, writed_bits) = write_data(slices, b, writed_bits, next);
+;; Important
+
+            if (writed_bits < 1023)
+            {
+              b = b.store_uint(next, 1);
+              writed_bits += 1;
+            }
+            else
+            {
+              var s = b.end_cell().begin_parse();
+              slices~tpush(s);
+              b = begin_cell();
+              b = b.store_uint(next, 1);
+              writed_bits = 1;
+            }
+
+;; Important end
       }
     }
 
@@ -269,8 +319,24 @@ tuple int_to_bits(int v)
           (slices, b) = write_break_builder(slices, b);
         }
       }
+;; Important
 
-      (slices, b, writed_bits) = write_data(slices, b, writed_bits, temp.at(i));
+            if (writed_bits < 1023)
+            {
+              b = b.store_uint(temp.at(i), 1);
+              writed_bits += 1;
+            }
+            else
+            {
+              var s = b.end_cell().begin_parse();
+              slices~tpush(s);
+              b = begin_cell();
+              b = b.store_uint(temp.at(i), 1);
+              writed_bits = 1;
+            }
+
+;; Important end
+
       i += 1;
     }
   }
@@ -298,25 +364,6 @@ int is_true(tuple t)
   }
 
   return - 1;
-}
-
-(tuple, builder, int) write_data(tuple slices, builder b, int writed, int next)
-{
-  if (writed < 1023)
-  {
-    b = b.store_uint(next, 1);
-    writed += 1;
-  }
-  else
-  {
-    var s = b.end_cell().begin_parse();
-    slices~tpush(s);
-    b = begin_cell();
-    b = b.store_uint(next, 1);
-    writed = 1;
-  }
-
-  return (slices, b, writed);
 }
 
 (tuple, builder) write_break_builder(tuple slices, builder b)
