@@ -58,6 +58,12 @@ tuple int_to_bits(int v)
 
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
+
+  if (slice_bits(sl) == 0)
+  {
+    return empty_tuple();
+  }
+
   var prev_count = 0;
 
   var slices = empty_tuple();
@@ -269,6 +275,16 @@ int is_true(tuple t)
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
+  if (flag <= 0)
+  {
+    return linked_list;
+  }
+
+  if (value <= 0)
+  {
+    return linked_list;
+  }
+
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
 
