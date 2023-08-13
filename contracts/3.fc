@@ -61,11 +61,6 @@ tuple int_to_bits(int v)
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
 
-  if (slice_bits(sl) == 0)
-  {
-    return empty_tuple();
-  }
-
   var prev_count = 0;
 
   var slices = empty_tuple();
@@ -96,7 +91,7 @@ tuple int_to_bits(int v)
             }
           }
 
-;; Important
+;; Important 1
 
             if (builder_bits(b) < 1023)
             {
@@ -129,7 +124,7 @@ tuple int_to_bits(int v)
         if ((is_true(temp)) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
         {
 
-;; Important
+;; Important 2
 
             if (builder_bits(b) < 1023)
             {
@@ -143,7 +138,7 @@ tuple int_to_bits(int v)
               b = b.store_uint(1, 1);
             }
 
-;; Important end
+;; Important end 3
 
           var overwrite = empty_tuple();
           var i = 1;
@@ -170,7 +165,7 @@ tuple int_to_bits(int v)
               }
             }
 
-;; Important
+;; Important 4
 
             if (builder_bits(b) < 1023)
             {
@@ -219,7 +214,7 @@ tuple int_to_bits(int v)
               }
             }
 
-;; Important
+;; Important 5
 
             if (builder_bits(b) < 1023)
             {
@@ -247,7 +242,7 @@ tuple int_to_bits(int v)
       }
       else
       {
-;; Important
+;; Important 6
 
             if (builder_bits(b) < 1023)
             {
@@ -308,7 +303,7 @@ tuple int_to_bits(int v)
           (slices, b) = write_break_builder(slices, b);
         }
       }
-;; Important
+;; Important 7
 
             if (builder_bits(b) < 1023)
             {
