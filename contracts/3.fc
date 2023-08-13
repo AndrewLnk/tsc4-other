@@ -114,7 +114,24 @@ tuple int_to_bits(int v)
       {
         if ((is_true(temp)) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
         {
-          (slices, b, writed_bits) = write_data(slices, b, writed_bits, 1);
+
+;; Important
+
+            if (writed_bits < 1023)
+            {
+              b = b.store_uint(1, 1);
+              writed_bits += 1;
+            }
+            else
+            {
+              var s = b.end_cell().begin_parse();
+              slices~tpush(s);
+              b = begin_cell();
+              b = b.store_uint(1, 1);
+              writed_bits = 1;
+            }
+
+  ;; Important end
 
           var overwrite = empty_tuple();
           var i = 1;
@@ -141,10 +158,6 @@ tuple int_to_bits(int v)
               }
             }
 
-;; Change        
-
-;;            (slices, b, writed_bits) = write_data(slices, b, writed_bits, temp.at(i));
-
 ;; Important
 
             if (writed_bits < 1023)
@@ -160,6 +173,8 @@ tuple int_to_bits(int v)
               b = b.store_uint(temp.at(i), 1);
               writed_bits = 1;
             }
+
+  ;; Important end
             
             i += 1;
           }

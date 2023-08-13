@@ -105,13 +105,35 @@ describe('Task3', () => {
         expect(dataLine).toBe(resultLine);
     });
 
-    it('1', async () => 
+    it('5', async () => 
     {
         var b = new Builder();
         b.storeInt(123, 8);
         var data = b.endCell();
 
         for (var i = 0; i < 5; i++)
+        {
+            b = new Builder();
+            b.storeBuffer(randomBytes(127)); // randomInt(1, 20)
+            b.storeRef(data);
+            data = b.endCell();
+        }
+
+        const result = await task3.getResult(42, 1, data);
+        var resultLine = await task3.getBitsLine(result);
+
+        var rep = await task3.replaceCellAll(data, "101010", "1");
+
+        expect(resultLine).toBe(rep);
+    });
+
+    it('10', async () => 
+    {
+        var b = new Builder();
+        b.storeInt(123, 8);
+        var data = b.endCell();
+
+        for (var i = 0; i < 10; i++)
         {
             b = new Builder();
             b.storeBuffer(randomBytes(127)); // randomInt(1, 20)
