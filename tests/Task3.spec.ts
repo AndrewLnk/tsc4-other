@@ -1,8 +1,9 @@
 import { Blockchain, SandboxContract } from '@ton-community/sandbox';
-import { Cell, toNano } from 'ton-core';
+import { BitBuilder, BitString, Builder, Cell, toNano } from 'ton-core';
 import { Task3 } from '../wrappers/Task3';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
+import { buffer } from 'stream/consumers';
 
 describe('Task3', () => {
     let code: Cell;
@@ -51,8 +52,32 @@ describe('Task3', () => {
         expect(encoded).toBe(1n);
     });
 
-    it('flag "122352346256" (1110001111100110001001010010010010000) - 19 bit', async () => {
-        const encoded = await task3.getBitOfInt(122352346256, 19);
+    it('flag "10" (1010) - 4 bit', async () => {
+        const encoded = await task3.getBitOfInt(10, 4);
+        expect(encoded).toBe(0n);
+    });
+
+    it('flag "11" (1011) - 4 bit', async () => {
+        const encoded = await task3.getBitOfInt(11, 4);
         expect(encoded).toBe(1n);
+    });
+
+    it('10, 11, empty cell', async () => {
+        const linked_list = new Cell();
+
+        const dataBuilder = new Builder();
+        dataBuilder.storeBit(1);
+        dataBuilder.storeBit(1);
+        dataBuilder.storeBit(0);
+        dataBuilder.storeBit(1);
+        dataBuilder.storeBit(1);
+        dataBuilder.storeBit(1);
+        dataBuilder.storeBit(1);
+        const data = dataBuilder.endCell();
+
+        const result = await task3.getResult(10, 11, linked_list, data);
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.getBitsLine(data);
+        expect(resultLine).toBe(dataLine);
     });
 });

@@ -35,4 +35,24 @@ export class Task3 implements Contract {
         ]);
         return BigInt(stack.readNumber());
     }
+
+    async getResult(provider: ContractProvider, flag: number, value: number, root: Cell, expected: Cell): Promise<Cell> {
+        const {stack} = await provider.get('find_and_replace', [
+            {type: 'int', value: BigInt(flag)},
+            {type: 'int', value: BigInt(value)},
+            {type: 'cell', cell: root}
+        ]);
+
+        return stack.readCell();
+    }
+
+    async getBitsLine(provider: ContractProvider, arr: Cell): Promise<string> {
+        var result = "";
+        var bits = arr.bits;
+        for (var i = 0; i < bits.length; i += 1)
+        {
+            result += bits.at(i) == true ? 1: 0;
+        }
+        return result;
+    }
 }
