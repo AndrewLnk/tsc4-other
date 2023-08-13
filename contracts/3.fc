@@ -191,8 +191,6 @@ tuple int_to_bits(int v)
       }
     }
 
-    (slices, b) = write_data(slices, b, next);
-
 
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
