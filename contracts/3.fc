@@ -191,6 +191,8 @@ tuple int_to_bits(int v)
       }
     }
 
+    (slices, b) = write_data(slices, b, next);
+
 
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
@@ -340,4 +342,37 @@ int is_true(tuple t)
   {
     return result;
   }
+}
+
+
+;; testable
+(int) debug_int_bit(int value, int i) method_id
+{
+  return int_to_bits(value).at(i - 1);
+}
+
+;; testable
+(int) debug_int_bit_length(int value) method_id
+{
+  return int_to_bits(value).tlen();
+}
+
+;; testable
+(int) debug_while_cell_length(cell value) method_id
+{
+  var l = 0;
+  var sl = value.begin_parse();
+
+  while(slice_bits(sl) > 0)
+  {
+    var next = sl~load_uint(1);
+    l += 1;
+
+    if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
+    {
+      sl = (sl~load_ref()).begin_parse();
+    }
+  }
+
+  return l;
 }
