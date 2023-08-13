@@ -206,7 +206,10 @@ tuple int_to_bits(int v)
       
       if (temp.tlen() > 0)
       {
-        prev_count = temp.tlen() + 1;
+        if (prev_count == 0)
+        {
+          prev_count = temp.tlen() + 1;
+        }
       }
       else
       {
@@ -222,6 +225,16 @@ tuple int_to_bits(int v)
     var temp_l = temp.tlen();
     while (i < temp_l)
     {
+      if (prev_count > 0)
+      {
+        prev_count -= 1;
+
+        if (prev_count == 0)
+        {
+          (slices, b) = write_break_builder(slices, b);
+        }
+      }
+
       (slices, b) = write_data(slices, b, temp.at(i));
       i += 1;
     }
