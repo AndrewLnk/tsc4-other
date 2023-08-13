@@ -78,13 +78,14 @@ tuple int_to_bits(int v)
         var i = 0;
         while (i < vlen)
         {
-          if (prev_count >= 0)
+          if (prev_count > 0)
           {
+            prev_count -= 1;
+
             if (prev_count == 0)
             {
                (slices, b) = write_break_builder(slices, b);
             }
-            prev_count -= 1;
           }
 
           (slices, b) = write_data(slices, b, value.at(i));
@@ -115,6 +116,16 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < temp.tlen())
           {
+            if (prev_count > 0)
+            {
+              prev_count -= 1;
+
+              if (prev_count == 0)
+              {
+               (slices, b) = write_break_builder(slices, b);
+              }
+            }
+
             (slices, b) = write_data(slices, b, temp.at(i));
             i += 1;
           }
@@ -134,13 +145,14 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < vlen)
           {
-            if (prev_count >= 0)
+            if (prev_count > 0)
             {
+              prev_count -= 1;
+
               if (prev_count == 0)
               {
                 (slices, b) = write_break_builder(slices, b);
               }
-              prev_count -= 1;
             }
 
             (slices, b) = write_data(slices, b, value.at(i));
@@ -160,11 +172,12 @@ tuple int_to_bits(int v)
       sl = (sl~load_ref()).begin_parse();
       if (temp.tlen() > 0)
       {
-        prev_count = temp.tlen();
+        prev_count = temp.tlen() + 1;
       }
       else
       {
         prev_count = 0;
+        (slices, b) = write_break_builder(slices, b);
       }
     }
   }
