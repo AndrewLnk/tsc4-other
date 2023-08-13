@@ -70,7 +70,6 @@ tuple int_to_bits(int v)
 
   var slices = empty_tuple();
   var b = begin_cell();
-  var writed_bits = 0;
 
   while(slice_bits(sl) > 0)
   {
@@ -99,10 +98,9 @@ tuple int_to_bits(int v)
 
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(value.at(i), 1);
-              writed_bits += 1;
             }
             else
             {
@@ -110,7 +108,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(value.at(i), 1);
-              writed_bits = 1;
             }
 
   ;; Important end
@@ -134,10 +131,9 @@ tuple int_to_bits(int v)
 
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(1, 1);
-              writed_bits += 1;
             }
             else
             {
@@ -145,7 +141,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(1, 1);
-              writed_bits = 1;
             }
 
 ;; Important end
@@ -177,10 +172,9 @@ tuple int_to_bits(int v)
 
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(temp.at(i), 1);
-              writed_bits += 1;
             }
             else
             {
@@ -188,7 +182,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(temp.at(i), 1);
-              writed_bits = 1;
             }
 
 ;; Important end
@@ -228,10 +221,9 @@ tuple int_to_bits(int v)
 
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(value.at(i), 1);
-              writed_bits += 1;
             }
             else
             {
@@ -239,7 +231,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(value.at(i), 1);
-              writed_bits = 1;
             }
 
 ;; Important end
@@ -258,10 +249,9 @@ tuple int_to_bits(int v)
       {
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(next, 1);
-              writed_bits += 1;
             }
             else
             {
@@ -269,7 +259,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(next, 1);
-              writed_bits = 1;
             }
 
 ;; Important end
@@ -321,10 +310,9 @@ tuple int_to_bits(int v)
       }
 ;; Important
 
-            if (writed_bits < 1023)
+            if (builder_bits(b) < 1023)
             {
               b = b.store_uint(temp.at(i), 1);
-              writed_bits += 1;
             }
             else
             {
@@ -332,7 +320,6 @@ tuple int_to_bits(int v)
               slices~tpush(s);
               b = begin_cell();
               b = b.store_uint(temp.at(i), 1);
-              writed_bits = 1;
             }
 
 ;; Important end
