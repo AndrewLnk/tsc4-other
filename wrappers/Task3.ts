@@ -74,6 +74,7 @@ export class Task3 implements Contract {
                     i = 0;
                     cell = newCell;
                     bits = cell.bits;
+                    result += " ";
                 }
             }
         }

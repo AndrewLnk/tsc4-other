@@ -58,11 +58,10 @@ tuple int_to_bits(int v)
 
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
+  var prev_count = 0;
 
   var slices = empty_tuple();
   var b = begin_cell();
-
-  var log = 0;
 
   while(slice_bits(sl) > 0)
   {
@@ -71,7 +70,6 @@ tuple int_to_bits(int v)
     if (next == flag.at(temp.tlen()))
     {
       temp~tpush(next);
-      log += 1;
 
       if (temp.tlen() == flen)
       {
@@ -80,6 +78,15 @@ tuple int_to_bits(int v)
         var i = 0;
         while (i < vlen)
         {
+          if (prev_count >= 0)
+          {
+            if (prev_count == 0)
+            {
+               (slices, b) = write_break_builder(slices, b);
+            }
+            prev_count -= 1;
+          }
+
           (slices, b) = write_data(slices, b, value.at(i));
           i += 1;
         }
@@ -127,7 +134,16 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < vlen)
           {
-           (slices, b) = write_data(slices, b, value.at(i));
+            if (prev_count >= 0)
+            {
+              if (prev_count == 0)
+              {
+                (slices, b) = write_break_builder(slices, b);
+              }
+              prev_count -= 1;
+            }
+
+            (slices, b) = write_data(slices, b, value.at(i));
             i += 1;
           }
         }
@@ -142,6 +158,14 @@ tuple int_to_bits(int v)
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
       sl = (sl~load_ref()).begin_parse();
+      if (temp.tlen() > 0)
+      {
+        prev_count = temp.tlen();
+      }
+      else
+      {
+        prev_count = 0;
+      }
     }
   }
 
@@ -160,11 +184,6 @@ tuple int_to_bits(int v)
   {
     var s = b.end_cell().begin_parse();
     slices~tpush(s);
-  }
-
-  if (log == 1)
-  {
-    return empty_tuple();
   }
 
   return slices;
@@ -188,7 +207,7 @@ int is_true(tuple t)
 
 (tuple, builder) write_data(tuple slices, builder b, int next)
 {
-  if (builder_bits(b) <= 1023)
+  if (builder_bits(b) < 1023)
   {
     b = b.store_uint(next, 1);
   }
@@ -199,6 +218,15 @@ int is_true(tuple t)
     b = begin_cell();
     b = b.store_uint(next, 1);
   }
+
+  return (slices, b);
+}
+
+(tuple, builder) write_break_builder(tuple slices, builder b)
+{
+  var s = b.end_cell().begin_parse();
+  slices~tpush(s);
+  b = begin_cell();
 
   return (slices, b);
 }

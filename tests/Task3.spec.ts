@@ -157,26 +157,57 @@ describe('Task3', () => {
         expect(resultLine).toBe(dataLine);
     });
 
-    it('12, 15, replace short', async () => {
-        
+    it('example test', async () => {
+
         const b1 = new Builder();
-        b1.storeInt(123, 8);
+        b1.storeUint(1, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
         const data1 = b1.endCell();
 
         const b2 = new Builder();
-        b2.storeInt(123, 8);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
         b2.storeRef(data1);
         const data2 = b2.endCell();
 
-        const b3 = new Builder();
-        b3.storeInt(124, 8);
-        b3.storeRef(data2);
-        const data3 = b3.endCell();
-
-        const result = await task3.getResult(8158075, 1, data3);
+        const result = await task3.getResult(373, 511, data2);
 
         var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.getBitsLine(data3);
+        var dataLine = await task3.getBitsLine(data2);
         expect(resultLine).toBe(dataLine);
     });
 });
