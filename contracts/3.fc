@@ -99,6 +99,12 @@ tuple int_to_bits(int v)
           (slices, b) = write_data(slices, b, value.at(i));
           i += 1;
         }
+
+        if (prev_count > 0)
+        {
+          prev_count = 0;
+          (slices, b) = write_break_builder(slices, b);
+        }
       }
     }
     else
@@ -139,6 +145,7 @@ tuple int_to_bits(int v)
           }
 
           temp = empty_tuple();
+          prev_count = 0;
         }
       }
 
@@ -166,6 +173,8 @@ tuple int_to_bits(int v)
             (slices, b) = write_data(slices, b, value.at(i));
             i += 1;
           }
+
+          prev_count = 0;
         }
       }
       else
@@ -306,6 +315,11 @@ int is_true(tuple t)
   {
     return linked_list;
   }
+  else
+  {
+    return result;
+  }
+}
   else
   {
     return result;
