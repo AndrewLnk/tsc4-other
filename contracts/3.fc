@@ -56,7 +56,7 @@ tuple int_to_bits(int v)
   var flen = flag.tlen();
   var vlen = value.tlen();
 
-  tuple temp = empty_tuple();
+  var temp = empty_tuple();
   var sl = linked_list.begin_parse();
 
   var slices = empty_tuple();
@@ -188,7 +188,7 @@ int is_true(tuple t)
 
 (tuple, builder) write_data(tuple slices, builder b, int next)
 {
-  if (builder_bits(b) < 1023)
+  if (builder_bits(b) <= 1023)
   {
     b = b.store_uint(next, 1);
   }

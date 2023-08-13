@@ -1,4 +1,5 @@
 import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
+import { DefaultDeserializer } from 'v8';
 
 export type Task3Config = {};
 
@@ -78,5 +79,23 @@ export class Task3 implements Contract {
         }
 
         return result;
+    }
+
+    async getRefsDepth(provider: ContractProvider, arr: Cell): Promise<bigint> {
+        var cell = arr;
+        var count = 0;
+
+        while(cell.refs.length > 0)
+        {
+            count += 1;
+            
+            var newCell = cell.refs.at(0);
+            if (newCell != null)
+            {
+                cell = newCell;
+            }
+        }
+
+        return BigInt(count);
     }
 }

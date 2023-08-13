@@ -157,22 +157,26 @@ describe('Task3', () => {
         expect(resultLine).toBe(dataLine);
     });
 
-    it('8, 9, big data', async () => 
-    {
-        var b = new Builder();
-        b.storeInt(123, 8);
-        var data = b.endCell();
+    it('12, 15, replace short', async () => {
+        
+        const b1 = new Builder();
+        b1.storeInt(123, 8);
+        const data1 = b1.endCell();
 
-        for (var i = 0; i < 360; i++)
-        {
-            b = new Builder();
-            b.storeInt(i, 16);
-            b.storeRef(data);
-            data = b.endCell();
-        }
+        const b2 = new Builder();
+        b2.storeInt(123, 8);
+        b2.storeRef(data1);
+        const data2 = b2.endCell();
 
-        const result = await task3.getResult(8, 9, data);
+        const b3 = new Builder();
+        b3.storeInt(124, 8);
+        b3.storeRef(data2);
+        const data3 = b3.endCell();
+
+        const result = await task3.getResult(8158075, 1, data3);
+
         var resultLine = await task3.getBitsLine(result);
-        expect(resultLine).toBe(resultLine);
+        var dataLine = await task3.getBitsLine(data3);
+        expect(resultLine).toBe(dataLine);
     });
 });
