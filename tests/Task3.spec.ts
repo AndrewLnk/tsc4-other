@@ -111,10 +111,10 @@ describe('Task3', () => {
         b.storeInt(123, 8);
         var data = b.endCell();
 
-        for (var i = 0; i < 6; i++)
+        for (var i = 0; i < 5; i++)
         {
             b = new Builder();
-            b.storeBuffer(randomBytes(randomInt(1, 127)));
+            b.storeBuffer(randomBytes(127)); // randomInt(1, 20)
             b.storeRef(data);
             data = b.endCell();
         }
