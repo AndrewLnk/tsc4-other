@@ -261,21 +261,40 @@ int is_true(tuple t)
 {
   var s = tree.begin_parse();
   builder reverted = null();
-
-  var reverted = begin_cell().store_slice(s);
+  var filled = 0;
   
   while (slice_empty?(s) == 0)
   {
     if (s.slice_refs() > 0)
     {
       var ref = (s~load_ref()).begin_parse();
+      
+      if (filled == 0)
+      {
+        reverted = begin_cell().store_slice(s);
+        filled = 1;
+      }
+      else
+      {
+        reverted = begin_cell().store_slice(s).store_ref(reverted.end_cell());
+      }
+      
+      s = ref;
     }
-    reverted = begin_cell().store_slice(ref).store_ref(reverted.end_cell());
-    var next = ref~load_ref();
-    ref = next.begin_parse();
+    else
+    {
+      if (filled == 0)
+      {
+        return begin_cell().store_slice(s).end_cell();
+      }
+      else
+      {
+        return begin_cell().store_slice(s).store_ref(reverted.end_cell()).end_cell();
+      }
+    }
   }
 
-  return reverted.end_cell();
+  return begin_cell().end_cell();
 }
 
 ;; testable
