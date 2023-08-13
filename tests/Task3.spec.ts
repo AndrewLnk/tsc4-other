@@ -119,23 +119,10 @@ describe('Task3', () => {
             data = b.endCell();
         }
 
-        // var f = randomInt(1, 2048);
-        // var v = randomInt(1, 2048);
-
-        // var fs = await task3.getBitsLengthOfInt(f);
-        // var vs = await task3.getBitsLengthOfInt(f);
-
-        // var fb = new BitBuilder();
-        // fb.writeInt(f, fs);
-        // var bsF = fb.build().toString();
-
-        // var vb = new BitBuilder();
-        // vb.writeInt(v, vs);
-        // var bsV = vb.build().toString();
-
-        const result = await task3.getResult(4, 567, data);
+        const result = await task3.getResult(42, 1, data);
         var resultLine = await task3.getBitsLine(result);
-        var rep = await task3.replaceCellAll(data, "101010", "101");
+
+        var rep = await task3.replaceCellAll(data, "101010", "1");
 
         expect(resultLine).toBe(rep);
     });
