@@ -53,7 +53,7 @@ tuple int_to_bits(int v)
   return list;
 }
 
-(tuple) build_flow(tuple flag, tuple value, cell linked_list)
+(cell) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
   var vlen = value.tlen();
@@ -61,7 +61,6 @@ tuple int_to_bits(int v)
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
 
-  var slices = empty_tuple();
   var b = begin_cell();
 
   while(slice_bits(sl) > 0)
@@ -87,10 +86,8 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(value.at(i), 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(value.at(i), 1).store_ref(f);
             }
 
   ;; Important end
@@ -114,13 +111,11 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(1, 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(1, 1).store_ref(f);
             }
 
-;; Important end 3
+;; Important end
 
           var overwrite = empty_tuple();
           var i = 1;
@@ -137,7 +132,7 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < temp.tlen())
           {
-;; Important 4
+;; Important 3
 
             if (builder_bits(b) < 1023)
             {
@@ -145,10 +140,8 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(temp.at(i), 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(temp.at(i), 1).store_ref(f);
             }
 
 ;; Important end
@@ -171,7 +164,7 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < vlen)
           {
-;; Important 5
+;; Important 4
 
             if (builder_bits(b) < 1023)
             {
@@ -179,10 +172,8 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(value.at(i), 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(value.at(i), 1).store_ref(f);
             }
 
 ;; Important end
@@ -193,7 +184,7 @@ tuple int_to_bits(int v)
       }
       else
       {
-;; Important 6
+;; Important 5
 
             if (builder_bits(b) < 1023)
             {
@@ -201,16 +192,13 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(next, 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(next, 1).store_ref(f);
             }
 
 ;; Important end
       }
     }
-
 
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
@@ -232,7 +220,7 @@ tuple int_to_bits(int v)
     var temp_l = temp.tlen();
     while (i < temp_l)
     {
-;; Important 7
+;; Important 6
 
             if (builder_bits(b) < 1023)
             {
@@ -240,10 +228,8 @@ tuple int_to_bits(int v)
             }
             else
             {
-              var s = b.end_cell().begin_parse();
-              slices~tpush(s);
-              b = begin_cell();
-              b = b.store_uint(temp.at(i), 1);
+              var f = b.end_cell();
+              b = begin_cell().store_uint(temp.at(i), 1).store_ref(f);
             }
 
 ;; Important end
@@ -252,13 +238,7 @@ tuple int_to_bits(int v)
     }
   }
 
-  if (builder_bits(b) > 0)
-  {
-    var s = b.end_cell().begin_parse();
-    slices~tpush(s);
-  }
-
-  return slices;
+  return b.end_cell();
 }
 
 int is_true(tuple t)
@@ -277,26 +257,21 @@ int is_true(tuple t)
   return - 1;
 }
 
-(cell, int) slices_to_linked(tuple slices)
+(cell) revert_tree(cell tree)
 {
-  var len = slices.tlen();
-
-  if (len == 0)
+  var reverted = begin_cell();
+  var s = tree.begin_parse();
+  reverted.store_slice(s);
+  
+  while (s.slice_refs() > 0)
   {
-    return (null(), 0);
+    var ns = s~load_ref();
+    var finishedSlice = reverted.store_ref(ns).end_cell().begin_parse();
+    reverted = begin_cell().store_slice(finishedSlice);
+    s = ns.begin_parse();
   }
-  else
-  {
-    var i = len - 1;
-    var last = begin_cell().store_slice(slices.at(i)).end_cell();
-    while (i > 0)
-    {
-      i -= 1;
-      last = begin_cell().store_slice(slices.at(i)).store_ref(last).end_cell();
-    }
 
-    return (last, -1);
-  }
+  return reverted.end_cell();
 }
 
 ;; testable
@@ -315,15 +290,6 @@ int is_true(tuple t)
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
 
-  var built_slices = build_flow(tupleF, tupleV, linked_list);
-  (var result, var success) = slices_to_linked(built_slices);
-
-  if (success == 0)
-  {
-    return linked_list;
-  }
-  else
-  {
-    return result;
-  }
+  var tree = build_flow(tupleF, tupleV, linked_list);
+  return tree;
 }
