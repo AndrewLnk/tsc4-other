@@ -61,8 +61,6 @@ tuple int_to_bits(int v)
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
 
-  var prev_count = 0;
-
   var slices = empty_tuple();
   var b = begin_cell();
 
@@ -81,16 +79,6 @@ tuple int_to_bits(int v)
         var i = 0;
         while (i < vlen)
         {
-          if (prev_count > 0)
-          {
-            prev_count -= 1;
-
-            if (prev_count == 0)
-            {
-               (slices, b) = write_break_builder(slices, b);
-            }
-          }
-
 ;; Important 1
 
             if (builder_bits(b) < 1023)
@@ -108,12 +96,6 @@ tuple int_to_bits(int v)
   ;; Important end
           
           i += 1;
-        }
-
-        if (prev_count > 0)
-        {
-          prev_count = 0;
-          (slices, b) = write_break_builder(slices, b);
         }
       }
     }
@@ -155,16 +137,6 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < temp.tlen())
           {
-            if (prev_count > 0)
-            {
-              prev_count -= 1;
-
-              if (prev_count == 0)
-              {
-               (slices, b) = write_break_builder(slices, b);
-              }
-            }
-
 ;; Important 4
 
             if (builder_bits(b) < 1023)
@@ -185,11 +157,6 @@ tuple int_to_bits(int v)
           }
 
           temp = empty_tuple();
-          if (prev_count > 0)
-          {
-            prev_count = 0;
-            (slices, b) = write_break_builder(slices, b);
-          }
         }
       }
 
@@ -204,16 +171,6 @@ tuple int_to_bits(int v)
           var i = 0;
           while (i < vlen)
           {
-            if (prev_count > 0)
-            {
-              prev_count -= 1;
-
-              if (prev_count == 0)
-              {
-                (slices, b) = write_break_builder(slices, b);
-              }
-            }
-
 ;; Important 5
 
             if (builder_bits(b) < 1023)
@@ -231,12 +188,6 @@ tuple int_to_bits(int v)
 ;; Important end
 
             i += 1;
-          }
-
-          if (prev_count > 0)
-          {
-            prev_count = 0;
-            (slices, b) = write_break_builder(slices, b);
           }
         }
       }
@@ -272,19 +223,6 @@ tuple int_to_bits(int v)
           found = 1;
         }
       } 
-      
-      if (temp.tlen() > 0)
-      {
-        if (prev_count == 0)
-        {
-          prev_count = temp.tlen() + 1;
-        }
-      }
-      else
-      {
-        prev_count = 0;
-        (slices, b) = write_break_builder(slices, b);
-      }
     }
   }
 
@@ -294,15 +232,6 @@ tuple int_to_bits(int v)
     var temp_l = temp.tlen();
     while (i < temp_l)
     {
-      if (prev_count > 0)
-      {
-        prev_count -= 1;
-
-        if (prev_count == 0)
-        {
-          (slices, b) = write_break_builder(slices, b);
-        }
-      }
 ;; Important 7
 
             if (builder_bits(b) < 1023)
@@ -346,15 +275,6 @@ int is_true(tuple t)
   }
 
   return - 1;
-}
-
-(tuple, builder) write_break_builder(tuple slices, builder b)
-{
-  var s = b.end_cell().begin_parse();
-  slices~tpush(s);
-  b = begin_cell();
-
-  return (slices, b);
 }
 
 (cell, int) slices_to_linked(tuple slices)
@@ -419,24 +339,4 @@ int is_true(tuple t)
 (int) debug_int_bit_length(int value) method_id
 {
   return int_to_bits(value).tlen();
-}
-
-;; testable
-(int) debug_while_cell_length(cell value) method_id
-{
-  var l = 0;
-  var sl = value.begin_parse();
-
-  while(slice_bits(sl) > 0)
-  {
-    var next = sl~load_uint(1);
-    l += 1;
-
-    if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
-    {
-      sl = (sl~load_ref()).begin_parse();
-    }
-  }
-
-  return l;
 }

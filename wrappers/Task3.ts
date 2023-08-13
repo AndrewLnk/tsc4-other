@@ -107,12 +107,4 @@ export class Task3 implements Contract {
 
         return result.replaceAll(rep, n);
     }
-
-    async getWhileCount(provider: ContractProvider, arr: Cell): Promise<bigint> {
-        const {stack} = await provider.get('debug_while_cell_length', [
-            {type: 'cell', cell: arr}
-        ]);
-
-        return BigInt(stack.readNumber());
-    }
 }
