@@ -24,6 +24,7 @@
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
+forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP"; 
 
 tuple int_to_bits(int v)
 {
@@ -55,25 +56,25 @@ tuple int_to_bits(int v)
   var flen = flag.tlen();
   var vlen = value.tlen();
 
-  var match = 0;
-  var temp = empty_tuple();
+  tuple temp = empty_tuple();
   var sl = linked_list.begin_parse();
 
   var slices = empty_tuple();
   var b = begin_cell();
 
+  var log = 0;
+
   while(slice_bits(sl) > 0)
   {
     var next = sl~load_uint(1);
 
-    if (next == flag.at(match))
+    if (next == flag.at(temp.tlen()))
     {
-      match += 1;
       temp~tpush(next);
+      log += 1;
 
-      if (match == flen)
+      if (temp.tlen() == flen)
       {
-        match = 0;
         temp = empty_tuple();
 
         var i = 0;
@@ -86,19 +87,50 @@ tuple int_to_bits(int v)
     }
     else
     {
-      if (match > 0)
+      if (temp.tlen() > 0)
       {
-        match = 0;
-        
-        var i = 0;
-        var temp_l = temp.tlen();
-        while (i < temp_l)
+        if ((is_true(temp)) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
         {
-          (slices, b) = write_data(slices, b, temp.at(i));
-          i += 1;
-        }
+          (slices, b) = write_data(slices, b, 1);
 
-        temp = empty_tuple();
+          var overwrite = empty_tuple();
+          var i = 1;
+          while (i < temp.tlen())
+          {
+            overwrite~tpush(temp.at(i));
+            i += 1;
+          }
+
+          temp = overwrite;
+        }
+        else
+        {
+          var i = 0;
+          while (i < temp.tlen())
+          {
+            (slices, b) = write_data(slices, b, temp.at(i));
+            i += 1;
+          }
+
+          temp = empty_tuple();
+        }
+      }
+
+      if (next == flag.at(temp.tlen()))
+      {
+        temp~tpush(next);
+
+        if (temp.tlen() == flen)
+        {
+          temp = empty_tuple();
+
+          var i = 0;
+          while (i < vlen)
+          {
+           (slices, b) = write_data(slices, b, value.at(i));
+            i += 1;
+          }
+        }
       }
       else
       {
@@ -106,13 +138,14 @@ tuple int_to_bits(int v)
       }
     }
 
+
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
       sl = (sl~load_ref()).begin_parse();
     }
   }
 
-  if (match > 0)
+  if (temp.tlen() > 0)
   {  
     var i = 0;
     var temp_l = temp.tlen();
@@ -129,7 +162,28 @@ tuple int_to_bits(int v)
     slices~tpush(s);
   }
 
+  if (log == 1)
+  {
+    return empty_tuple();
+  }
+
   return slices;
+}
+
+int is_true(tuple t)
+{
+  var i = 0;
+  while (i < t.tlen())
+  {
+    if (t.at(i) == 0)
+    {
+      return 0;
+    }
+
+    i += 1;
+  }
+
+  return - 1;
 }
 
 (tuple, builder) write_data(tuple slices, builder b, int next)
@@ -191,7 +245,13 @@ tuple int_to_bits(int v)
 }
 
 ;; testable
-(int) debug_second_int_bit(int value, int i) method_id
+(int) debug_int_bit(int value, int i) method_id
 {
   return int_to_bits(value).at(i - 1);
+}
+
+;; testable
+(int) debug_int_bit_length(int value) method_id
+{
+  return int_to_bits(value).tlen();
 }

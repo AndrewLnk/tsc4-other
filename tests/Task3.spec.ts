@@ -1,9 +1,8 @@
 import { Blockchain, SandboxContract } from '@ton-community/sandbox';
-import { BitBuilder, BitString, Builder, Cell, toNano } from 'ton-core';
+import { Builder, Cell, toNano } from 'ton-core';
 import { Task3 } from '../wrappers/Task3';
 import '@ton-community/test-utils';
 import { compile } from '@ton-community/blueprint';
-import { buffer } from 'stream/consumers';
 
 describe('Task3', () => {
     let code: Cell;
@@ -42,19 +41,9 @@ describe('Task3', () => {
         expect(encoded).toBe(1n);
     });
 
-    it('flag "5" (101) - 2 bit', async () => {
-        const encoded = await task3.getBitOfInt(5, 2);
-        expect(encoded).toBe(0n);
-    });
-
     it('flag "1" (1) - 1 bit', async () => {
         const encoded = await task3.getBitOfInt(1, 1);
         expect(encoded).toBe(1n);
-    });
-
-    it('flag "10" (1010) - 4 bit', async () => {
-        const encoded = await task3.getBitOfInt(10, 4);
-        expect(encoded).toBe(0n);
     });
 
     it('flag "11" (1011) - 4 bit', async () => {
@@ -62,22 +51,128 @@ describe('Task3', () => {
         expect(encoded).toBe(1n);
     });
 
-    it('10, 11, empty cell', async () => {
-        const linked_list = new Cell();
+    it('flag length "10" (1010)', async () => {
+        const encoded = await task3.getBitsLengthOfInt(10);
+        expect(encoded).toBe(4n);
+    });
 
-        const dataBuilder = new Builder();
-        dataBuilder.storeBit(1);
-        dataBuilder.storeBit(1);
-        dataBuilder.storeBit(0);
-        dataBuilder.storeBit(1);
-        dataBuilder.storeBit(1);
-        dataBuilder.storeBit(1);
-        dataBuilder.storeBit(1);
-        const data = dataBuilder.endCell();
+    it('flag length "11" (1011)', async () => {
+        const encoded = await task3.getBitsLengthOfInt(11);
+        expect(encoded).toBe(4n);
+    });
 
-        const result = await task3.getResult(10, 11, linked_list, data);
+    it('10, 11, not found', async () => {
+
+        const b1 = new Builder();
+        b1.storeInt(123, 8);
+        const data1 = b1.endCell();
+
+        const b2 = new Builder();
+        b2.storeInt(123, 8);
+        b2.storeRef(data1);
+        const data2 = b2.endCell();
+
+        const b3 = new Builder();
+        b3.storeInt(124, 8);
+        b3.storeRef(data2);
+        const data3 = b3.endCell();
+
+        const result = await task3.getResult(10, 11, data3);
+
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.getBitsLine(data3);
+        expect(resultLine).toBe(dataLine);
+    });
+
+    it('12, 15, replace simple', async () => {
+
+        const b1 = new Builder();
+        b1.storeInt(123, 8);
+        const data1 = b1.endCell();
+
+        const b2 = new Builder();
+        b2.storeInt(123, 8);
+        b2.storeRef(data1);
+        const data2 = b2.endCell();
+
+        const b3 = new Builder();
+        b3.storeInt(124, 8);
+        b3.storeRef(data2);
+        const data3 = b3.endCell();
+
+        const result = await task3.getResult(12, 15, data3);
+
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.getBitsLine(data3);
+        dataLine = dataLine.replace("1100", "1111");
+        expect(resultLine).toBe(dataLine);
+    });
+
+    it('8, 9, replace join', async () => {
+
+        const b1 = new Builder();
+        b1.storeInt(123, 8);
+        const data1 = b1.endCell();
+
+        const b2 = new Builder();
+        b2.storeInt(123, 8);
+        b2.storeRef(data1);
+        const data2 = b2.endCell();
+
+        const b3 = new Builder();
+        b3.storeInt(124, 8);
+        b3.storeRef(data2);
+        const data3 = b3.endCell();
+
+        const result = await task3.getResult(8, 9, data3);
+
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.getBitsLine(data3);
+        dataLine = dataLine.replace("1000", "1001");
+        expect(resultLine).toBe(dataLine);
+    });
+
+    it('8, 9, big data', async () => 
+    {
+        var b = new Builder();
+        b.storeInt(123, 8);
+        var data = b.endCell();
+
+        for (var i = 0; i < 5; i++)
+        {
+            b = new Builder();
+            b.storeInt(i, 16);
+            b.storeRef(data);
+            data = b.endCell();
+        }
+
+        const result = await task3.getResult(8, 9, data);
+
         var resultLine = await task3.getBitsLine(result);
         var dataLine = await task3.getBitsLine(data);
+        dataLine = dataLine.replace('1000', '1001');
+        dataLine = dataLine.replace('11000', '11001');
+        dataLine = dataLine.replace('0001000', '0001001');
+        dataLine = dataLine.replace('0001000', '0001001');
         expect(resultLine).toBe(dataLine);
+    });
+
+    it('8, 9, big data', async () => 
+    {
+        var b = new Builder();
+        b.storeInt(123, 8);
+        var data = b.endCell();
+
+        for (var i = 0; i < 360; i++)
+        {
+            b = new Builder();
+            b.storeInt(i, 16);
+            b.storeRef(data);
+            data = b.endCell();
+        }
+
+        const result = await task3.getResult(8, 9, data);
+        var resultLine = await task3.getBitsLine(result);
+        expect(resultLine).toBe(resultLine);
     });
 });

@@ -28,7 +28,7 @@ export class Task3 implements Contract {
     }
 
     async getBitOfInt(provider: ContractProvider, v: number, i: number): Promise<bigint> {
-        const {stack} = await provider.get('debug_second_int_bit', 
+        const {stack} = await provider.get('debug_int_bit', 
         [
             {type: 'int', value: BigInt(v)},
             {type: 'int', value: BigInt(i)}    
@@ -36,7 +36,15 @@ export class Task3 implements Contract {
         return BigInt(stack.readNumber());
     }
 
-    async getResult(provider: ContractProvider, flag: number, value: number, root: Cell, expected: Cell): Promise<Cell> {
+    async getBitsLengthOfInt(provider: ContractProvider, v: number): Promise<bigint> {
+        const {stack} = await provider.get('debug_int_bit_length', 
+        [
+            {type: 'int', value: BigInt(v)} 
+        ]);
+        return BigInt(stack.readNumber());
+    }
+
+    async getResult(provider: ContractProvider, flag: number, value: number, root: Cell): Promise<Cell> {
         const {stack} = await provider.get('find_and_replace', [
             {type: 'int', value: BigInt(flag)},
             {type: 'int', value: BigInt(value)},
@@ -49,10 +57,26 @@ export class Task3 implements Contract {
     async getBitsLine(provider: ContractProvider, arr: Cell): Promise<string> {
         var result = "";
         var bits = arr.bits;
-        for (var i = 0; i < bits.length; i += 1)
+        var cell = arr;
+        var i = 0;
+
+        while(i < bits.length)
         {
             result += bits.at(i) == true ? 1: 0;
+            i += 1;
+
+            if (i == bits.length && cell.refs.length > 0)
+            {
+                var newCell = cell.refs.at(0);
+                if (newCell != null)
+                {
+                    i = 0;
+                    cell = newCell;
+                    bits = cell.bits;
+                }
+            }
         }
+
         return result;
     }
 }
