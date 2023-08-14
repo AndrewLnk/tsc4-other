@@ -276,5 +276,5 @@ tuple int_to_bits(int v)
 
   var tree = build_flow(tupleF, tupleV, linked_list);
   
-  return tree;
+  return revert_tree(tree);
 }
