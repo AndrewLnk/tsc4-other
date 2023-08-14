@@ -1,34 +1,13 @@
-{- 
-  TASK 3 - Find and replace binary substring
-  Binary string is represented as a cell linked list: string splitted to chunks,
-  first chunk stored to the root cell, next one to the cell in ref and so on;
-  each cell can have only one ref. 
-  Write the method that find and replaces one flags in the binary string
-  with another value. Flags and values can be of any length, but
-  strictly up to 128 bits. The method must replace every flag it finds.
-  Flag and the value to be replaced is guaranteed to be greater than 0.
-  Lets give a simple example.
-  
-  We have the target flag 101110101 and the value to be written 111111111 as inputs, 
-  
-  and a linked list of cells, in which the bit value of the first cell ends with ...10100001011, 
-  and in the ref we have cell that starts with 10101000111111...
-
-  The output should be a linked list where the first cell ends with ...10100001111, 
-  and the second cell starts with 11111000111111...
--}
-
 () recv_internal() {
 }
 
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple) to_tuple (X x) asm "NOP";
-forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP"; 
 
 tuple int_to_bits(int v)
 {
-  var c = begin_cell().store_int(v, 253).end_cell();
+  var c = begin_cell().store_int(v, 128).end_cell();
   var s = c.begin_parse();
 
   var list = empty_tuple();
@@ -302,12 +281,7 @@ tuple int_to_bits(int v)
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
-  if (flag <= 0)
-  {
-    return null();
-  }
-
-  if (value <= 0)
+  if ((flag <= 0) | (value <= 0))
   {
     return null();
   }

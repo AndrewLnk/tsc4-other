@@ -352,16 +352,16 @@ describe('Task3', () => {
     
     it('10', async () => 
     {
-        for (var r = 0; r < 1; r++)
+        for (var r = 0; r < 2; r++)
         {
             var b = new Builder();
             b.storeBit(0);
             var data = b.endCell();
 
-            for (var i = 0; i < 35; i++)
+            for (var i = 0; i < 20; i++)
             {
                 b = new Builder();
-                b.storeBuffer(randomBytes(randomInt(1, 15)));
+                b.storeBuffer(randomBytes(randomInt(1, 10)));
                 b.storeRef(data);
                 data = b.endCell();
             }
