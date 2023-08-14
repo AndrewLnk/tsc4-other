@@ -355,7 +355,7 @@ describe('Task3', () => {
     
     it('10', async () => 
     {
-        for (var r = 0; r < 2; r++)
+        for (var r = 0; r < 50; r++)
         {
             var b = new Builder();
             b.storeBit(0);
@@ -370,7 +370,7 @@ describe('Task3', () => {
             }
             
             var f = randomInt(1, 875858);
-            var v = randomInt(1, 9869);
+            var v = randomInt(1, 875858);
 
             const result = await task3.getResult(BigInt(f), BigInt(v), data);
             var resultLine = await task3.getBitsLine(result);
