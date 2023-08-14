@@ -7,7 +7,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 tuple int_to_bits(int v)
 {
-  var c = begin_cell().store_int(v, 128).end_cell();
+  var c = begin_cell().store_int(v, 253).end_cell();
   var s = c.begin_parse();
 
   var list = empty_tuple();
