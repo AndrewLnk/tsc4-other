@@ -141,7 +141,7 @@ tuple int_to_bits(int v)
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  if ((builder_bits(b) + to) < 1023)
+  if (builder_bits(b) < 895)
   {
     var i = 0;
     repeat (to)
