@@ -50,8 +50,8 @@ tuple int_to_bits(int v)
 
       if (temp.tlen() == flen)
       {
+        b = store_to_builder_to(b, value, vlen);
         temp = empty_tuple();
-        b = store_to_builder_to(b, value, value.tlen());
       }
     }
     else
@@ -101,12 +101,9 @@ tuple int_to_bits(int v)
           
           if ((i > 0) & (i != temp.tlen()))
           {
-            if (i > 1)
+            if ((i > 1) & temp.at(1) == flag.at(0))
             {
-              if (temp.at(1) == flag.at(0))
-              {
-                i = 1;
-              }
+              i = 1;
             }
             
             b = store_to_builder_to(b, temp, i);
@@ -141,7 +138,7 @@ tuple int_to_bits(int v)
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  if (builder_bits(b) < 895)
+  if ((builder_bits(b) + to) < 1023)
   {
     var i = 0;
     repeat (to)
