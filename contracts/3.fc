@@ -6,124 +6,24 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
 
-(cell) build_flow(tuple flag, tuple value, cell linked_list)
+;; Ok for opt
+(tuple) int_to_bits(int v)
 {
-  var flen = flag.tlen();
-  var vlen = value.tlen();
+  var size = ubitsize(v);
+  var c = begin_cell().store_int(v, size + 1).end_cell();
+  var s = c.begin_parse();
+  s~load_uint(1);
 
-  var temp = empty_tuple();
-  var templ = 0;
-  var sl = linked_list.begin_parse();
-  var b = begin_cell();
-  
-  while(slice_bits(sl) > 0)
-  {
-    var next = sl~load_uint(1);
-
-    if (next == flag.at(templ))
-    {
-      temp~tpush(next);
-      templ += 1;
-      
-      if (templ == flen)
-      {
-        b = store_to_builder_to(b, value, vlen);
-        temp = empty_tuple();
-        templ = 0;
-      }
-    }
-    else
-    {
-      if (templ > 0)
-      {
-        temp~tpush(next);
-        templ += 1;
-        
-        var rem = 1;
-        var i_counter = 1;
-        while (i_counter < templ)
-        {
-          if (temp.at(i_counter) == 0)
+  var list = empty_tuple();
+  repeat (size)
           {
-            rem += 1;
-            i_counter += 1;
-          }
-          else
-          {
-            i_counter = 1000;
-          }
-        }
-        
-        b = store_to_builder_to(b, temp, rem);
-        temp = remove_first_i(temp, rem);
-        templ -= rem;
-        
-        var loop = 1;
-        while ((loop == 1) & templ > 0)
-        {
-          var zero_count = check_first_is_zero(temp);
-          b = store_to_builder_to(b, temp, zero_count);
-          temp = remove_first_i(temp, zero_count);
-          templ -= zero_count;
-          
-          var i = 0;
-          var br = 0;
-          repeat (templ)
-          {
-            if (br == 0)
-            {
-              if (temp.at(i) == flag.at(i))
-              {
-                i += 1;
-              }
-              else
-              {
-                br = 1;
-              }
-            }
+            list~tpush(s~load_uint(1));
           }
 
-          if ((i > 0) & (i != templ))
-          {
-            if (i > 1)
-            {
-              if (temp.at(1) == flag.at(0))
-              {
-                i = 1;
-              }
-            }
-            
-            b = store_to_builder_to(b, temp, i);
-            temp = remove_first_i(temp, i);
-            templ -= i;
-          }
-          else
-          {
-            loop = 0;
-          }
-        }
-      }
-      else
-      {
-        b = store_to_builder(b, next);
-      }
-    }
-    
-    if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
-    {
-      sl = (sl~load_ref()).begin_parse();
-    }
-  }
-
-  ;; Ok for opt
-  if (templ > 0)
-  {
-    b = store_to_builder_to(b, temp, templ);
-  }
-  
-  return b.end_cell();
+  return list;
 }
 
+;; ok for opt
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
   if ((builder_bits(b) + to) < 1023)
@@ -139,8 +39,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   else
   {
     var i = 0;
-    var cl = b.end_cell();
-    b = begin_cell().store_uint(t.at(i), 1).store_ref(cl);
+    b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
     repeat (to - 1)
     {
       i += 1;
@@ -148,6 +47,132 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
     return b;
   }
+}
+
+(cell) build_flow(tuple flag, tuple value, cell linked_list)
+{
+  var flen = flag.tlen();
+  var vlen = value.tlen();
+
+  var temp = empty_tuple();
+  var templ = 0;
+  var sl = linked_list.begin_parse();
+  var b = begin_cell();
+  
+  var continue = slice_bits(sl) > 0;
+  while(continue)
+  {
+    repeat (slice_bits(sl))
+    {
+      var next = sl~load_uint(1);
+      
+      if (next == flag.at(templ))
+      {
+        temp~tpush(next);
+        templ += 1;
+        
+        if (templ == flen)
+        {
+          b = store_to_builder_to(b, value, vlen);
+          temp = empty_tuple();
+          templ = 0;
+        }
+      }
+      else
+      {
+        if (templ > 0)
+        {
+          temp~tpush(next);
+          templ += 1;
+          
+          var rem = 1;
+          var i_counter = 1;
+          while (i_counter < templ)
+          {
+            if (temp.at(i_counter) == 0)
+            {
+              rem += 1;
+              i_counter += 1;
+            }
+            else
+             {
+               i_counter = 1000;
+             }
+          }
+
+          b = store_to_builder_to(b, temp, rem);
+          temp = remove_first_i(temp, rem);
+          templ -= rem;
+
+          var loop = 1;
+          while ((loop == 1) & templ > 0)
+          {
+            var zero_count = check_first_is_zero(temp);
+            b = store_to_builder_to(b, temp, zero_count);
+            temp = remove_first_i(temp, zero_count);
+            templ -= zero_count;
+
+            var i = 0;
+            var br = 0;
+            repeat (templ)
+            {
+              if (br == 0)
+              {
+                if (temp.at(i) == flag.at(i))
+                {
+                  i += 1;
+                }
+                else
+                {
+                  br = 1;
+                }
+              }
+            }
+                                
+            if ((i > 0) & (i != templ))
+            {
+              if (i > 1)
+              {
+                if (temp.at(1) == flag.at(0))
+                {
+                  i = 1;
+                }
+              }
+              
+              b = store_to_builder_to(b, temp, i);
+              temp = remove_first_i(temp, i);
+              templ -= i;
+            }
+            else
+            {
+              loop = 0;
+            }
+          }
+        }
+        else
+        {
+          b = store_to_builder(b, next);
+        }
+      }
+    }
+    
+    if (slice_refs(sl) > 0)
+    {
+      sl = (sl~load_ref()).begin_parse();
+    }
+    else
+    {
+      continue = false;
+    }
+  }
+
+  ;; Ok for opt
+  if (templ > 0)
+  {
+    b = store_to_builder_to(b, temp, templ);
+  }
+  
+  return b.end_cell();
 }
 
 (builder) store_to_builder(builder b, int i)
@@ -244,22 +269,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 
   return begin_cell().end_cell();
-}
-
-tuple int_to_bits(int v)
-{
-  var size = ubitsize(v);
-  var c = begin_cell().store_int(v, size + 1).end_cell();
-  var s = c.begin_parse();
-  s~load_uint(1);
-
-  var list = empty_tuple();
-  repeat (size)
-  {
-    list~tpush(s~load_uint(1));
-  }
-
-  return list;
 }
 
 ;; testable
