@@ -266,7 +266,12 @@ tuple int_to_bits(int v)
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
-  if ((flag <= 0) | (value <= 0))
+  if (flag <= 0)
+  {
+    return null();
+  }
+  
+  if (value <= 0)
   {
     return null();
   }
