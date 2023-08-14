@@ -62,7 +62,7 @@ tuple int_to_bits(int v)
   var sl = linked_list.begin_parse();
 
   var b = begin_cell();
-
+  
   while(slice_bits(sl) > 0)
   {
     var next = sl~load_uint(1);
@@ -73,25 +73,13 @@ tuple int_to_bits(int v)
 
       if (temp.tlen() == flen)
       {
-        temp = empty_tuple();
+        var tmm = empty_tuple();
+        temp = tmm;
 
         var i = 0;
-        while (i < vlen)
+        repeat (vlen)
         {
-;; Important 1
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(value.at(i), 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(value.at(i), 1).store_ref(f);
-            }
-
-  ;; Important end
-          
+          b = store_to_builder(b, value.at(i));
           i += 1;
         }
       }
@@ -100,26 +88,13 @@ tuple int_to_bits(int v)
     {
       if (temp.tlen() > 0)
       {
-        if ((is_true(temp)) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
+        if (is_true(temp) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
         {
-
-;; Important 2
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(1, 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(1, 1).store_ref(f);
-            }
-
-;; Important end
+          b = store_to_builder(b, 1);
 
           var overwrite = empty_tuple();
           var i = 1;
-          while (i < temp.tlen())
+          repeat (temp.tlen() - 1)
           {
             overwrite~tpush(temp.at(i));
             i += 1;
@@ -130,22 +105,9 @@ tuple int_to_bits(int v)
         else
         {
           var i = 0;
-          while (i < temp.tlen())
+          repeat (temp.tlen())
           {
-;; Important 3
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(temp.at(i), 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(temp.at(i), 1).store_ref(f);
-            }
-
-;; Important end
-            
+            b = store_to_builder(b, temp.at(i));
             i += 1;
           }
 
@@ -162,78 +124,31 @@ tuple int_to_bits(int v)
           temp = empty_tuple();
 
           var i = 0;
-          while (i < vlen)
+          repeat (vlen)
           {
-;; Important 4
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(value.at(i), 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(value.at(i), 1).store_ref(f);
-            }
-
-;; Important end
-
+            b = store_to_builder(b, value.at(i));
             i += 1;
           }
         }
       }
       else
       {
-;; Important 5
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(next, 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(next, 1).store_ref(f);
-            }
-
-;; Important end
+        b = store_to_builder(b, next);
       }
     }
 
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
-      var found = 0;
-      while ((slice_refs(sl) > 0) & (found == 0))
-      {
-        sl = (sl~load_ref()).begin_parse();
-        if (slice_bits(sl) > 0)
-        {
-          found = 1;
-        }
-      } 
+      sl = (sl~load_ref()).begin_parse();
     }
   }
 
   if (temp.tlen() > 0)
   {  
     var i = 0;
-    var temp_l = temp.tlen();
-    while (i < temp_l)
+    repeat (temp.tlen())
     {
-;; Important 6
-
-            if (builder_bits(b) < 1023)
-            {
-              b = b.store_uint(temp.at(i), 1);
-            }
-            else
-            {
-              var f = b.end_cell();
-              b = begin_cell().store_uint(temp.at(i), 1).store_ref(f);
-            }
-
-;; Important end
-
+      b = store_to_builder(b, temp.at(i));
       i += 1;
     }
   }
@@ -241,10 +156,22 @@ tuple int_to_bits(int v)
   return b.end_cell();
 }
 
-int is_true(tuple t)
+(builder) store_to_builder(builder b, int i)
+{
+  if (builder_bits(b) < 1023)
+  {
+    return b.store_uint(i, 1);
+  }
+  else
+  {
+    return begin_cell().store_uint(i, 1).store_ref(b.end_cell());
+  }
+}
+
+(int) is_true(tuple t)
 {
   var i = 0;
-  while (i < t.tlen())
+  repeat (t.tlen())
   {
     if (t.at(i) == 0)
     {
@@ -254,7 +181,7 @@ int is_true(tuple t)
     i += 1;
   }
 
-  return - 1;
+  return -1;
 }
 
 (cell) revert_tree(cell tree)
