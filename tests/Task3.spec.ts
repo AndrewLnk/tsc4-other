@@ -336,41 +336,38 @@ describe('Task3', () => {
     it('own check', async () => {
 
         const b2 = new Builder();
-        b2.storeUint(0, 1);
-        b2.storeUint(0, 1);
         b2.storeUint(1, 1);
         b2.storeUint(0, 1);
         b2.storeUint(1, 1);
         b2.storeUint(0, 1);
-        b2.storeUint(1, 1);
-        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
         const data2 = b2.endCell();
 
-        const result = await task3.getResult(0n, 6n, data2);
+        const result = await task3.getResult(-6n, 21n, data2);
 
         var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.replaceCellAll(data2, "1", "110");
+        var dataLine = await task3.replaceCellAll(data2, "10100", "10101");
         expect(resultLine).toBe(dataLine);
     });
     
     it('10', async () => 
     {
-        for (var r = 0; r < 20; r++)
+        for (var r = 0; r < 1; r++)
         {
             var b = new Builder();
             b.storeBit(0);
             var data = b.endCell();
 
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 35; i++)
             {
                 b = new Builder();
-                b.storeBuffer(randomBytes(20));
+                b.storeBuffer(randomBytes(randomInt(1, 15)));
                 b.storeRef(data);
                 data = b.endCell();
             }
             
-            var f = randomInt(1, 128);
-            var v = randomInt(1, 128);
+            var f = randomInt(1, 875858);
+            var v = randomInt(1, 9869);
 
             const result = await task3.getResult(BigInt(f), BigInt(v), data);
             var resultLine = await task3.getBitsLine(result);

@@ -99,29 +99,4 @@ export class Task3 implements Contract {
 
         return result.replaceAll(rep, n);
     }
-
-    async getBitOfInt(provider: ContractProvider, v: number, i: number): Promise<bigint> {
-        const {stack} = await provider.get('debug_int_bit',
-            [
-                {type: 'int', value: BigInt(v)},
-                {type: 'int', value: BigInt(i)}
-            ]);
-        return BigInt(stack.readNumber());
-    }
-
-    async getBitsLengthOfInt(provider: ContractProvider, v: bigint): Promise<bigint> {
-        const {stack} = await provider.get('debug_int_bit_length',
-            [
-                {type: 'int', value: v}
-            ]);
-        return stack.readBigNumber();
-    }
-
-    async getBitsOfIntView(provider: ContractProvider, v: bigint): Promise<Cell> {
-        const {stack} = await provider.get('debug_cell_view',
-            [
-                {type: 'int', value: BigInt(65843858677786654633700972097782701568)}
-            ]);
-        return stack.readCell();
-    }
 }

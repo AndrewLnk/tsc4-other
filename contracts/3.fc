@@ -33,7 +33,7 @@ tuple int_to_bits(int v)
 
   var list = empty_tuple();
   var started = 0;
-  var max = 129;
+  var max = 128;
   repeat (slice_bits(s))
   {
     int b = s~load_uint(1);
@@ -304,43 +304,17 @@ tuple int_to_bits(int v)
 {
   if (flag <= 0)
   {
-    return begin_cell().end_cell();
+    return null();
   }
 
   if (value <= 0)
   {
-    return begin_cell().end_cell();
+    return null();
   }
 
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
-  
-  if (tupleF.tlen() >= 128){
-    return begin_cell().end_cell();
-  }
-
-  if (tupleV.tlen() >= 128){
-    return begin_cell().end_cell();
-  }
 
   var tree = build_flow(tupleF, tupleV, linked_list);
   return revert_tree(tree);
-}
-
-;; testable
-(int) debug_int_bit(int value, int i) method_id
-{
-  return int_to_bits(value).at(i - 1);
-}
-
-;; testable
-(int) debug_int_bit_length(int value) method_id
-{
-  return value;
-}
-
-(cell) debug_cell_view(int v) method_id
-{
-  var c = begin_cell().store_uint(v, 128).end_cell();
-  return c;
 }
