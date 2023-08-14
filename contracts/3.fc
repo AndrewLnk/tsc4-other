@@ -126,7 +126,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  if ((builder_bits(b) + to) < 1023)
+  if ((builder_bits(b) + to) < 800)
   {
     var i = 0;
     repeat (to)
