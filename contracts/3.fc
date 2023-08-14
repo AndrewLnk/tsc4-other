@@ -130,16 +130,17 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   {
     t~tpop();
   }
+  
+  var rev = empty_tuple();
+  repeat (to)
+  {
+    var q = t~tpop();
+    rev~tpush(q);
+  }
 
   var free = 1023 - builder_bits(b);
   if (free >= to)
   {
-    var rev = empty_tuple();
-    repeat (to)
-    {
-      var q = t~tpop();
-      rev~tpush(q);
-    }
     repeat (to)
     {
       b~store_uint(rev~tpop(), 1);
@@ -148,17 +149,19 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
   else
   {
-     var i = 0;
-     var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
-     repeat (to - 1)
-     {
-        i += 1;
-        b~store_uint(t.at(i), 1);
-     }
+    repeat (free)
+            {
+              b~store_uint(rev~tpop(), 1);
+            }
+    var next = rev~tpop();
+    var b = begin_cell().store_uint(next, 1).store_ref(b.end_cell());
+    repeat (to - free - 1)
+            {
+              b~store_uint(rev~tpop(), 1);
+            }
+    
      return b;
   }
-
-  return b;
 }
 
 (builder) store_to_builder(builder b, int i)
