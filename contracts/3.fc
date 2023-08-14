@@ -89,21 +89,27 @@ tuple int_to_bits(int v)
           var br = 0;
           repeat (temp.tlen())
           {
-            if ((temp.at(i) == flag.at(i)) & (br == 0))
+            if (br == 0)
             {
-              i += 1;
-            }
-            else
-            {
-              br = 1;
+              if (temp.at(i) == flag.at(i))
+              {
+                i += 1;
+              }
+              else
+              {
+                br = 1;
+              }
             }
           }
-          
+
           if ((i > 0) & (i != temp.tlen()))
           {
-            if ((i > 1) & temp.at(1) == flag.at(0))
+            if (i > 1)
             {
-              i = 1;
+              if (temp.at(1) == flag.at(0))
+              {
+                i = 1;
+              }
             }
             
             b = store_to_builder_to(b, temp, i);
