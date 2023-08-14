@@ -74,47 +74,45 @@ tuple int_to_bits(int v)
       if (temp.tlen() == flen)
       {
         temp = empty_tuple();
-
-        var i = 0;
-        repeat (vlen)
-        {
-          b = store_to_builder(b, value.at(i));
-          i += 1;
-        }
+        b = store_to_builder_to(b, value, value.tlen());
       }
     }
     else
     {
       if (temp.tlen() > 0)
       {
+        temp~tpush(next);
+        
         var rem = 1;
-        var i = 1;
-        while (i < temp.tlen())
+        var i_counter = 1;
+        while (i_counter < temp.tlen())
         {
-          if (temp.at(i) == 0)
+          if (temp.at(i_counter) == 0)
           {
             rem += 1;
-            i += 1;
+            i_counter += 1;
           }
           else
           {
-            i = 1000;
+            i_counter = 1000;
           }
         }
         
         b = store_to_builder_to(b, temp, rem);
         temp = remove_first_i(temp, rem);
         
-        temp~tpush(next);
-        
         var loop = 1;
         while ((loop == 1) & temp.tlen() > 0)
         {
+          var zero_count = check_first_is_zero(temp);
+          b = store_to_builder_to(b, temp, zero_count);
+          temp = remove_first_i(temp, zero_count);
+          
           var i = 0;
           var br = 0;
-          while (i < temp.tlen() & (br == 0))
+          repeat (temp.tlen())
           {
-            if (temp.at(i) == flag.at(i))
+            if ((temp.at(i) == flag.at(i)) & (br == 0))
             {
               i += 1;
             }
@@ -147,21 +145,17 @@ tuple int_to_bits(int v)
     }
   }
 
-  if (temp.tlen() > 0)
-  {  
-    var i = 0;
-    repeat (temp.tlen())
-    {
-      b = store_to_builder(b, temp.at(i));
-      i += 1;
-    }
-  }
-
+  b = store_to_builder_to(b, temp, temp.tlen());
   return b.end_cell();
 }
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
+  if (t.tlen() == 0)
+  {
+    return b;
+  }
+  
   if ((builder_bits(b) + to) < 1023)
   {
     var i = 0;
@@ -237,6 +231,24 @@ tuple int_to_bits(int v)
   }
 
   return  overwrite;
+}
+
+(int) check_first_is_zero(tuple t)
+{
+  var i_counter = 0;
+  while (i_counter < t.tlen())
+  {
+    if (t.at(i_counter) == 0)
+    {
+      i_counter += 1;
+    }
+    else
+    {
+       return i_counter;
+    }
+  }
+
+  return i_counter;
 }
 
 (cell) revert_tree(cell tree)

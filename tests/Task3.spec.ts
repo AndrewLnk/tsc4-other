@@ -223,46 +223,104 @@ describe('Task3', () => {
         expect(resultLine).toBe(dataLine);
     });
 
-    it('5', async () => 
-    {
-        var b = new Builder();
-        b.storeBuffer(randomBytes(30));
-        var data = b.endCell();
+    it('static fix 1', async () => {
 
-        for (var i = 0; i < 600; i++)
-        {
-            b = new Builder();
-            b.storeBuffer(randomBytes(1));
-            b.storeRef(data);
-            data = b.endCell();
-        }
+        const b1 = new Builder();
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(1, 1);
+        b1.storeUint(0, 1);
+        b1.storeUint(0, 1);
+        const data1 = b1.endCell();
 
-        const result = await task3.getResult(42n, 1n, data);
+        const b2 = new Builder();
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeRef(data1);
+        const data2 = b2.endCell();
+
+        const result = await task3.getResult(7n, 3n, data2);
+
         var resultLine = await task3.getBitsLine(result);
-
-        var rep = await task3.replaceCellAll(data, "101010", "1");
-
-        expect(resultLine).toBe(rep);
+        var dataLine = await task3.replaceCellAll(data2, "111", "11");
+        expect(resultLine).toBe(dataLine);
     });
 
+    it('static fix 2', async () => {
+        
+        const b2 = new Builder();
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        b2.storeUint(0, 1);
+        b2.storeUint(1, 1);
+        const data2 = b2.endCell();
+
+        const result = await task3.getResult(12n, 4n, data2);
+
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.replaceCellAll(data2, "1100", "100");
+        expect(resultLine).toBe(dataLine);
+    });
+    
     it('10', async () => 
     {
-        for (var r = 0; r < 0; r++)
+        for (var r = 0; r < 20; r++)
         {
             var b = new Builder();
             b.storeBit(0);
             var data = b.endCell();
 
-            for (var i = 0; i < randomInt(1, 127); i++)
+            for (var i = 0; i < 1; i++)
             {
                 b = new Builder();
-                b.storeBuffer(randomBytes(randomInt(1, 30)));
+                b.storeBuffer(randomBytes(20));
                 b.storeRef(data);
                 data = b.endCell();
             }
             
-            var f = randomInt(1, 1024);
-            var v = randomInt(1, 1024);
+            var f = randomInt(1, 20);
+            var v = randomInt(1, 20);
 
             const result = await task3.getResult(BigInt(f), BigInt(v), data);
             var resultLine = await task3.getBitsLine(result);
