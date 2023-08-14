@@ -34,14 +34,17 @@ tuple int_to_bits(int v)
   var list = empty_tuple();
   var started = 0;
   var max = 129;
-  repeat (slice_bits(s)){
+  repeat (slice_bits(s))
+  {
     int b = s~load_uint(1);
 
-    if (b == 1){
+    if (b == 1)
+    {
       started = -1;
     }
 
-    if (started & (max > 0)){
+    if (started & (max > 0))
+    {
       list~tpush(b);
       max -= 1;
     }
@@ -56,13 +59,23 @@ tuple int_to_bits(int v)
   var vlen = value.tlen();
 
   var temp = empty_tuple();
+  var cache = empty_tuple();
   var sl = linked_list.begin_parse();
 
   var b = begin_cell();
   
-  while(slice_bits(sl) > 0)
+  while((slice_bits(sl) > 0) | (cache.tlen() > 0))
   {
-    var next = sl~load_uint(1);
+    var next = 0;
+    if (cache.tlen() > 0)
+    {
+      next = cache.at(0);
+      cache = remove_first(cache);
+    }
+    else
+    {
+      next = sl~load_uint(1);
+    }
 
     if (next == flag.at(temp.tlen()))
     {
@@ -84,55 +97,17 @@ tuple int_to_bits(int v)
     {
       if (temp.tlen() > 0)
       {
-        if (is_true(temp) & (next == flag.at(temp.tlen() - 1)) & temp.tlen() > 1)
-        {
-          b = store_to_builder(b, 1);
-
-          var overwrite = empty_tuple();
-          var i = 1;
-          repeat (temp.tlen() - 1)
-          {
-            overwrite~tpush(temp.at(i));
-            i += 1;
-          }
-
-          temp = overwrite;
-        }
-        else
-        {
-          var i = 0;
-          repeat (temp.tlen())
-          {
-            b = store_to_builder(b, temp.at(i));
-            i += 1;
-          }
-
-          temp = empty_tuple();
-        }
-      }
-
-      if (next == flag.at(temp.tlen()))
-      {
-        temp~tpush(next);
-
-        if (temp.tlen() == flen)
-        {
-          temp = empty_tuple();
-
-          var i = 0;
-          repeat (vlen)
-          {
-            b = store_to_builder(b, value.at(i));
-            i += 1;
-          }
-        }
+        b = store_to_builder(b, 1);
+        cache = remove_first(temp);
+        temp = empty_tuple();
+        cache~tpush(next);
       }
       else
       {
         b = store_to_builder(b, next);
       }
     }
-
+    
     if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
     {
       sl = (sl~load_ref()).begin_parse();
@@ -178,6 +153,19 @@ tuple int_to_bits(int v)
   }
 
   return -1;
+}
+
+(tuple) remove_first(tuple t)
+{
+  var overwrite = empty_tuple();
+  var i = 1;
+  repeat (t.tlen() - 1)
+  {
+    overwrite~tpush(t.at(i));
+    i += 1;
+  }
+
+  return  overwrite;
 }
 
 (cell) revert_tree(cell tree)
