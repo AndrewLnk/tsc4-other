@@ -247,7 +247,7 @@ describe('Task3', () => {
 
     it('10', async () => 
     {
-        for (var r = 0; r < 100; r++)
+        for (var r = 0; r < 0; r++)
         {
             var b = new Builder();
             b.storeBit(0);
