@@ -304,23 +304,23 @@ tuple int_to_bits(int v)
 {
   if (flag <= 0)
   {
-    return linked_list;
+    return begin_cell().end_cell();
   }
 
   if (value <= 0)
   {
-    return linked_list;
+    return begin_cell().end_cell();
   }
 
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
   
   if (tupleF.tlen() >= 128){
-    return linked_list;
+    return begin_cell().end_cell();
   }
 
   if (tupleV.tlen() >= 128){
-    return linked_list;
+    return begin_cell().end_cell();
   }
 
   var tree = build_flow(tupleF, tupleV, linked_list);
