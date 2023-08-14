@@ -99,12 +99,4 @@ export class Task3 implements Contract {
 
         return result.replaceAll(rep, n);
     }
-    
-    async getBitsLengthOfInt(provider: ContractProvider, v: number): Promise<bigint> {
-        const {stack} = await provider.get('debug_int_bit_length',
-            [
-                {type: 'int', value: BigInt(v)}
-            ]);
-        return BigInt(stack.readNumber());
-    }
 }

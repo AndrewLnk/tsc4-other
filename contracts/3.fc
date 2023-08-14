@@ -241,43 +241,17 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 tuple int_to_bits(int v)
 {
   var size = ubitsize(v);
-  var c = begin_cell().store_int(v, 129).end_cell();
+  var c = begin_cell().store_int(v, size + 1).end_cell();
   var s = c.begin_parse();
-
-  repeat (129 - size)
-  {
-    s~load_uint(1);
-  }
+  s~load_uint(1);
 
   var list = empty_tuple();
   repeat (size)
   {
-    int b = s~load_uint(1);
-    list~tpush(b);
-   }
+    list~tpush(s~load_uint(1));
+  }
 
   return list;
-}
-
-int int_to_bits_n(int v)
-{
-  var size = ubitsize(v);
-  var c = begin_cell().store_int(v, 129).end_cell();
-  var s = c.begin_parse();
-
-  repeat (129 - size)
-  {
-    s~load_uint(1);
-  }
-
-  var list = empty_tuple();
-  repeat (size)
-  {
-     int b = s~load_uint(1);
-     list~tpush(b);
-  }
-  
-  return list.tlen();
 }
 
 ;; testable
@@ -293,11 +267,4 @@ int int_to_bits_n(int v)
 
   var tree = build_flow(tupleF, tupleV, linked_list);
   return revert_tree(tree);
-}
-
-;; testable
-(int) debug_int_bit_length(int value) method_id
-{
-  return int_to_bits_n(value);
-  return ubitsize(value);
 }
