@@ -3,16 +3,16 @@
 
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple) to_tuple (X x) asm "NOP";
-forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP"; 
+forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
+(int) ubitsize (int a) asm "UBITSIZE";
 
 tuple int_to_bits(int v)
 {
-  var c = begin_cell().store_int(v, 253).end_cell();
+  var c = begin_cell().store_int(v, 129).end_cell();
   var s = c.begin_parse();
 
   var list = empty_tuple();
   var started = 0;
-  var max = 128;
   repeat (slice_bits(s))
   {
     int b = s~load_uint(1);
@@ -22,10 +22,9 @@ tuple int_to_bits(int v)
       started = -1;
     }
 
-    if (started & (max > 0))
+    if (started)
     {
       list~tpush(b);
-      max -= 1;
     }
   }
 
@@ -39,7 +38,6 @@ tuple int_to_bits(int v)
 
   var temp = empty_tuple();
   var sl = linked_list.begin_parse();
-
   var b = begin_cell();
   
   while(slice_bits(sl) > 0)
@@ -178,22 +176,6 @@ tuple int_to_bits(int v)
   }
 }
 
-(int) is_true(tuple t)
-{
-  var i = 0;
-  repeat (t.tlen())
-  {
-    if (t.at(i) == 0)
-    {
-      return 0;
-    }
-
-    i += 1;
-  }
-
-  return -1;
-}
-
 (tuple) remove_first(tuple t)
 {
   var overwrite = empty_tuple();
@@ -222,20 +204,20 @@ tuple int_to_bits(int v)
 
 (int) check_first_is_zero(tuple t)
 {
-  var i_counter = 0;
-  while (i_counter < t.tlen())
+  var i = 0;
+  repeat(t.tlen())
   {
-    if (t.at(i_counter) == 0)
+    if (t.at(i) == 0)
     {
-      i_counter += 1;
+      i += 1;
     }
     else
     {
-       return i_counter;
+       return i;
     }
   }
 
-  return i_counter;
+  return i;
 }
 
 (cell) revert_tree(cell tree)
