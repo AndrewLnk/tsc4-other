@@ -130,17 +130,17 @@ tuple int_to_bits(int v)
     }
   }
 
-  b = store_to_builder_to(b, temp, temp.tlen());
+  var last = temp.tlen();
+  if (last > 0)
+  {
+    b = store_to_builder_to(b, temp, last);
+  }
+  
   return b.end_cell();
 }
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  if (t.tlen() == 0)
-  {
-    return b;
-  }
-  
   if ((builder_bits(b) + to) < 1023)
   {
     var i = 0;
@@ -153,12 +153,12 @@ tuple int_to_bits(int v)
   }
   else
   {
-     var b = begin_cell().store_uint(t.at(0), 1).store_ref(b.end_cell());
-     var i = 1;
-     repeat (to - 1)
+     var i = 0;
+     var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
+     repeat (to)
      {
-        b~store_uint(t.at(i), 1);
         i += 1;
+        b~store_uint(t.at(i), 1);
      }
      return b;
   }
