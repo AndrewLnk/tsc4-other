@@ -6,31 +6,6 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
 
-tuple int_to_bits(int v)
-{
-  var c = begin_cell().store_int(v, 129).end_cell();
-  var s = c.begin_parse();
-
-  var list = empty_tuple();
-  var started = 0;
-  repeat (slice_bits(s))
-  {
-    int b = s~load_uint(1);
-
-    if (b == 1)
-    {
-      started = -1;
-    }
-
-    if (started)
-    {
-      list~tpush(b);
-    }
-  }
-
-  return list;
-}
-
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
@@ -263,15 +238,52 @@ tuple int_to_bits(int v)
   return begin_cell().end_cell();
 }
 
+tuple int_to_bits(int v)
+{
+  var size = ubitsize(v);
+  var c = begin_cell().store_int(v, 129).end_cell();
+  var s = c.begin_parse();
+
+  repeat (129 - size)
+  {
+    s~load_uint(1);
+  }
+
+  var list = empty_tuple();
+  repeat (size)
+  {
+    int b = s~load_uint(1);
+    list~tpush(b);
+   }
+
+  return list;
+}
+
+int int_to_bits_n(int v)
+{
+  var size = ubitsize(v);
+  var c = begin_cell().store_int(v, 129).end_cell();
+  var s = c.begin_parse();
+
+  repeat (129 - size)
+  {
+    s~load_uint(1);
+  }
+
+  var list = empty_tuple();
+  repeat (size)
+  {
+     int b = s~load_uint(1);
+     list~tpush(b);
+  }
+  
+  return list.tlen();
+}
+
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
-  if (flag <= 0)
-  {
-    return null();
-  }
-  
-  if (value <= 0)
+  if ((flag <= 0) | (value <= 0))
   {
     return null();
   }
@@ -281,4 +293,11 @@ tuple int_to_bits(int v)
 
   var tree = build_flow(tupleF, tupleV, linked_list);
   return revert_tree(tree);
+}
+
+;; testable
+(int) debug_int_bit_length(int value) method_id
+{
+  return int_to_bits_n(value);
+  return ubitsize(value);
 }

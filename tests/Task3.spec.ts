@@ -397,4 +397,9 @@ describe('Task3', () => {
 
         expect(true).toBe(true);
     });
+
+    it('flag 34563457 - 26 bit', async () => {
+        const encoded = await task3.getBitsLengthOfInt(34563457);
+        expect(encoded).toBe(26n);
+    });
 });
