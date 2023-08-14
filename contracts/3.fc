@@ -108,11 +108,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
   }
 
-  var last = temp.tlen();
-  if (last > 0)
-  {
-    b = store_to_builder_to(b, temp, last);
-  }
+  b = store_to_builder_to(b, temp, temp.tlen());
   
   return b.end_cell();
 }

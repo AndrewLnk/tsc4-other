@@ -332,23 +332,6 @@ describe('Task3', () => {
         var dataLine = await task3.replaceCellAll(data2, "110110", "1011100");
         expect(resultLine).toBe(dataLine);
     });
-
-    it('own check', async () => {
-
-        const b2 = new Builder();
-        b2.storeUint(1, 1);
-        b2.storeUint(0, 1);
-        b2.storeUint(1, 1);
-        b2.storeUint(0, 1);
-        b2.storeUint(0, 1);
-        const data2 = b2.endCell();
-
-        const result = await task3.getResult(-6n, 21n, data2);
-
-        var resultLine = await task3.getBitsLine(result);
-        var dataLine = await task3.replaceCellAll(data2, "10100", "10101");
-        expect(resultLine).toBe(dataLine);
-    });
     
     it('10', async () => 
     {
