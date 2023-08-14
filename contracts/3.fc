@@ -132,7 +132,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
     i += 1;
   }
-  repeat (to)
+  repeat (to - i)
   {
     b~store_uint(t.at(i), 1);
     i += 1;
