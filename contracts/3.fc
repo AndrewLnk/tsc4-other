@@ -82,17 +82,17 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       {
         if (templ > 0)
         {
-          b = store_to_builder_to(b, temp, 1);
-          temp = remove_first_i(temp, 1);
           temp~tpush(next);
-
+          var plane_remove = 1;
+          
           var loop = true;
           while (loop & templ > 0)
           {
-            var zero_count = check_first_is_zero(temp);
+            var zero_count = check_is_zero_line(temp, plane_remove);
             b = store_to_builder_to(b, temp, zero_count);
             temp = remove_first_i(temp, zero_count);
-            templ -= zero_count;
+            templ -= zero_count - plane_remove;
+            plane_remove = 0;
 
             var i = 0;
             var br = 0;
@@ -195,10 +195,10 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return  overwrite;
 }
 
-(int) check_first_is_zero(tuple t)
+(int) check_is_zero_line(tuple t, int with_first)
 {
-  var i = 0;
-  repeat(t.tlen())
+  var i = with_first;
+  while (i < t.tlen())
   {
     if (t.at(i) == 0)
     {
@@ -206,7 +206,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
     else
     {
-       return i;
+      return i;
     }
   }
 
