@@ -153,12 +153,12 @@ tuple int_to_bits(int v)
   }
   else
   {
-     var b = begin_cell().store_uint(t.at(0), 1).store_ref(b.end_cell());
-     var i = 1;
+     var i = 0;
+     var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
      repeat (to - 1)
      {
-        b~store_uint(t.at(i), 1);
         i += 1;
+        b~store_uint(t.at(i), 1);
      }
      return b;
   }
