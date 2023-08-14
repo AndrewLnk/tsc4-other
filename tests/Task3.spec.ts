@@ -73,6 +73,26 @@ describe('Task3', () => {
         expect(resultLine).toBe(dataLine);
     });
 
+    it('dev', async () => {
+
+        const b1 = new Builder();
+        b1.storeBit(1);
+        b1.storeBit(0);
+        b1.storeBit(1);
+        b1.storeBit(1);
+        b1.storeBit(1);
+        b1.storeBit(0);
+        b1.storeBit(0);
+        b1.storeBit(1);
+        const data1 = b1.endCell();
+
+        const result = await task3.getResult(10n, 11n, data1);
+
+        var resultLine = await task3.getBitsLine(result);
+        var dataLine = await task3.getBitsLine(data1);
+        expect(resultLine).toBe(dataLine);
+    });
+
     it('1 -> 10', async () => {
 
         const b1 = new Builder();

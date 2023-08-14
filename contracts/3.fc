@@ -27,7 +27,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       
       if (templ == flen)
       {
-        b = store_to_builder_to(b, value, vlen);
+        b = store_to_builder_to_1(b, value, vlen);
         temp = empty_tuple();
         templ = 0;
       }
@@ -54,7 +54,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
           }
         }
         
-        b = store_to_builder_to(b, temp, rem);
+        b = store_to_builder_to_1(b, temp, rem);
         temp = remove_first_i(temp, rem);
         templ -= rem;
         
@@ -62,7 +62,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         while ((loop == 1) & templ > 0)
         {
           var zero_count = check_first_is_zero(temp);
-          b = store_to_builder_to(b, temp, zero_count);
+          b = store_to_builder_to_1(b, temp, zero_count);
           temp = remove_first_i(temp, zero_count);
           templ -= zero_count;
           
@@ -93,7 +93,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
               }
             }
             
-            b = store_to_builder_to(b, temp, i);
+            b = store_to_builder_to_1(b, temp, i);
             temp = remove_first_i(temp, i);
             templ -= i;
           }
@@ -118,35 +118,73 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   ;; Ok for opt
   if (templ > 0)
   {
-    b = store_to_builder_to(b, temp, templ);
+    b = store_to_builder_to_1(b, temp, templ);
   }
   
   return b.end_cell();
 }
 
+(builder) store_to_builder_to_1(builder b, tuple t, int to)
+{
+  repeat (t.tlen() - to)
+  {
+    t~tpop();
+  }
+  
+  var rev = empty_tuple();
+  repeat (to)
+  {
+    var q = t~tpop();
+    rev~tpush(q);
+  }
+  
+  var free = 1023 - builder_bits(b);
+  if (free > to)
+  {
+    repeat (to)
+    {
+      b~store_uint(rev~tpop(), 1);
+    }
+  }
+  else
+  {
+    repeat (free)
+    {
+      b~store_uint(rev~tpop(), 1);
+    }
+    var b = begin_cell().store_ref(b.end_cell());
+    repeat (to - free)
+    {
+      b~store_uint(rev~tpop(), 1);
+    }
+  }
+  
+  return b;
+}
+
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  if ((builder_bits(b) + to) < 800)
+  if ((builder_bits(b) + to) < 1023)
   {
     var i = 0;
     repeat (to)
     {
-      b~store_uint(t.at(i), 1);    
+      b~store_uint(t.at(i), 1);
       i += 1;
     }
     return b;
-  }
-  else
-  {
-     var i = 0;
-     var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
-     repeat (to - 1)
-     {
+    }
+    else
+    {
+      var i = 0;
+      var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
+      repeat (to - 1)
+      {
         i += 1;
         b~store_uint(t.at(i), 1);
-     }
-     return b;
-  }
+      }
+      return b;
+    }
 }
 
 (builder) store_to_builder(builder b, int i)
@@ -205,18 +243,48 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return i;
 }
 
+(cell) revert_tree_1(cell tree)
+{
+  var sl = tree.begin_parse();
+  var b = begin_cell();
+  var writed = 0;
+  
+  while(slice_bits(sl) > 0)
+  {
+    var next = sl~load_uint(1);
+    
+    if (writed < 1023)
+    {
+      b~store_uint(next, 1);
+      writed += 1;
+    }
+    else
+    {
+      var b = begin_cell().store_uint(next, 1).store_ref(b.end_cell());
+      writed = 0;
+    }
+    
+    if ((slice_bits(sl) == 0) & (slice_refs(sl) > 0))
+    {
+      sl = (sl~load_ref()).begin_parse();
+    }
+  }
+
+  return b.end_cell();
+}
+
 (cell) revert_tree(cell tree)
 {
   var s = tree.begin_parse();
   builder reverted = null();
   var filled = 0;
-  
+
   while (slice_empty?(s) == 0)
   {
     if (s.slice_refs() > 0)
     {
       var ref = (s~load_ref()).begin_parse();
-      
+
       if (filled == 0)
       {
         reverted = begin_cell().store_slice(s);
@@ -226,7 +294,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       {
         reverted = begin_cell().store_slice(s).store_ref(reverted.end_cell());
       }
-      
+
       s = ref;
     }
     else
@@ -275,6 +343,5 @@ tuple int_to_bits(int v)
   var tupleV = int_to_bits(value);
 
   var tree = build_flow(tupleF, tupleV, linked_list);
-  
   return revert_tree(tree);
 }
