@@ -28,23 +28,20 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 tuple int_to_bits(int v)
 {
-  var c = begin_cell().store_int(v, 257).end_cell();
+  var c = begin_cell().store_int(v, 253).end_cell();
   var s = c.begin_parse();
 
   var list = empty_tuple();
   var started = 0;
-  var max = 128;
-  repeat (slice_bits(s))
-  {
+  var max = 129;
+  repeat (slice_bits(s)){
     int b = s~load_uint(1);
 
-    if (b == 1)
-    {
+    if (b == 1){
       started = -1;
     }
 
-    if (started & (max > 0))
-    {
+    if (started & (max > 0)){
       list~tpush(b);
       max -= 1;
     }
@@ -73,8 +70,7 @@ tuple int_to_bits(int v)
 
       if (temp.tlen() == flen)
       {
-        var tmm = empty_tuple();
-        temp = tmm;
+        temp = empty_tuple();
 
         var i = 0;
         repeat (vlen)
@@ -239,7 +235,33 @@ tuple int_to_bits(int v)
 
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
+  
+  if (tupleF.tlen() > 128){
+    return linked_list;
+  }
+
+  if (tupleV.tlen() > 128){
+    return linked_list;
+  }
 
   var tree = build_flow(tupleF, tupleV, linked_list);
   return revert_tree(tree);
+}
+
+;; testable
+(int) debug_int_bit(int value, int i) method_id
+{
+  return int_to_bits(value).at(i - 1);
+}
+
+;; testable
+(int) debug_int_bit_length(int value) method_id
+{
+  return value;
+}
+
+(cell) debug_cell_view(int v) method_id
+{
+  var c = begin_cell().store_uint(v, 128).end_cell();
+  return c;
 }

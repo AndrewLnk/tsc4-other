@@ -1,4 +1,11 @@
-import { Address, beginCell, Cell, Contract, contractAddress, ContractProvider, Sender, SendMode } from 'ton-core';
+import { 
+    Address, beginCell, 
+    Cell, Contract, 
+    contractAddress, 
+    ContractProvider, 
+    Sender, 
+    SendMode,
+    TupleItemInt} from 'ton-core';
 import { DefaultDeserializer } from 'v8';
 
 export type Task3Config = {};
@@ -28,10 +35,10 @@ export class Task3 implements Contract {
         });
     }
 
-    async getResult(provider: ContractProvider, flag: number, value: number, root: Cell): Promise<Cell> {
+    async getResult(provider: ContractProvider, flag: bigint, value: bigint, root: Cell): Promise<Cell> {
         const {stack} = await provider.get('find_and_replace', [
-            {type: 'int', value: BigInt(flag)},
-            {type: 'int', value: BigInt(value)},
+            {type: 'int', value: flag},
+            {type: 'int', value: value},
             {type: 'cell', cell: root}
         ]);
 
@@ -91,5 +98,30 @@ export class Task3 implements Contract {
         }
 
         return result.replaceAll(rep, n);
+    }
+
+    async getBitOfInt(provider: ContractProvider, v: number, i: number): Promise<bigint> {
+        const {stack} = await provider.get('debug_int_bit',
+            [
+                {type: 'int', value: BigInt(v)},
+                {type: 'int', value: BigInt(i)}
+            ]);
+        return BigInt(stack.readNumber());
+    }
+
+    async getBitsLengthOfInt(provider: ContractProvider, v: bigint): Promise<bigint> {
+        const {stack} = await provider.get('debug_int_bit_length',
+            [
+                {type: 'int', value: v}
+            ]);
+        return stack.readBigNumber();
+    }
+
+    async getBitsOfIntView(provider: ContractProvider, v: bigint): Promise<Cell> {
+        const {stack} = await provider.get('debug_cell_view',
+            [
+                {type: 'int', value: BigInt(65843858677786654633700972097782701568)}
+            ]);
+        return stack.readCell();
     }
 }
