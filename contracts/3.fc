@@ -126,18 +126,27 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
-  var i = 0;
-  if ((builder_bits(b) + to) >= 1023)
+  if ((builder_bits(b) + to) < 1023)
   {
-    var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
-    i += 1;
+    var i = 0;
+    repeat (to)
+    {
+      b~store_uint(t.at(i), 1);
+      i += 1;
+    }
+    return b;
   }
-  repeat (to - i)
-  {
-    b~store_uint(t.at(i), 1);
-    i += 1;
-  }
-  return b;
+  else
+ {
+   var i = 0;
+   var b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
+   repeat (to - 1)
+   {
+     i += 1;
+     b~store_uint(t.at(i), 1);
+   }
+   return b;
+   }
 }
 
 (builder) store_to_builder(builder b, int i)
