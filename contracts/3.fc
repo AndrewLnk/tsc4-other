@@ -25,13 +25,28 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 ;; write first items of t to builder
 (builder) store_to_builder_t(builder b, tuple t)
 {
-  var i = 0;
-  repeat (t.tlen())
+  var to = t.tlen();
+  if ((builder_bits(b) + to) < 1023)
   {
-    b~store_uint(t.at(i), 1);
-    i += 1;
+    var i = 0;
+    repeat (to)
+    {
+      b~store_uint(t.at(i), 1);
+      i += 1;
+    }
+    return b;
   }
-  return b;
+  else
+  {
+    var i = 0;
+    b = begin_cell().store_uint(t.at(i), 1).store_ref(b.end_cell());
+    repeat (to - 1)
+    {
+      i += 1;
+      b~store_uint(t.at(i), 1);
+    }
+    return b;
+  }
 }
 
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
@@ -121,7 +136,14 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (builder) store_to_builder(builder b, int i)
 {
-  return b.store_uint(i, 1);
+  if (builder_bits(b) < 1023)
+  {
+    return b.store_uint(i, 1);
+  }
+  else
+  {
+    return begin_cell().store_uint(i, 1).store_ref(b.end_cell());
+  }
 }
 
 (tuple) remove_first_i(tuple t, int r)
@@ -191,5 +213,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var tupleV = int_to_bits(value);
 
   var tree = build_flow(tupleF, tupleV, linked_list);
+  
   return revert_tree(tree);
 }
