@@ -77,7 +77,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var sl = linked_list.begin_parse();
   var b = begin_cell();
   
-  var continue = slice_bits(sl) > 0;
+  var continue = slice_bits(sl) != 0;
   while(continue)
   {
     repeat (slice_bits(sl))
@@ -98,13 +98,13 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       }
       else
       {
-        if (templ > 0)
+        if (templ != 0)
         {
           temp~tpush(next);
           var plane_remove = 1;
           
           var loop = true;
-          while (loop & templ > 0)
+          while (loop & templ != 0)
           {
             ;; Remove first and next zero items
             var zero_count = check_is_zero_line(temp, plane_remove);
@@ -132,7 +132,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             }
 
             ;; Remove if needed and continue ...
-            if ((i > 0) & (i < templ))
+            if ((i > 0) & (i != templ))
             {
               if (i > 1)
               {
@@ -159,7 +159,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       }
     }
     
-    if (slice_refs(sl) > 0)
+    if (slice_refs(sl) != 0)
     {
       sl = (sl~load_ref()).begin_parse();
     }
@@ -188,19 +188,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   {
     return begin_cell().store_uint(i, 1).store_ref(b.end_cell());
   }
-}
-
-(tuple) remove_first(tuple t)
-{
-  var overwrite = empty_tuple();
-  var i = 1;
-  repeat (t.tlen() - 1)
-  {
-    overwrite~tpush(t.at(i));
-    i += 1;
-  }
-
-  return  overwrite;
 }
 
 (tuple) remove_first_i(tuple t, int r)
