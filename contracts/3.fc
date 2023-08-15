@@ -167,12 +167,22 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (cell) build_tree(tuple builders)
 {
-  var b = builders~tpop();
-  var i = 1;
-  while (i < builders.tlen()){
-    var next = builders~tpop();
-    b = b.store_ref(next.end_cell());
-  }
+;;   var b = builders~tpop();
+;;   var i = 0;
+;;   while (i < builders.tlen()){
+;;     var next = builders~tpop();
+;;     b = b.store_ref(next.end_cell());
+;;   }
+  
+      var b = builders.first();
+      builders = remove_first_i(builders, 1);
+      var i = 0;
+      while (i < builders.tlen()){
+        var next = builders.first();
+        builders = remove_first_i(builders, 1);
+        b = b.store_ref(next.end_cell());
+      }
+  
   return b.end_cell();
 }
 

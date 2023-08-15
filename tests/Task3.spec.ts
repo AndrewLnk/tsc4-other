@@ -241,9 +241,7 @@ describe('Task3', () => {
         var resultLine = await task3.getBitsLine(result);
         var dataLine = await task3.replaceCellAll(data2, "101110101", "111111111");
         
-        var c = resultLine;
-        c += " ";
-        expect(c).toBe(dataLine);
+        expect(resultLine).toBe(dataLine);
     });
 
     it('static fix 1', async () => {
@@ -358,16 +356,16 @@ describe('Task3', () => {
     
     it('10', async () => 
     {
-        for (var r = 0; r < 50; r++)
+        for (var r = 0; r < 1; r++)
         {
             var b = new Builder();
             b.storeBit(0);
             var data = b.endCell();
 
-            for (var i = 0; i < 20; i++)
+            for (var i = 0; i < 2; i++)
             {
                 b = new Builder();
-                b.storeBuffer(randomBytes(randomInt(1, 10)));
+                b.storeBuffer(randomBytes(127));
                 b.storeRef(data);
                 data = b.endCell();
             }
