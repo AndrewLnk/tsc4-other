@@ -66,24 +66,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return with;
 }
 
-;; Return how can be removed by with + zeros
-(int) count_same(tuple t, tuple t2)
-{
-  var i = 0;
-  repeat (t.tlen())
-  {
-    if (t.at(i) == t2.at(i))
-    {
-      i += 1;
-    }
-    else
-    {
-      return i;
-    }
-  }
-  return i;
-}
-
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
@@ -131,7 +113,22 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             plane_remove = 0;
 
             ;; Collect count of with == flag items
-            var i = count_same(temp, flag);
+            var i = 0;
+            var break = false;
+            repeat (templ)
+            {
+              if (br == false)
+              {
+                if (temp.at(i) == flag.at(i))
+                {
+                  i += 1;
+                }
+                else
+                {
+                  br = true;
+                }
+              }
+            }
 
             if ((i > 0) & (i != templ))
             {
