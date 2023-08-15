@@ -132,12 +132,23 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
   }
   
-  ;; Ok for opt
+  ;; Set other temp
   if (tl > 0)
   {
-    (b, builders) = store_to_builder_t(b, builders, temp);
+    if ((builder_bits(b) + tl) >= 1023)
+    {
+      builders~tpush(b);
+      b = begin_cell();
+    }
+    var i = 0;
+    repeat (tl)
+    {
+      b~store_uint(temp.at(i), 1);
+      i += 1;
+    }
   }
 
+  ;; Set other cache
   repeat (cache.tlen())
   {
     if (builder_bits(b) < 1023)
