@@ -2,11 +2,8 @@
 }
 
 int tlen(tuple t) asm "TLEN";
-forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
-forall X -> int is_null (X x) asm "ISNULL";
-forall X -> int cast_to_int (X x) asm "NOP";
 
 ;; convert int bits to tuple
 (tuple) int_to_bits(int v)
@@ -93,7 +90,6 @@ forall X -> int cast_to_int (X x) asm "NOP";
       else
       {
         next = sl~load_uint(1);
-        cache = empty_tuple();
       }
       
       if (next == flag.at(temp.tlen()))
@@ -118,8 +114,6 @@ forall X -> int cast_to_int (X x) asm "NOP";
             var t = temp~tpop();
             cache~tpush(t);
           }
-          
-          temp = empty_tuple();
         }
         else
         {
