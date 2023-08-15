@@ -25,29 +25,22 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 ;; write first items of t to builder
 (builder, tuple) store_to_builder_t(builder b, tuple builders, tuple t)
 {
-  var to = t.tlen();
-  if ((builder_bits(b) + to) < 1023)
-  {
-    var i = 0;
-    repeat (to)
-    {
-      b~store_uint(t.at(i), 1);
-      i += 1;
-    }
-    return (b, builders);
-  }
-  else
+  var len = t.tlen();
+  
+  if ((builder_bits(b) + len) >= 1023)
   {
     builders~tpush(b);
-    var b = begin_cell();
-    var i = 0;
-    repeat (to)
-    {
-      b~store_uint(t.at(i), 1);
-      i += 1;
-    }
-    return (b, builders);
+    b = begin_cell();
   }
+
+  var i = 0;
+  repeat (len)
+  {
+    b~store_uint(t.at(i), 1);
+    i += 1;
+  }
+  
+  return (b, builders);
 }
 
 (tuple) build_flow(tuple flag, tuple value, cell linked_list)
