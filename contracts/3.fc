@@ -1,10 +1,6 @@
 () recv_internal() {
 }
 
-int tlen(tuple t) asm "TLEN";
-forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
-(int) ubitsize (int a) asm "UBITSIZE";
-
 ;; convert int bits to tuple
 (tuple) int_to_bits(int v)
 {
