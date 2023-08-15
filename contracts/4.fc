@@ -1,45 +1,33 @@
+{-
+  TASK 4 - Caesar Cipher
+  Implement a Caesar cipher encryption and decryption functions.
+  The input is a string (https://docs.ton.org/develop/smart-contracts/guidelines/internal-messages#simple-message-with-comment)
+  where the text is encrypted in a cell (after 32bit 00000000 prefix flag), the algorithm rotates the characters and the last ASCII
+  character should go to the beginning. Return new text encoded in cell.
+-}
+
 () recv_internal() {
 }
 
-int tlen(tuple t) asm "TLEN";
-forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
-
-(cell) entry(builder b, slice sl, int s)
+builder entry(builder b, slice sl, int s)
 {
-  var builders = empty_tuple();
-
-  var continue = true;
-  while (continue)
+  var r = slice_bits(sl) / 8;
+  repeat (r)
   {
-    var r = slice_bits(sl) / 8;
-    repeat (r)
-    {
-      var c = sl~load_uint(8);
-      var sh = shifting(c, s);
-      b = b.store_uint(sh, 8);
-    }
-
-    builders~tpush(b);
-
-    if (slice_refs(sl) != 0)
-    {
-      var next_sl = sl~load_ref().begin_parse();
-      sl = next_sl;
-      b = begin_cell();
-    }
-    else
-    {
-      continue = false;
-    }
+    var c = sl~load_uint(8);
+    var sh = shifting(c, s);
+    b = b.store_uint(sh, 8);
   }
 
-  var b = begin_cell();
-  repeat (builders.tlen()){
-    var nt = builders~tpop();
-    b = nt.store_ref(b.end_cell());
+  if (slice_refs(sl) != 0)
+  {
+    var ns = sl~load_ref().begin_parse();
+    var nb = entry(begin_cell(), ns, s);
+    var nc = nb.end_cell();
+    b = b.store_ref(nc);
   }
-  ;; Return
-  return b.end_cell();
+
+  return b;
 }
 
 (int) shifting(int c, int s)
@@ -66,7 +54,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
-  return entry(b, s, shift);
+  return entry(b, s, shift).end_cell();
 }
 
 ;; testable
@@ -76,5 +64,5 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
-  return entry(b, s, 0 - shift);
+  return entry(b, s, 0 - shift).end_cell();
 }
