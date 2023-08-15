@@ -2,16 +2,12 @@
 }
 
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
+int tlen(tuple t) asm "TLEN";
 
 (cell) entry(builder b, slice sl, int s)
 {
-  var builders = empty_tuple();
-  var builders2 = empty_tuple();
-  
-  var passed = 0;
-
-  var continue = true;
-  while (continue)
+  var depth = slice_depth(sl);
+  if (depth == 0)
   {
     var r = slice_bits(sl) / 8;
     repeat (r)
@@ -20,56 +16,98 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       var sh = shifting(c, s);
       b = b.store_uint(sh, 8);
     }
-    
-    if (passed >= 254)
-    {
-      builders2~tpush(b);
-    }
-    else
-    {
-      builders~tpush(b);
-    }
-
-    if (slice_refs(sl) != 0)
-    {
-      var next_sl = sl~load_ref().begin_parse();
-      sl = next_sl;
-      b = begin_cell();
-    }
-    else
-    {
-      continue = false;
-    }
-
-    passed += 1;
-  }
-  
-  if (passed >= 255)
-  {
-    var b = builders2~tpop();
-    repeat (passed - 255)
-    {
-      var nt = builders2~tpop();
-      b = nt.store_ref(b.end_cell());
-    }
-    repeat (254)
-    {
-      var nt = builders~tpop();
-      b = nt.store_ref(b.end_cell());
-    }
 
     return b.end_cell();
   }
   else
   {
-    var b = builders~tpop();
-    repeat (passed - 1)
+    if (depth <= 253)
     {
-      var nt = builders~tpop();
-      b = nt.store_ref(b.end_cell());
+      var builders = empty_tuple();
+      repeat (depth + 1)
+      {
+        var r = slice_bits(sl) / 8;
+        repeat (r)
+        {
+          var c = sl~load_uint(8);
+          var sh = shifting(c, s);
+          b = b.store_uint(sh, 8);
+        }
+
+        builders~tpush(b);
+
+        if (slice_refs(sl) != 0)
+        {
+          sl = sl~load_ref().begin_parse();
+          b = begin_cell();
+        }
+      }
+
+      var b = builders~tpop();
+      repeat (builders.tlen())
+      {
+        var nt = builders~tpop();
+        b = nt.store_ref(b.end_cell());
+      }
+
+      return b.end_cell();
     }
-    
-    return b.end_cell();
+    else
+    {
+      var builders = empty_tuple();
+      repeat (253)
+      {
+        var r = slice_bits(sl) / 8;
+        repeat (r)
+        {
+          var c = sl~load_uint(8);
+          var sh = shifting(c, s);
+          b = b.store_uint(sh, 8);
+        }
+
+        builders~tpush(b);
+
+        if (slice_refs(sl) != 0)
+        {
+          sl = sl~load_ref().begin_parse();
+          b = begin_cell();
+        }
+      }
+
+      var builders2 = empty_tuple();
+      repeat (depth - 253)
+      {
+        var r = slice_bits(sl) / 8;
+        repeat (r)
+        {
+          var c = sl~load_uint(8);
+          var sh = shifting(c, s);
+          b = b.store_uint(sh, 8);
+        }
+
+        builders2~tpush(b);
+
+        if (slice_refs(sl) != 0)
+        {
+          sl = sl~load_ref().begin_parse();
+          b = begin_cell();
+        }
+      }
+
+      var b = builders2~tpop();
+      repeat (builders2.tlen())
+      {
+        var nt = builders2~tpop();
+        b = nt.store_ref(b.end_cell());
+      }
+      repeat (builders.tlen())
+      {
+        var nt = builders~tpop();
+        b = nt.store_ref(b.end_cell());
+      }
+
+      return b.end_cell();
+    }
   }
 }
 
