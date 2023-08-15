@@ -75,7 +75,7 @@ int tlen(tuple t) asm "TLEN";
       }
 
       var builders2 = empty_tuple();
-      repeat (depth - 253)
+      repeat (depth - 252)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
