@@ -95,7 +95,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         if (tl > 0)
         {
           (b, builders) = store_to_builder(b, builders, temp.at(0));
-          temp = remove_first_i(temp, 1);
           temp~tpush(next);
           
           repeat (tl){
@@ -150,19 +149,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     builders~tpush(b);
     return (begin_cell().store_uint(i, 1), builders);
   }
-}
-
-(tuple) remove_first_i(tuple t, int r)
-{
-  var overwrite = empty_tuple();
-  var i = r;
-  repeat (t.tlen() - r)
-  {
-     overwrite~tpush(t.at(i));
-     i += 1;
-  }
-
-  return  overwrite;
 }
 
 (cell) build_tree(tuple builders)
