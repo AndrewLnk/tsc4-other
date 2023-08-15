@@ -24,7 +24,7 @@ int tlen(tuple t) asm "TLEN";
     if (depth <= 253)
     {
       var builders = empty_tuple();
-      repeat (depth + 1)
+      repeat (depth)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
@@ -33,15 +33,19 @@ int tlen(tuple t) asm "TLEN";
           var sh = shifting(c, s);
           b = b.store_uint(sh, 8);
         }
-
         builders~tpush(b);
-
-        if (slice_refs(sl) != 0)
-        {
-          sl = sl~load_ref().begin_parse();
-          b = begin_cell();
-        }
+        b = begin_cell();
+        sl = sl~load_ref().begin_parse();
       }
+
+      var r = slice_bits(sl) / 8;
+      repeat (r)
+      {
+        var c = sl~load_uint(8);
+        var sh = shifting(c, s);
+        b = b.store_uint(sh, 8);
+      }
+      builders~tpush(b);
 
       var b = builders~tpop();
       repeat (builders.tlen())
@@ -55,7 +59,7 @@ int tlen(tuple t) asm "TLEN";
     else
     {
       var builders = empty_tuple();
-      repeat (253)
+      repeat (252)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
@@ -64,16 +68,11 @@ int tlen(tuple t) asm "TLEN";
           var sh = shifting(c, s);
           b = b.store_uint(sh, 8);
         }
-
+        
         builders~tpush(b);
-
-        if (slice_refs(sl) != 0)
-        {
-          sl = sl~load_ref().begin_parse();
-          b = begin_cell();
-        }
+        b = begin_cell();
+        sl = sl~load_ref().begin_parse();
       }
-
       var builders2 = empty_tuple();
       repeat (depth - 252)
       {
@@ -84,16 +83,20 @@ int tlen(tuple t) asm "TLEN";
           var sh = shifting(c, s);
           b = b.store_uint(sh, 8);
         }
-
         builders2~tpush(b);
-
-        if (slice_refs(sl) != 0)
-        {
-          sl = sl~load_ref().begin_parse();
-          b = begin_cell();
-        }
+        b = begin_cell();
+        sl = sl~load_ref().begin_parse();
       }
 
+      var r = slice_bits(sl) / 8;
+      repeat (r)
+      {
+        var c = sl~load_uint(8);
+        var sh = shifting(c, s);
+        b = b.store_uint(sh, 8);
+      }
+      builders~tpush(b);
+      
       var b = builders2~tpop();
       repeat (builders2.tlen())
       {
