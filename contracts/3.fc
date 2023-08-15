@@ -35,7 +35,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var b = begin_cell();
   var builders = empty_tuple();
   
-  var continue = slice_bits(sl) > 0;
+  var continue = true;
   while(continue)
   {
     while (slice_bits(sl) > 0)
