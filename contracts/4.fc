@@ -51,8 +51,7 @@ builder entry(builder b, slice sl, int s)
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id 
 {
   var s = text.begin_parse();
-  var sl = s~load_uint(32);
-  var b = begin_cell().store_uint(sl, 32);
+  var b = begin_cell().store_uint(0, 32);
 
   return entry(b, s, shift).end_cell();
 }
@@ -61,8 +60,7 @@ builder entry(builder b, slice sl, int s)
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id 
 {
   var s = text.begin_parse();
-  var sl = s~load_uint(32);
-  var b = begin_cell().store_uint(sl, 32);
+  var b = begin_cell().store_uint(0, 32);
 
   return entry(b, s, 0 - shift).end_cell();
 }
