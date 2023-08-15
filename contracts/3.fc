@@ -6,7 +6,7 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
 
-;; Ok for opt
+;; convert int bits to tuple
 (tuple) int_to_bits(int v)
 {
   var size = ubitsize(v);
@@ -23,7 +23,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return list;
 }
 
-;; ok for opt
+;; write first items of t to builder
 (builder) store_to_builder_to(builder b, tuple t, int to)
 {
   if ((builder_bits(b) + to) < 1023)
@@ -47,6 +47,41 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
     return b;
   }
+}
+
+;; Return how can be removed by with + zeros
+(int) check_is_zero_line(tuple t, int with)
+{
+  repeat (t.tlen() - with)
+  {
+    if (t.at(with) == 0)
+    {
+      with += 1;
+    }
+    else
+    {
+      return with;
+    }
+  }
+  return with;
+}
+
+;; Return how can be removed by with + zeros
+(int) count_same(tuple t, tuple t2)
+{
+  var i = 0;
+  repeat (t.tlen())
+  {
+    if (t.at(i) == t2.at(i))
+    {
+      i += 1;
+    }
+    else
+    {
+      return i;
+    }
+  }
+  return i;
 }
 
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
@@ -96,15 +131,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             plane_remove = 0;
 
             ;; Collect count of with == flag items
-            var i = 0;
-            while (i < templ){
-              if (temp.at(i) == flag.at(i)) {
-                i += 1;
-              } else {
-                i += 1000;
-              }
-            }
-            if (i >= 1000) { i -= 1000; }
+            var i = count_same(temp, flag);
 
             if ((i > 0) & (i != templ))
             {
@@ -188,24 +215,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 
   return  overwrite;
-}
-
-(int) check_is_zero_line(tuple t, int with_first)
-{
-  var i = with_first;
-  while (i < t.tlen())
-  {
-    if (t.at(i) == 0)
-    {
-      i += 1;
-    }
-    else
-    {
-      return i;
-    }
-  }
-
-  return i;
 }
 
 (cell) revert_tree(cell tree)
