@@ -71,6 +71,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var vlen = value.tlen();
   
   var temp = empty_tuple();
+  var tl = 0;
   var cache = empty_tuple();
   
   var sl = linked_list.begin_parse();
@@ -92,28 +93,33 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         next = sl~load_uint(1);
       }
       
-      if (next == flag.at(temp.tlen()))
+      if (next == flag.at(tl))
       {
         temp~tpush(next);
+        tl += 1;
         
-        if (temp.tlen() == flen)
+        if (tl == flen)
         {
           b = store_to_builder_to(b, value, vlen);
           temp = empty_tuple();
+          tl = 0;
         }
       }
       else
       {
-        if (temp.tlen() > 0)
+        if (tl > 0)
         {
           b = store_to_builder(b, temp.at(0));
           temp = remove_first_i(temp, 1);
           temp~tpush(next);
           
-          repeat (temp.tlen()){
+          repeat (tl){
             var t = temp~tpop();
             cache~tpush(t);
           }
+
+          temp = empty_tuple();
+          tl = 0;
         }
         else
         {
@@ -135,9 +141,9 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   
 
   ;; Ok for opt
-  if (temp.tlen() > 0)
+  if (tl > 0)
   {
-    b = store_to_builder_to(b, temp, temp.tlen());
+    b = store_to_builder_to(b, temp, tl);
   }
   
   repeat (cache.tlen()){
