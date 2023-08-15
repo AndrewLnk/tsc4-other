@@ -21,7 +21,7 @@ int tlen(tuple t) asm "TLEN";
   }
   else
   {
-    if (depth <= 253)
+    if (depth <= 254)
     {
       var builders = empty_tuple();
       repeat (depth)
@@ -59,7 +59,8 @@ int tlen(tuple t) asm "TLEN";
     else
     {
       var builders = empty_tuple();
-      repeat (252)
+      var builders2 = empty_tuple();
+      repeat (253)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
@@ -73,8 +74,7 @@ int tlen(tuple t) asm "TLEN";
         b = begin_cell();
         sl = sl~load_ref().begin_parse();
       }
-      var builders2 = empty_tuple();
-      repeat (depth - 252)
+      repeat (depth - 253)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
