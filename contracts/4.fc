@@ -5,38 +5,35 @@ builder entry(builder b, slice sl, int s)
 {
   var r = slice_bits(sl) / 8;
   repeat (r)
-          {
-            var c = sl~load_uint(8);
-            var sh = shifting(c, s);
-            b = b.store_uint(sh, 8);
-          }
+  {
+    var c = sl~load_uint(8);
+
+    if ((c >= 97) & (c <= 122))
+    {
+      b = b.store_uint(((c + s - 97) % 26 + 97), 8);
+    }
+    else
+    {
+      if ((c >= 65) & (c <= 90))
+      {
+        b = b.store_uint(((c + s - 65) % 26 + 65), 8);
+      }
+      else
+      {
+        b = b.store_uint(c, 8);
+      }
+    }
+  }
 
   if (slice_refs(sl) != 0)
-          {
-            var ns = sl~load_ref().begin_parse();
-            var nb = entry(begin_cell(), ns, s);
-            var nc = nb.end_cell();
-            b = b.store_ref(nc);
-          }
+  {
+    var ns = sl~load_ref().begin_parse();
+    var nb = entry(begin_cell(), ns, s);
+    var nc = nb.end_cell();
+    b = b.store_ref(nc);
+  }
 
   return b;
-}
-
-(int) shifting(int c, int s)
-{
-  if ((c >= 97) & (c <= 122))
-          {
-            return (c + s - 97) % 26 + 97;
-          }
-          else
-                  {
-                    if ((c >= 65) & (c <= 90))
-                            {
-                              return (c + s - 65) % 26 + 65;
-                            }
-
-                    return c;
-                  }
 }
 
 ;; testable
