@@ -25,18 +25,29 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 ;; write first items of t to builder
 (builder, tuple) store_to_builder_t(builder b, tuple builders, tuple t)
 {
-  var len = t.tlen();
-  if ((builder_bits(b) + len) >= 1023)
+  var to = t.tlen();
+  if ((builder_bits(b) + to) < 1023)
+  {
+    var i = 0;
+    repeat (to)
+    {
+      b~store_uint(t.at(i), 1);
+      i += 1;
+    }
+    return (b, builders);
+  }
+  else
   {
     builders~tpush(b);
+    var nb = begin_cell();
+    var i = 0;
+    repeat (to)
+    {
+      nb~store_uint(t.at(i), 1);
+      i += 1;
+    }
+    return (nb, builders);
   }
-
-  var i = 0;
-  repeat (len){
-    b~store_uint(t.at(i), 1);
-    i += 1;
-  }
-  return (b, builders);
 }
 
 (tuple) build_flow(tuple flag, tuple value, cell linked_list)
@@ -44,8 +55,8 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var flen = flag.tlen();
   
   var temp = empty_tuple();
-  var cache = empty_tuple();
   var tl = 0;
+  var cache = empty_tuple();
   
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -84,6 +95,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         if (tl > 0)
         {
           (b, builders) = store_to_builder(b, builders, temp.at(0));
+          temp = remove_first_i(temp, 1);
           temp~tpush(next);
           
           repeat (tl){
@@ -140,22 +152,44 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 }
 
-;; testable
-(cell) find_and_replace(int flag, int value, cell linked_list) method_id 
+(tuple) remove_first_i(tuple t, int r)
 {
-  ;; Ok for opt
-  if ((flag <= 0) | (value <= 0)){ return null(); }
-  ;; Ok for opt
-  var tupleF = int_to_bits(flag);
-  var tupleV = int_to_bits(value);
-  ;; Create builder
-  var builders = build_flow(tupleF, tupleV, linked_list);
-  ;; Setup builders to line
+  var overwrite = empty_tuple();
+  var i = r;
+  repeat (t.tlen() - r)
+  {
+     overwrite~tpush(t.at(i));
+     i += 1;
+  }
+
+  return  overwrite;
+}
+
+(cell) build_tree(tuple builders)
+{
   var b = begin_cell();
+  
   repeat (builders.tlen()){
     var nt = builders~tpop();
     b = nt.store_ref(b.end_cell());
   }
-  ;; return result
+  
   return b.end_cell();
+}
+
+;; testable
+(cell) find_and_replace(int flag, int value, cell linked_list) method_id 
+{
+  ;; Ok for opt
+  if ((flag <= 0) | (value <= 0))
+  {
+    return null();
+  }
+
+  ;; Ok for opt
+  var tupleF = int_to_bits(flag);
+  var tupleV = int_to_bits(value);
+
+  var builders = build_flow(tupleF, tupleV, linked_list);
+  return build_tree(builders);
 }
