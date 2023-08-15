@@ -17,7 +17,7 @@
   }
 }
 
-builder entry(builder b, slice sl, int s)
+cell entry(builder b, slice sl, int s)
 {
   var r = slice_bits(sl) / 8;
   repeat (r)
@@ -26,14 +26,14 @@ builder entry(builder b, slice sl, int s)
     b = b.store_uint(sh, 8);
   }
 
-  if (~slice_refs_empty?(s))
+  if (~ slice_refs_empty?(sl))
   {
     var newb = begin_cell();
-    var nexts = s.preload_ref().begin_parse();
+    var nexts = sl.preload_ref().begin_parse();
     b = b.store_ref(entry(newb, nexts, s));
   }
 
-  return b;
+  return b.end_cell();
 }
 
 ;; testable
@@ -42,8 +42,7 @@ builder entry(builder b, slice sl, int s)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
-
-  return entry(b, s, shift).end_cell();
+  return entry(b, s, shift);
 }
 
 ;; testable
@@ -52,6 +51,5 @@ builder entry(builder b, slice sl, int s)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
-
-  return entry(b, s, 0 - shift).end_cell();
+  return entry(b, s, 0 - shift);
 }
