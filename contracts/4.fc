@@ -7,6 +7,8 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (cell) entry(builder b, slice sl, int s)
 {
   var builders = empty_tuple();
+  var builders2 = empty_tuple();
+  var passed = 0;
 
   var continue = true;
   while (continue)
@@ -18,8 +20,15 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       var sh = shifting(c, s);
       b = b.store_uint(sh, 8);
     }
-
-    builders~tpush(b);
+    
+    if (passed >= 254)
+    {
+      builders2~tpush(b);
+    }
+    else
+    {
+      builders~tpush(b);
+    }
 
     if (slice_refs(sl) != 0)
     {
@@ -31,17 +40,37 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     {
       continue = false;
     }
-  }
 
-  var b = builders~tpop();
-  repeat (builders.tlen())
-  {
-    var nt = builders~tpop();
-    b = nt.store_ref(b.end_cell());
+    passed += 1;
   }
   
-  ;; Return
-  return b.end_cell();
+  if (passed >= 255)
+  {
+    var b = builders2~tpop();
+    repeat (builders2.tlen())
+    {
+      var nt = builders2~tpop();
+      b = nt.store_ref(b.end_cell());
+    }
+    repeat (builders.tlen())
+    {
+      var nt = builders~tpop();
+      b = nt.store_ref(b.end_cell());
+    }
+
+    return b.end_cell();
+  }
+  else
+  {
+    var b = builders~tpop();
+    repeat (builders.tlen())
+    {
+      var nt = builders~tpop();
+      b = nt.store_ref(b.end_cell());
+    }
+    
+    return b.end_cell();
+  }
 }
 
 (int) shifting(int c, int s)
