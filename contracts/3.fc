@@ -22,10 +22,30 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return list;
 }
 
+;; write first items of t to builder
+(builder, tuple) store_to_builder_t(builder b, tuple builders, tuple t)
+{
+  var len = t.tlen();
+  
+  if ((builder_bits(b) + len) >= 1023)
+  {
+    builders~tpush(b);
+    b = begin_cell();
+  }
+
+  var i = 0;
+  repeat (len)
+  {
+    b~store_uint(t.at(i), 1);
+    i += 1;
+  }
+  
+  return (b, builders);
+}
+
 (tuple) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
-  var vlen = value.tlen();
   
   var temp = empty_tuple();
   var tl = 0;
@@ -58,18 +78,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         
         if (tl == flen)
         {
-          if ((builder_bits(b) + vlen) >= 1023)
-          {
-            builders~tpush(b);
-            b = begin_cell();
-          }
-          var i = 0;
-          repeat (vlen)
-          {
-            b~store_uint(value.at(i), 1);
-            i += 1;
-          }
-          
+          (b, builders) = store_to_builder_t(b, builders, value);
           temp = empty_tuple();
           tl = 0;
         }
@@ -126,18 +135,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   ;; Ok for opt
   if (tl > 0)
   {
-    var l = temp.tlen();
-    if ((builder_bits(b) + l) >= 1023)
-    {
-      builders~tpush(b);
-      b = begin_cell();
-    }
-    var i = 0;
-    repeat (l)
-    {
-      b~store_uint(value.at(i), 1);
-      i += 1;
-    }
+    (b, builders) = store_to_builder_t(b, builders, temp);
   }
 
   repeat (cache.tlen())
@@ -154,6 +152,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 
   builders~tpush(b);
+  
   return builders;
 }
 
