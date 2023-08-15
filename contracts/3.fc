@@ -71,11 +71,9 @@ forall X -> int is_null (X x) asm "ISNULL";
 {
   var flen = flag.tlen();
   var vlen = value.tlen();
-
+  
   var temp = empty_tuple();
   var templ = 0;
-
-  var rtemp = empty_tuple();
   
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -90,14 +88,12 @@ forall X -> int is_null (X x) asm "ISNULL";
       if (next == flag.at(templ))
       {
         temp~tpush(next);
-        rtemp = cons(next, rtemp);
         templ += 1;
         
         if (templ == flen)
         {
           b = store_to_builder_to(b, value, vlen);
           temp = empty_tuple();
-          rtemp = empty_tuple();
           templ = 0;
         }
       }
@@ -106,31 +102,24 @@ forall X -> int is_null (X x) asm "ISNULL";
         if (templ > 0)
         {
           temp~tpush(next);
-          rtemp = cons(next, rtemp);
           var plane_remove = 1;
+
+          b = store_to_builder_to(b, temp, 1);
+          temp = remove_first_i(temp, 1);
           
           var loop = true;
           while (loop & templ > 0)
           {
             ;; Remove first and next zero items
-            var zero_count = check_is_zero_line(temp, plane_remove);
-            b = store_to_builder_to(b, temp, zero_count);
-            var rpt = zero_count;
-            if (rpt > rtemp.tlen())
-            {
-              rpt = rtemp.tlen();
-            }
-            repeat (rpt)
-            {
-              rtemp~tpop();
-            }
-            temp = remove_first_i(temp, zero_count);
-            templ -= zero_count - plane_remove;
-            plane_remove = 0;
+;;             var zero_count = check_is_zero_line(temp, 0);
+;;             b = store_to_builder_to(b, temp, zero_count);
+;;             temp = remove_first_i(temp, zero_count);
+;;             templ -= zero_count;
 
             ;; Collect count of with == flag items
             var i = 0;
             var break = false;
+            var next_z = false;
             repeat (templ)
             {
               ifnot (break)
@@ -141,13 +130,17 @@ forall X -> int is_null (X x) asm "ISNULL";
                 }
                 else
                 {
+                  if (temp.at(i) == 0){
+                    i += 1;
+                    next_z = true;
+                  }
                   break = true;
                 }
               }
             }
 
             ;; Check range and Continue & remove if need
-            if ((i > 0) & (i != templ))
+            if ((i > 0) & (i != templ) | next_z)
             {
               if (i > 1)
               {
@@ -158,15 +151,6 @@ forall X -> int is_null (X x) asm "ISNULL";
               }
               
               b = store_to_builder_to(b, temp, i);
-              var rpt = i;
-              if (rpt > rtemp.tlen())
-              {
-                rpt = rtemp.tlen();
-              }
-              repeat (rpt)
-              {
-                rtemp~tpop();
-              }
               temp = remove_first_i(temp, i);
               templ -= i;
             }
