@@ -132,7 +132,6 @@ int ubitsize (int a) asm "UBITSIZE";
       continue = false;
     }
   }
-
   ;; Set other temp
   if (tl > 0)
   {
@@ -148,7 +147,6 @@ int ubitsize (int a) asm "UBITSIZE";
       i += 1;
     }
   }
-
   ;; Set other cache
   repeat (cache.tlen())
   {
@@ -162,7 +160,6 @@ int ubitsize (int a) asm "UBITSIZE";
       b = begin_cell().store_uint(cache~tpop(), 1);
     }
   }
-
   builders~tpush(b);
   
   ;; To tree !!!!!!!!!!!!!!!!!!!!!
@@ -172,7 +169,6 @@ int ubitsize (int a) asm "UBITSIZE";
     var nt = builders~tpop();
     b = nt.store_ref(b.end_cell());
   }
-  
   
   ;; Return
   return b.end_cell();
