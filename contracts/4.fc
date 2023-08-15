@@ -69,34 +69,29 @@ int tlen(tuple t) asm "TLEN";
           var sh = shifting(c, s);
           b = b.store_uint(sh, 8);
         }
-        
         builders~tpush(b);
         b = begin_cell();
         sl = sl~load_ref().begin_parse();
       }
-      repeat (depth - 253)
+      repeat ((depth + 1) - 253)
       {
         var r = slice_bits(sl) / 8;
         repeat (r)
         {
-          var c = sl~load_uint(8);
-          var sh = shifting(c, s);
-          b = b.store_uint(sh, 8);
-        }
-        builders2~tpush(b);
-        b = begin_cell();
-        sl = sl~load_ref().begin_parse();
-      }
-
-      var r = slice_bits(sl) / 8;
-      repeat (r)
-      {
         var c = sl~load_uint(8);
         var sh = shifting(c, s);
         b = b.store_uint(sh, 8);
+        }
+        
+        builders2~tpush(b);
+
+        if (slice_refs(sl) != 0)
+        {
+          sl = sl~load_ref().begin_parse();
+          b = begin_cell();
+        }
       }
-      builders~tpush(b);
-      
+
       var b = builders2~tpop();
       repeat (builders2.tlen())
       {
