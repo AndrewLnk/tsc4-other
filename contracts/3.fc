@@ -117,16 +117,13 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             var break = false;
             repeat (templ)
             {
-              ifnot (break)
+              if ((break == 0) & temp.at(i) == flag.at(i))
               {
-                if (temp.at(i) == flag.at(i))
-                {
-                  i += 1;
-                }
-                else
-                {
-                  break = true;
-                }
+                i += 1;
+              }
+              else
+              {
+                break = true;
               }
             }
 
