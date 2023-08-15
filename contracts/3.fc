@@ -28,9 +28,8 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var vlen = value.tlen();
   
   var temp = empty_tuple();
-  var templ = 0;
+  var tl = 0;
   var cache = empty_tuple();
-  var cachel = 0;
   
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -43,22 +42,21 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     {
       int next = 0;
       
-      if (cachel > 0)
+      if (cache.tlen() > 0)
       {
         next = cache~tpop();
-        cachel -= 1;
       }
       else
       {
         next = sl~load_uint(1);
       }
       
-      if (next == flag.at(templ))
+      if (next == flag.at(tl))
       {
         temp~tpush(next);
-        templ += 1;
+        tl += 1;
         
-        if (templ == flen)
+        if (tl == flen)
         {
           if ((builder_bits(b) + vlen) >= 1023)
           {
@@ -73,12 +71,12 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
           }
           
           temp = empty_tuple();
-          templ = 0;
+          tl = 0;
         }
       }
       else
       {
-        if (templ > 0)
+        if (tl > 0)
         {
           if (builder_bits(b) < 1023)
           {
@@ -92,14 +90,13 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
           
           temp~tpush(next);
           
-          repeat (templ){
+          repeat (tl){
             var t = temp~tpop();
             cache~tpush(t);
-            cachel += 1;
           }
 
           temp = empty_tuple();
-          templ = 0;
+          tl = 0;
         }
         else
         {
@@ -127,15 +124,15 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
   
   ;; Set other temp
-  if (templ > 0)
+  if (tl > 0)
   {
-    if ((builder_bits(b) + templ) >= 1023)
+    if ((builder_bits(b) + tl) >= 1023)
     {
       builders~tpush(b);
       b = begin_cell();
     }
     var i = 0;
-    repeat (templ)
+    repeat (tl)
     {
       b~store_uint(temp.at(i), 1);
       i += 1;
@@ -143,7 +140,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 
   ;; Set other cache
-  repeat (cachel)
+  repeat (cache.tlen())
   {
     if (builder_bits(b) < 1023)
     {
