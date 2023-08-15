@@ -171,7 +171,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var i = 1;
   while (i < builders.tlen()){
     var next = builders~tpop();
-    b = b.store_ref(b.end_cell());
+    b = b.store_ref(next.end_cell());
   }
   return b.end_cell();
 }

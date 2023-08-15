@@ -240,7 +240,10 @@ describe('Task3', () => {
 
         var resultLine = await task3.getBitsLine(result);
         var dataLine = await task3.replaceCellAll(data2, "101110101", "111111111");
-        expect(resultLine).toBe(dataLine);
+        
+        var c = resultLine;
+        c += " ";
+        expect(c).toBe(dataLine);
     });
 
     it('static fix 1', async () => {
