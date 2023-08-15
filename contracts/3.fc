@@ -6,6 +6,7 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
 forall X -> int is_null (X x) asm "ISNULL";
+forall X -> int cast_to_int (X x) asm "NOP";
 
 ;; convert int bits to tuple
 (tuple) int_to_bits(int v)
@@ -73,7 +74,7 @@ forall X -> int is_null (X x) asm "ISNULL";
   var vlen = value.tlen();
   
   var temp = empty_tuple();
-  var templ = 0;
+  var cache = empty_tuple();
   
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -81,84 +82,44 @@ forall X -> int is_null (X x) asm "ISNULL";
   var continue = slice_bits(sl) > 0;
   while(continue)
   {
-    repeat (slice_bits(sl))
+    while (slice_bits(sl) > 0)
     {
-      var next = sl~load_uint(1);
+      int next = 0;
       
-      if (next == flag.at(templ))
+      if (cache.tlen() > 0)
+      {
+        next = cache~tpop();
+      }
+      else
+      {
+        next = sl~load_uint(1);
+        cache = empty_tuple();
+      }
+      
+      if (next == flag.at(temp.tlen()))
       {
         temp~tpush(next);
-        templ += 1;
         
-        if (templ == flen)
+        if (temp.tlen() == flen)
         {
           b = store_to_builder_to(b, value, vlen);
           temp = empty_tuple();
-          templ = 0;
         }
       }
       else
       {
-        if (templ > 0)
+        if (temp.tlen() > 0)
         {
-          temp~tpush(next);
-          var plane_remove = 1;
-
-          b = store_to_builder_to(b, temp, 1);
+          b = store_to_builder(b, temp.at(0));
           temp = remove_first_i(temp, 1);
+          temp~tpush(next);
           
-          var loop = true;
-          while (loop & templ > 0)
-          {
-            ;; Remove first and next zero items
-;;             var zero_count = check_is_zero_line(temp, 0);
-;;             b = store_to_builder_to(b, temp, zero_count);
-;;             temp = remove_first_i(temp, zero_count);
-;;             templ -= zero_count;
-
-            ;; Collect count of with == flag items
-            var i = 0;
-            var break = false;
-            var next_z = false;
-            repeat (templ)
-            {
-              ifnot (break)
-              {
-                if (temp.at(i) == flag.at(i))
-                {
-                  i += 1;
-                }
-                else
-                {
-                  if (temp.at(i) == 0){
-                    i += 1;
-                    next_z = true;
-                  }
-                  break = true;
-                }
-              }
-            }
-
-            ;; Check range and Continue & remove if need
-            if ((i > 0) & (i != templ) | next_z)
-            {
-              if (i > 1)
-              {
-                if (temp.at(1) == flag.at(0))
-                {
-                  i = 1;
-                }
-              }
-              
-              b = store_to_builder_to(b, temp, i);
-              temp = remove_first_i(temp, i);
-              templ -= i;
-            }
-            else
-            {
-              loop = false;
-            }
+          repeat (temp.tlen()){
+            var t = temp~tpop();
+            cache~tpush(t);
           }
+          
+          temp = empty_tuple();
         }
         else
         {
@@ -176,11 +137,17 @@ forall X -> int is_null (X x) asm "ISNULL";
       continue = false;
     }
   }
+  
+  
 
   ;; Ok for opt
-  if (templ > 0)
+  if (temp.tlen() > 0)
   {
-    b = store_to_builder_to(b, temp, templ);
+    b = store_to_builder_to(b, temp, temp.tlen());
+  }
+  
+  repeat (cache.tlen()){
+    b = store_to_builder(b, cache~tpop());
   }
   
   return b.end_cell();
