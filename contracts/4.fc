@@ -29,8 +29,7 @@ builder entry(builder b, slice sl, int s)
   {
     var ns = sl~load_ref().begin_parse();
     var nb = entry(begin_cell(), ns, s);
-    var nc = nb.end_cell();
-    b~store_ref(nc);
+    b = b.store_ref(nb.end_cell());
   }
 
   return b;
