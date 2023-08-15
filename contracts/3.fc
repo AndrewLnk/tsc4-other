@@ -23,8 +23,9 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 }
 
 ;; write first items of t to builder
-(builder) store_to_builder_to(builder b, tuple t, int to)
+(builder) store_to_builder_t(builder b, tuple t)
 {
+  var to = t.tlen();
   if ((builder_bits(b) + to) < 1023)
   {
     var i = 0;
@@ -48,27 +49,9 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 }
 
-;; Return how can be removed by with + zeros
-(int) check_is_zero_line(tuple t, int with)
-{
-  repeat (t.tlen() - with)
-  {
-    if (t.at(with) == 0)
-    {
-      with += 1;
-    }
-    else
-    {
-      return with;
-    }
-  }
-  return with;
-}
-
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
-  var vlen = value.tlen();
   
   var temp = empty_tuple();
   var tl = 0;
@@ -100,7 +83,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         
         if (tl == flen)
         {
-          b = store_to_builder_to(b, value, vlen);
+          b = store_to_builder_t(b, value);
           temp = empty_tuple();
           tl = 0;
         }
@@ -138,12 +121,10 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
     }
   }
   
-  
-
   ;; Ok for opt
   if (tl > 0)
   {
-    b = store_to_builder_to(b, temp, tl);
+    b = store_to_builder_t(b, temp);
   }
   
   repeat (cache.tlen()){
