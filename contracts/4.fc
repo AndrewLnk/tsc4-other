@@ -4,12 +4,11 @@
 builder entry(builder b, slice sl, int s)
 {
   var r = slice_bits(sl) / 8;
+  var s_l = s - 97;
+  var s_L = s - 65;
   repeat (r)
   {
     var c = sl~load_uint(8);
-
-    var s_l = s - 97;
-    var s_L = s - 65;
     if ((c >= 97) & (c <= 122))
     {
       b~store_uint(((c + s_l) % 26 + 97), 8);
