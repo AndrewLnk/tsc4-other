@@ -39,14 +39,14 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   else
   {
     builders~tpush(b);
-    var nb = begin_cell();
+    var b = begin_cell();
     var i = 0;
     repeat (to)
     {
-      nb~store_uint(t.at(i), 1);
+      b~store_uint(t.at(i), 1);
       i += 1;
     }
-    return (nb, builders);
+    return (b, builders);
   }
 }
 
