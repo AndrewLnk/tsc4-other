@@ -3,144 +3,7 @@
 
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
-(int) ubitsize (int a) asm "UBITSIZE";
-
-
-(tuple) build_flow(tuple flag, tuple value, cell linked_list)
-{
-  var flen = flag.tlen();
-  var vlen = value.tlen();
-  
-  var temp = empty_tuple();
-  var tl = 0;
-  var cache = empty_tuple();
-  
-  var sl = linked_list.begin_parse();
-  var b = begin_cell();
-  var builders = empty_tuple();
-  
-  var continue = true;
-  while(continue)
-  {
-    while (slice_bits(sl) > 0)
-    {
-      int next = 0;
-      
-      if (cache.tlen() > 0)
-      {
-        next = cache~tpop();
-      }
-      else
-      {
-        next = sl~load_uint(1);
-      }
-      
-      if (next == flag.at(tl))
-      {
-        temp~tpush(next);
-        tl += 1;
-        
-        if (tl == flen)
-        {
-          if ((builder_bits(b) + vlen) >= 1023)
-          {
-            builders~tpush(b);
-            b = begin_cell();
-          }
-          var i = 0;
-          repeat (vlen)
-          {
-            b~store_uint(value.at(i), 1);
-            i += 1;
-          }
-          
-          temp = empty_tuple();
-          tl = 0;
-        }
-      }
-      else
-      {
-        if (tl > 0)
-        {
-          if (builder_bits(b) < 1023)
-          {
-            b~store_uint(temp.at(0), 1);
-          }
-          else
-          {
-            builders~tpush(b);
-            b = begin_cell().store_uint(temp.at(0), 1);
-          }
-          
-          temp~tpush(next);
-          
-          repeat (tl){
-            var t = temp~tpop();
-            cache~tpush(t);
-          }
-
-          temp = empty_tuple();
-          tl = 0;
-        }
-        else
-        {
-          if (builder_bits(b) < 1023)
-          {
-            b~store_uint(next, 1);
-          }
-          else
-          {
-            builders~tpush(b);
-            b = begin_cell().store_uint(next, 1);
-          }
-        }
-      }
-    }
-    
-    if (slice_refs(sl) > 0)
-    {
-      sl = (sl~load_ref()).begin_parse();
-    }
-    else
-    {
-      continue = false;
-    }
-  }
-  
-  ;; Set other temp
-  if (tl > 0)
-  {
-    if ((builder_bits(b) + tl) >= 1023)
-    {
-      builders~tpush(b);
-      b = begin_cell();
-    }
-    var i = 0;
-    repeat (tl)
-    {
-      b~store_uint(temp.at(i), 1);
-      i += 1;
-    }
-  }
-
-  ;; Set other cache
-  repeat (cache.tlen())
-  {
-    if (builder_bits(b) < 1023)
-    {
-      b~store_uint(cache~tpop(), 1);
-    }
-    else
-    {
-      builders~tpush(b);
-      b = begin_cell().store_uint(cache~tpop(), 1);
-    }
-  }
-
-  builders~tpush(b);
-  
-  return builders;
-}
+int ubitsize (int a) asm "UBITSIZE";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
@@ -173,9 +36,134 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
-  var builders = build_flow(flagT, valueT, linked_list);
-  
-  
+  var temp = empty_tuple();
+  var tl = 0;
+  var cache = empty_tuple();
+
+  var sl = linked_list.begin_parse();
+  var b = begin_cell();
+  var builders = empty_tuple();
+
+  var continue = true;
+  while(continue)
+  {
+     while (slice_bits(sl) > 0)
+     {
+       int next = 0;
+
+       if (cache.tlen() > 0)
+       {
+         next = cache~tpop();
+       }
+       else
+       {
+         next = sl~load_uint(1);
+       }
+
+       if (next == flagT.at(tl))
+       {
+         temp~tpush(next);
+         tl += 1;
+
+         if (tl == flagL)
+         {
+           if ((builder_bits(b) + valueL) >= 1023)
+           {
+             builders~tpush(b);
+             b = begin_cell();
+           }
+           var i = 0;
+           repeat (valueL)
+           {
+             b~store_uint(valueT.at(i), 1);
+             i += 1;
+           }
+           
+           temp = empty_tuple();
+           tl = 0;
+         }
+       }
+       else
+       {
+         if (tl > 0)
+         {
+           if (builder_bits(b) < 1023)
+           {
+             b~store_uint(temp.at(0), 1);
+           }
+           else
+           {
+             builders~tpush(b);
+             b = begin_cell().store_uint(temp.at(0), 1);
+           }
+           
+           temp~tpush(next);
+           
+           repeat (tl)
+           {
+             var t = temp~tpop();
+             cache~tpush(t);
+           }
+
+           temp = empty_tuple();
+           tl = 0;
+         }
+         else
+         {
+           if (builder_bits(b) < 1023)
+           {
+             b~store_uint(next, 1);
+           }
+           else
+           {
+             builders~tpush(b);
+             b = begin_cell().store_uint(next, 1);
+           }
+         }
+       }
+     }
+
+    if (slice_refs(sl) > 0)
+    {
+      sl = (sl~load_ref()).begin_parse();
+    }
+    else
+    {
+      continue = false;
+    }
+  }
+
+  ;; Set other temp
+  if (tl > 0)
+  {
+    if ((builder_bits(b) + tl) >= 1023)
+    {
+      builders~tpush(b);
+      b = begin_cell();
+    }
+    var i = 0;
+    repeat (tl)
+    {
+      b~store_uint(temp.at(i), 1);
+      i += 1;
+    }
+  }
+
+  ;; Set other cache
+  repeat (cache.tlen())
+  {
+    if (builder_bits(b) < 1023)
+    {
+      b~store_uint(cache~tpop(), 1);
+    }
+    else
+    {
+      builders~tpush(b);
+      b = begin_cell().store_uint(cache~tpop(), 1);
+    }
+  }
+
+  builders~tpush(b);
   
   ;; To tree !!!!!!!!!!!!!!!!!!!!!
   var b = begin_cell();
