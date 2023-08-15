@@ -94,7 +94,16 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
       {
         if (tl > 0)
         {
-          (b, builders) = store_to_builder(b, builders, temp.at(0));
+          if (builder_bits(b) < 1023)
+          {
+            b~store_uint(temp.at(0), 1);
+          }
+          else
+          {
+            builders~tpush(b);
+            b = begin_cell().store_uint(temp.at(0), 1);
+          }
+          
           temp~tpush(next);
           
           repeat (tl){
@@ -107,7 +116,15 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
         }
         else
         {
-          (b, builders) = store_to_builder(b, builders, next);
+          if (builder_bits(b) < 1023)
+          {
+            b~store_uint(next, 1);
+          }
+          else
+          {
+            builders~tpush(b);
+            b = begin_cell().store_uint(next, 1);
+          }
         }
       }
     }
@@ -130,25 +147,20 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
   repeat (cache.tlen())
   {
-    (b, builders) = store_to_builder(b, builders, cache~tpop());
+    if (builder_bits(b) < 1023)
+    {
+      b~store_uint(cache~tpop(), 1);
+    }
+    else
+    {
+      builders~tpush(b);
+      b = begin_cell().store_uint(cache~tpop(), 1);
+    }
   }
 
   builders~tpush(b);
   
   return builders;
-}
-
-(builder, tuple) store_to_builder(builder b, tuple builders, int i)
-{
-  if (builder_bits(b) < 1023)
-  {
-    return (b.store_uint(i, 1), builders);
-  }
-  else
-  {
-    builders~tpush(b);
-    return (begin_cell().store_uint(i, 1), builders);
-  }
 }
 
 ;; testable
