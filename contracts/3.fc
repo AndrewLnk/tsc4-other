@@ -167,21 +167,12 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (cell) build_tree(tuple builders)
 {
-;;   var b = builders~tpop();
-;;   var i = 0;
-;;   while (i < builders.tlen()){
-;;     var next = builders~tpop();
-;;     b = b.store_ref(next.end_cell());
-;;   }
+  var b = begin_cell();
   
-      var b = builders.first();
-      builders = remove_first_i(builders, 1);
-      var i = 0;
-      while (i < builders.tlen()){
-        var next = builders.first();
-        builders = remove_first_i(builders, 1);
-        b = b.store_ref(next.end_cell());
-      }
+  repeat (builders.tlen()){
+    var nt = builders~tpop();
+    b = nt.store_ref(b.end_cell());
+  }
   
   return b.end_cell();
 }
@@ -200,9 +191,5 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   var tupleV = int_to_bits(value);
 
   var builders = build_flow(tupleF, tupleV, linked_list);
-  
-  if (builders.tlen() == 0){
-    return null();
-  }
   return build_tree(builders);
 }

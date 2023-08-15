@@ -362,7 +362,7 @@ describe('Task3', () => {
             b.storeBit(0);
             var data = b.endCell();
 
-            for (var i = 0; i < 2; i++)
+            for (var i = 0; i < 3; i++)
             {
                 b = new Builder();
                 b.storeBuffer(randomBytes(127));
