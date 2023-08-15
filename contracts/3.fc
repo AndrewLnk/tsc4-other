@@ -66,6 +66,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   return with;
 }
 
+;; main entry of analyze
 (cell) build_flow(tuple flag, tuple value, cell linked_list)
 {
   var flen = flag.tlen();
@@ -117,17 +118,21 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             var break = false;
             repeat (templ)
             {
-              if ((break == 0) & temp.at(i) == flag.at(i))
+              ifnot (break)
               {
-                i += 1;
-              }
-              else
-              {
-                break = true;
+                if ((break == 0) & temp.at(i) == flag.at(i))
+                {
+                  i += 1;
+                }
+                else
+                {
+                  break = true;
+                }
               }
             }
 
-            if ((i > 0) & (i != templ))
+            ;; Remove if needed and continue ...
+            if ((i > 0) & (i < templ))
             {
               if (i > 1)
               {
