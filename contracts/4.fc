@@ -1,13 +1,13 @@
 () recv_internal() {
 }
 
-int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 
 (cell) entry(builder b, slice sl, int s)
 {
   var builders = empty_tuple();
   var builders2 = empty_tuple();
+  
   var passed = 0;
 
   var continue = true;
@@ -47,12 +47,12 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   if (passed >= 255)
   {
     var b = builders2~tpop();
-    repeat (builders2.tlen())
+    repeat (passed - 255)
     {
       var nt = builders2~tpop();
       b = nt.store_ref(b.end_cell());
     }
-    repeat (builders.tlen())
+    repeat (254)
     {
       var nt = builders~tpop();
       b = nt.store_ref(b.end_cell());
@@ -63,7 +63,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   else
   {
     var b = builders~tpop();
-    repeat (builders.tlen())
+    repeat (passed - 1)
     {
       var nt = builders~tpop();
       b = nt.store_ref(b.end_cell());
@@ -94,10 +94,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id
 {
   var s = text.begin_parse();
-  if (slice_bits(s) <= 32){
-    return text;
-  }
-  
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
@@ -108,10 +104,6 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id
 {
   var s = text.begin_parse();
-  if (slice_bits(s) <= 32){
-    return text;
-  }
-  
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
