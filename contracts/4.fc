@@ -10,17 +10,17 @@ builder entry(builder b, slice sl, int s)
 
     if ((c >= 97) & (c <= 122))
     {
-      b = b.store_uint(((c + s - 97) % 26 + 97), 8);
+      b~store_uint(((c + s - 97) % 26 + 97), 8);
     }
     else
     {
       if ((c >= 65) & (c <= 90))
       {
-        b = b.store_uint(((c + s - 65) % 26 + 65), 8);
+        b~store_uint(((c + s - 65) % 26 + 65), 8);
       }
       else
       {
-        b = b.store_uint(c, 8);
+        b~store_uint(c, 8);
       }
     }
   }
@@ -30,7 +30,7 @@ builder entry(builder b, slice sl, int s)
     var ns = sl~load_ref().begin_parse();
     var nb = entry(begin_cell(), ns, s);
     var nc = nb.end_cell();
-    b = b.store_ref(nc);
+    b~store_ref(nc);
   }
 
   return b;

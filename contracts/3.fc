@@ -5,22 +5,6 @@ int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 (int) ubitsize (int a) asm "UBITSIZE";
 
-;; convert int bits to tuple
-(tuple) int_to_bits(int v)
-{
-  var size = ubitsize(v);
-  var c = begin_cell().store_int(v, size + 1).end_cell();
-  var s = c.begin_parse();
-  s~load_uint(1);
-
-  var list = empty_tuple();
-  repeat (size)
-  {
-    list~tpush(s~load_uint(1));
-  }
-
-  return list;
-}
 
 (tuple) build_flow(tuple flag, tuple value, cell linked_list)
 {
@@ -163,18 +147,45 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 {
   ;; Ok for opt
   if ((flag <= 0) | (value <= 0)){ return null(); }
-  ;; Ok for opt
-  var tupleF = int_to_bits(flag);
-  var tupleV = int_to_bits(value);
-  ;; Create builders
-  var builders = build_flow(tupleF, tupleV, linked_list);
-  ;; To tree
+
+  ;; Setup flag info
+  var flagL = ubitsize(flag);
+  var flagC = begin_cell().store_int(flag, flagL + 1).end_cell();
+  var flagS = flagC.begin_parse();
+  flagS~load_uint(1);
+
+  var flagT = empty_tuple();
+  repeat (flagL)
+  {
+    flagT~tpush(flagS~load_uint(1));
+  }
+
+  ;; Setup value info
+  var valueL = ubitsize(value);
+  var valueC = begin_cell().store_uint(value, valueL + 1).end_cell();
+  var valueS = valueC.begin_parse();
+  valueS~load_uint(1);
+
+  var valueT = empty_tuple();
+  repeat (valueL)
+  {
+    valueT~tpush(valueS~load_uint(1));
+  }
+  
+  ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
+  var builders = build_flow(flagT, valueT, linked_list);
+  
+  
+  
+  ;; To tree !!!!!!!!!!!!!!!!!!!!!
   var b = begin_cell();
   repeat (builders.tlen())
   {
     var nt = builders~tpop();
     b = nt.store_ref(b.end_cell());
   }
+  
+  
   ;; Return
   return b.end_cell();
 }
