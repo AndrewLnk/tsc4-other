@@ -118,7 +118,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
             var break = false;
             repeat (templ)
             {
-              ifnot (break)
+              if (br == false)
               {
                 if ((break == 0) & temp.at(i) == flag.at(i))
                 {
@@ -126,7 +126,7 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
                 }
                 else
                 {
-                  break = true;
+                  br = true;
                 }
               }
             }
