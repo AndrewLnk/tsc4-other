@@ -151,31 +151,23 @@ forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
   }
 }
 
-(cell) build_tree(tuple builders)
-{
-  var b = begin_cell();
-  
-  repeat (builders.tlen()){
-    var nt = builders~tpop();
-    b = nt.store_ref(b.end_cell());
-  }
-  
-  return b.end_cell();
-}
-
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
   ;; Ok for opt
-  if ((flag <= 0) | (value <= 0))
-  {
-    return null();
-  }
-
+  if ((flag <= 0) | (value <= 0)){ return null(); }
   ;; Ok for opt
   var tupleF = int_to_bits(flag);
   var tupleV = int_to_bits(value);
-
+  ;; Create builders
   var builders = build_flow(tupleF, tupleV, linked_list);
-  return build_tree(builders);
+  ;; To tree
+  var b = begin_cell();
+  repeat (builders.tlen())
+  {
+    var nt = builders~tpop();
+    b = nt.store_ref(b.end_cell());
+  }
+  ;; Return
+  return b.end_cell();
 }
