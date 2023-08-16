@@ -4,8 +4,8 @@
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 int ubitsize (int a) asm "UBITSIZE";
+;;; Returns the number of data bits already stored in `builder` [b].
 int builder_free(builder b) asm "BREMBITS";
-builder builder_store_one(builder b) asm "STONE";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
@@ -85,12 +85,12 @@ builder builder_store_one(builder b) asm "STONE";
          {
            if (builder_free(b) > 0)
            {
-             b = builder_store_one(b);
+             b~store_uint(temp.first(), 1);
            }
            else
            {
              builders~tpush(b);
-             b = builder_store_one(b);
+             b = begin_cell().store_uint(temp.first(), 1);
            }
            
            temp~tpush(next);
