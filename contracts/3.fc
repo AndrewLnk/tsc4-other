@@ -9,30 +9,28 @@ int ubitsize (int a) asm "UBITSIZE";
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
 {
   ;; Ok for opt
-  if ((flag <= 0) | (value <= 0)){ return null(); }
+  if ((flag <= 0) | (value <= 0)) { return begin_cell().end_cell(); }
 
   ;; Setup flag info
   var flagL = ubitsize(flag);
-  var flagC = begin_cell().store_int(flag, flagL + 1).end_cell();
-  var flagS = flagC.begin_parse();
-  flagS~load_uint(1);
+  var tempS = begin_cell().store_int(flag, flagL + 1).end_cell().begin_parse();
+  tempS~load_uint(1);
 
   var flagT = empty_tuple();
   repeat (flagL)
   {
-    flagT~tpush(flagS~load_uint(1));
+    flagT~tpush(tempS~load_uint(1));
   }
 
   ;; Setup value info
   var valueL = ubitsize(value);
-  var valueC = begin_cell().store_uint(value, valueL + 1).end_cell();
-  var valueS = valueC.begin_parse();
-  valueS~load_uint(1);
+  tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
+  tempS~load_uint(1);
 
   var valueT = empty_tuple();
   repeat (valueL)
   {
-    valueT~tpush(valueS~load_uint(1));
+    valueT~tpush(tempS~load_uint(1));
   }
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
