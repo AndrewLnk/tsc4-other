@@ -5,12 +5,9 @@
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
-  if (k == 0)
-  {
-    return empty_tuple();
-  }
-  
-  (int previous, int current) = (0, 1);
+  n -= 2;
+  int previous = 0;
+  int current = 1;
 
   repeat (n)
   {
@@ -18,11 +15,19 @@
   }
 
   tuple list = empty_tuple();
-  
+  repeat (0 - n)
+  {
+    if (k > 0){
+      n += 1;
+      k -= 1;
+      list~tpush(n + 1);
+    }
+  }
+
   repeat (k)
   {
-    list~tpush(previous);
     (previous, current) = (current, previous + current);
+    list~tpush(current);
   }
 
   return list;
