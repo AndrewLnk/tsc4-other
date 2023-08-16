@@ -25,8 +25,6 @@ int builder_free(builder b) asm "BREMBITS";
 
   ;; Setup value info
   var valueL = ubitsize(value);
-  tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
-  tempS~load_uint(1);
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
   var temp = empty_tuple();
@@ -68,8 +66,8 @@ int builder_free(builder b) asm "BREMBITS";
              builders~tpush(b);
              b = begin_cell();
            };
-
-           b = b.store_slice(tempS);
+           
+           b~store_uint(value, valueL);
            
            temp = empty_tuple();
            tl = 0;
