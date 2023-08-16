@@ -2,8 +2,6 @@
 {
 }
 
-int tlen(tuple t) asm "TLEN";
-
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
@@ -13,15 +11,24 @@ int tlen(tuple t) asm "TLEN";
   }
   else
   {
+    n -= 2;
     var previous = 0;
     var current = 1;
+
+    repeat (n)
+    {
+      (previous, current) = (current, previous + current);
+    }
+
     var list = empty_tuple();
+    repeat (0 - n)
+    {
+      n += 1;
+      k -= 1;
+      list~tpush(n + 1);
+    }
 
-    repeat (n - 1) { (previous, current) = (current, previous + current); }
-    if (n <= 0) { list~tpush(previous); }
-
-    list~tpush(current);
-    repeat (k - list.tlen())
+    repeat (k)
     {
       (previous, current) = (current, previous + current);
       list~tpush(current);
