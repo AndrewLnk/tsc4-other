@@ -90,12 +90,12 @@ int ubitsize (int a) asm "UBITSIZE";
          {
            if (builder_bits(b) < 1023)
            {
-             b~store_uint(temp.at(0), 1);
+             b~store_uint(temp.first(), 1);
            }
            else
            {
              builders~tpush(b);
-             b = begin_cell().store_uint(temp.at(0), 1);
+             b = begin_cell().store_uint(temp.first(), 1);
            }
            
            temp~tpush(next);
