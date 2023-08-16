@@ -4,8 +4,8 @@
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 int ubitsize (int a) asm "UBITSIZE";
-;;; Returns the number of data bits already stored in `builder` [b].
 int builder_free(builder b) asm "BREMBITS";
+(slice, int) skip_first_zero_byte?(slice cs) asm "x{00} SDBEGINSQ";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
@@ -36,6 +36,7 @@ int builder_free(builder b) asm "BREMBITS";
   var cl = 0;
 
   var sl = linked_list.begin_parse();
+  sl~skip_first_zero_byte?();
   var b = begin_cell();
   var builders = empty_tuple();
   
