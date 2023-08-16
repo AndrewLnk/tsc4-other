@@ -1,6 +1,8 @@
 () recv_internal() {
 }
 
+forall X -> (tuple) to_tuple (X x) asm "NOP";
+
 builder entry(builder b, slice sl, tuple table)
 {
   var r = slice_bits(sl) / 8;
@@ -24,24 +26,8 @@ builder entry(builder b, slice sl, tuple table)
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
   
-  var table = empty_tuple();
+  tuple table = to_tuple([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
   
-  table~tpush(0);
-  table~tpush(1);
-  table~tpush(2);
-  table~tpush(3);
-  table~tpush(4);
-  table~tpush(5);
-  table~tpush(6);
-  table~tpush(7);
-  table~tpush(8);
-  table~tpush(9);
-  table~tpush(10);
-  
-  table~tpush(11);
-  table~tpush(12);
-  table~tpush(13);
-  table~tpush(14);
   table~tpush(15);
   table~tpush(16);
   table~tpush(17);
@@ -319,24 +305,8 @@ builder entry(builder b, slice sl, tuple table)
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
-  var table = empty_tuple();
-
-  table~tpush(0);
-  table~tpush(1);
-  table~tpush(2);
-  table~tpush(3);
-  table~tpush(4);
-  table~tpush(5);
-  table~tpush(6);
-  table~tpush(7);
-  table~tpush(8);
-  table~tpush(9);
-  table~tpush(10);
-
-  table~tpush(11);
-  table~tpush(12);
-  table~tpush(13);
-  table~tpush(14);
+  tuple table = to_tuple([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+  
   table~tpush(15);
   table~tpush(16);
   table~tpush(17);
