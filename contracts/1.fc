@@ -14,6 +14,7 @@
 forall X -> int is_null (X x) asm "ISNULL";
 forall X -> (tuple, ()) push_back (tuple tail, X head) asm "CONS";
 forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
+int tlen(tuple t) asm "TLEN";
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
@@ -23,17 +24,20 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
   while (stack.is_null() == 0)
   {
-    var c = stack~pop_back();
-
-    if (cell_hash(c) == hash)
+    repeat (stack.tlen())
     {
-      return c;
-    }
+      var c = stack~pop_back();
 
-    var s = c.begin_parse();
-    repeat (s.slice_refs()) 
-    {
-      stack~push_back(s~load_ref());
+      if (cell_hash(c) == hash)
+      {
+        return c;
+      }
+
+      var s = c.begin_parse();
+      repeat (s.slice_refs())
+      {
+        stack~push_back(s~load_ref());
+      }
     }
   }
 
