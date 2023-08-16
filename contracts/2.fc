@@ -27,6 +27,8 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
   repeat(matrixA.tlen())
   {
     var rowC = empty_tuple();
+    var rowA = matrixA.at(y);
+    y += 1;
     
     c = 0;
     repeat (mC_x_lenth)
@@ -35,7 +37,7 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
       t = 0;
       repeat(mA_y_lenth)
       {
-        t += matrixA.at(y).at(x) * matrixB.at(x).at(c);
+        t += rowA.at(x) * matrixB.at(x).at(c);
         x += 1;
       }
 
@@ -44,7 +46,6 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
     }
 
     matrixC~tpush(rowC);
-    y += 1;
   }
 
   return matrixC;
