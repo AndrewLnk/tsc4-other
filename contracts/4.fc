@@ -6,13 +6,11 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 builder entry(builder b, slice sl, tuple table)
 {
   var r = slice_bits(sl) / 8;
-  repeat (r)
-  {
+  repeat (r){
     b~store_uint(table.at(sl~load_uint(8)), 8);
   }
 
-  if (slice_refs(sl) != 0)
-  {
+  if (slice_refs(sl) != 0){
     var ns = sl~load_ref().begin_parse();
     var nb = entry(begin_cell(), ns, table);
     b = b.store_ref(nb.end_cell());
@@ -27,23 +25,25 @@ builder entry(builder b, slice sl, tuple table)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
-  
+
   var table = empty_tuple();
   var i = 0;
   repeat (65){
     table~tpush(i);
     i += 1;
   }
+  var s_L = shift - 65;
   repeat (26){
-    table~tpush(((i + shift - 65) % 26 + 65));
+    table~tpush(((i + s_L) % 26 + 65));
     i += 1;
   }
   repeat (6){
     table~tpush(i);
     i += 1;
   }
+  var s_l = shift - 97;
   repeat (26){
-    table~tpush(((i + shift - 97) % 26 + 97));
+    table~tpush(((i + s_l) % 26 + 97));
     i += 1;
   }
   repeat (132){
@@ -67,16 +67,18 @@ builder entry(builder b, slice sl, tuple table)
     table~tpush(i);
     i += 1;
   }
+  var s_L = -65 - shift;
   repeat (26){
-    table~tpush(((i - shift - 65) % 26 + 65));
+    table~tpush(((i + s_L) % 26 + 65));
     i += 1;
   }
   repeat (6){
     table~tpush(i);
     i += 1;
   }
+  var s_l = -97 - shift;
   repeat (26){
-    table~tpush(((i - shift - 97) % 26 + 97));
+    table~tpush(((i + s_l) % 26 + 97));
     i += 1;
   }
   repeat (132){
