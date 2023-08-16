@@ -34,18 +34,16 @@ builder entry(builder b, slice sl, tuple table)
     table~tpush(i);
     i += 1;
   }
-  var s_L = shift - 65;
   repeat (26){
-    table~tpush(((i + s_L) % 26 + 65));
+    table~tpush(((i + shift - 65) % 26 + 65));
     i += 1;
   }
   repeat (6){
     table~tpush(i);
     i += 1;
   }
-  var s_l = shift - 97;
   repeat (26){
-    table~tpush(((i + s_l) % 26 + 97));
+    table~tpush(((i + shift - 97) % 26 + 97));
     i += 1;
   }
   repeat (132){
@@ -69,18 +67,16 @@ builder entry(builder b, slice sl, tuple table)
     table~tpush(i);
     i += 1;
   }
-  var s_L = 0 - shift - 65;
   repeat (26){
-    table~tpush(((i + s_L) % 26 + 65));
+    table~tpush(((i - shift - 65) % 26 + 65));
     i += 1;
   }
   repeat (6){
     table~tpush(i);
     i += 1;
   }
-  var s_l = 0 - shift - 97;
   repeat (26){
-    table~tpush(((i + s_l) % 26 + 97));
+    table~tpush(((i - shift - 97) % 26 + 97));
     i += 1;
   }
   repeat (132){
