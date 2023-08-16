@@ -4,6 +4,8 @@
 int tlen(tuple t) asm "TLEN";
 forall X -> (tuple, X) ~tpop (tuple t) asm "TPOP";
 int ubitsize (int a) asm "UBITSIZE";
+;;; Returns the number of data bits already stored in `builder` [b].
+int builder_free(builder b) asm "BREMBITS";
 
 ;; testable
 (cell) find_and_replace(int flag, int value, cell linked_list) method_id 
@@ -26,12 +28,6 @@ int ubitsize (int a) asm "UBITSIZE";
   var valueL = ubitsize(value);
   tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
   tempS~load_uint(1);
-
-;;   var valueT = empty_tuple();
-;;   repeat (valueL)
-;;   {
-;;     valueT~tpush(tempS~load_uint(1));
-;;   }
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
   var temp = empty_tuple();
@@ -68,7 +64,7 @@ int ubitsize (int a) asm "UBITSIZE";
 
          if (tl == flagL)
          {
-           if ((builder_bits(b) + valueL) >= 1023)
+           if (builder_free(b) < valueL)
            {
              builders~tpush(b);
              b = begin_cell();
@@ -87,7 +83,7 @@ int ubitsize (int a) asm "UBITSIZE";
        {
          if (tl > 0)
          {
-           if (builder_bits(b) < 1023)
+           if (builder_free(b) > 0)
            {
              b~store_uint(temp.first(), 1);
            }
@@ -110,7 +106,7 @@ int ubitsize (int a) asm "UBITSIZE";
          }
          else
          {
-           if (builder_bits(b) < 1023)
+           if (builder_free(b) > 0)
            {
              b~store_uint(next, 1);
            }
@@ -131,7 +127,7 @@ int ubitsize (int a) asm "UBITSIZE";
   ;; Set other temp
   if (tl > 0)
   {
-    if ((builder_bits(b) + tl) >= 1023)
+    if (builder_free(b) < tl)
     {
       builders~tpush(b);
       b = begin_cell();
@@ -146,7 +142,7 @@ int ubitsize (int a) asm "UBITSIZE";
   ;; Set other cache
   repeat (cl)
   {
-    if (builder_bits(b) < 1023)
+    if (builder_free(b) > 0)
     {
       b~store_uint(cache~tpop(), 1);
     }
