@@ -9,34 +9,36 @@
   {
     return empty_tuple();
   }
-
-  n -= 2;
-  var previous = 0;
-  var current = 1;
-
-  repeat (n) 
+  else
   {
-    var tmp = previous + current;
-    previous = current;
-    current = tmp;
-  }
-  
-  var list = empty_tuple();
-  repeat (0 - n)
-  {
-    n += 1;
-    k -= 1;
-    list~tpush(n + 1);
-  }
+    n -= 2;
+    var previous = 0;
+    var current = 1;
 
-  repeat (k)
-  {
-    var tmp = previous + current;
-    previous = current;
-    current = tmp;
+    repeat (n)
+    {
+      var tmp = previous + current;
+      previous = current;
+      current = tmp;
+    }
 
-    list~tpush(current);
+    var list = empty_tuple();
+    repeat (0 - n)
+    {
+      n += 1;
+      k -= 1;
+      list~tpush(n + 1);
+    }
+
+    repeat (k)
+    {
+      var tmp = previous + current;
+      previous = current;
+      current = tmp;
+
+      list~tpush(current);
+    }
+
+    return list;
   }
-
-  return list;
 }
