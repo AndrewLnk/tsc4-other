@@ -17,9 +17,7 @@
 
     repeat (n)
     {
-      var tmp = previous + current;
-      previous = current;
-      current = tmp;
+      (previous, current) = (current, previous + current);
     }
 
     var list = empty_tuple();
@@ -32,10 +30,7 @@
 
     repeat (k)
     {
-      var tmp = previous + current;
-      previous = current;
-      current = tmp;
-
+      (previous, current) = (current, previous + current);
       list~tpush(current);
     }
 
