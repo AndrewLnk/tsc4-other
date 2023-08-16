@@ -9,31 +9,28 @@
   {
     return empty_tuple();
   }
-  else
+  n -= 2;
+  int previous = 0;
+  int current = 1;
+
+  repeat (n)
   {
-    n -= 2;
-    var previous = 0;
-    var current = 1;
-
-    repeat (n)
-    {
-      (previous, current) = (current, previous + current);
-    }
-
-    var list = empty_tuple();
-    repeat (0 - n)
-    {
-      n += 1;
-      k -= 1;
-      list~tpush(n + 1);
-    }
-
-    repeat (k)
-    {
-      (previous, current) = (current, previous + current);
-      list~tpush(current);
-    }
-
-    return list;
+    (previous, current) = (current, previous + current);
   }
+
+  tuple list = empty_tuple();
+  repeat (0 - n)
+  {
+    n += 1;
+    k -= 1;
+    list~tpush(n + 1);
+  }
+
+  repeat (k)
+  {
+    (previous, current) = (current, previous + current);
+    list~tpush(current);
+  }
+
+  return list;
 }
