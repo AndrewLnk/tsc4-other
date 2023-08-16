@@ -8,8 +8,7 @@ builder entry(builder b, slice sl, tuple table)
   var r = slice_bits(sl) / 8;
   repeat (r)
   {
-    var c = sl~load_uint(8);
-    b~store_uint(table.at(c), 8);
+    b~store_uint(table.at(sl~load_uint(8)), 8);
   }
 
   if (slice_refs(sl) != 0)
@@ -33,7 +32,7 @@ builder entry(builder b, slice sl, tuple table)
   var i = 0;
   var s_l = shift - 97;
   var s_L = shift - 65;
-  while (i < 254)
+  while (i < 128)
   {
     if ((i >= 97) & (i <= 122))
     {
@@ -68,7 +67,7 @@ builder entry(builder b, slice sl, tuple table)
   var i = 0;
   var s_l = 0 - shift - 97;
   var s_L = 0 - shift - 65;
-  while (i < 255)
+  while (i < 128)
   {
     if ((i >= 97) & (i <= 122))
     {
