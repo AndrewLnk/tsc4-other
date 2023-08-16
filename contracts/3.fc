@@ -68,11 +68,8 @@ int builder_free(builder b) asm "BREMBITS";
              builders~tpush(b);
              b = begin_cell();
            };
-           var temp_v = slice_last(tempS, valueL);
-           repeat (valueL)
-           {
-             b~store_uint(temp_v~load_uint(1), 1);
-           }
+
+           b = b.store_slice(tempS);
            
            temp = empty_tuple();
            tl = 0;
