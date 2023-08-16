@@ -43,7 +43,8 @@ int ubitsize (int a) asm "UBITSIZE";
   var b = begin_cell();
   var builders = empty_tuple();
   
-  repeat (slice_depth(sl) + 1)
+  var depth = slice_depth(sl) + 1;
+  repeat (depth)
   {
      var bits_count = slice_bits(sl);
      while (bits_count > 0)
@@ -124,9 +125,10 @@ int ubitsize (int a) asm "UBITSIZE";
        }
      }
 
-    if (slice_refs(sl) > 0)
+    if (depth > 1)
     {
       sl = (sl~load_ref()).begin_parse();
+      depth -= 1;
     }
   }
   ;; Set other temp
