@@ -1,36 +1,34 @@
-() recv_internal()
+() recv_internal() 
 {
 }
 
-int tlen(tuple t) asm "TLEN";
-
 ;; testable
-(tuple) fibonacci_sequence (int n, int k) method_id
+(tuple) fibonacci_sequence (int n, int k) method_id 
 {
-  if (k == 0){ return empty_tuple(); }
-
-  var previous = 0;
-  var current = 1;
-  var list = empty_tuple();
-
-  repeat (n - 1) { (previous, current) = (current, previous + current); }
-  
-  if (n <= 0) 
-  { 
-    list~tpush(previous);
-    list~tpush(current);
-    repeat (k - 2)
-    {
-      (previous, current) = (current, previous + current);
-      list~tpush(current);
-    }
-
-    return list;
+  if (k == 0)
+  {
+    return empty_tuple();
   }
   else
   {
-    list~tpush(current);
-    repeat (k - 1)
+    n -= 2;
+    var previous = 0;
+    var current = 1;
+
+    repeat (n)
+    {
+      (previous, current) = (current, previous + current);
+    }
+
+    var list = empty_tuple();
+    repeat (0 - n)
+    {
+      n += 1;
+      k -= 1;
+      list~tpush(n + 1);
+    }
+
+    repeat (k)
     {
       (previous, current) = (current, previous + current);
       list~tpush(current);
