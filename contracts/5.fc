@@ -5,30 +5,35 @@
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id 
 {
-  n -= 2;
-  int previous = 0;
-  int current = 1;
-
-  repeat (n)
+  if (k == 0)
   {
-    (previous, current) = (current, previous + current);
+    return empty_tuple();
   }
-
-  tuple list = empty_tuple();
-  repeat (0 - n)
+  else
   {
-    if (k > 0){
+    n -= 2;
+    var previous = 0;
+    var current = 1;
+
+    repeat (n)
+    {
+      (previous, current) = (current, previous + current);
+    }
+
+    var list = empty_tuple();
+    repeat (0 - n)
+    {
       n += 1;
       k -= 1;
       list~tpush(n + 1);
     }
-  }
 
-  repeat (k)
-  {
-    (previous, current) = (current, previous + current);
-    list~tpush(current);
-  }
+    repeat (k)
+    {
+      (previous, current) = (current, previous + current);
+      list~tpush(current);
+    }
 
-  return list;
+    return list;
+  }
 }
