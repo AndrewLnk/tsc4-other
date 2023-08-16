@@ -1,35 +1,21 @@
 () recv_internal() {
 }
 
-builder entry(builder b, slice sl, int s)
+forall X -> (tuple) to_tuple (X x) asm "NOP";
+
+builder entry(builder b, slice sl, tuple table)
 {
   var r = slice_bits(sl) / 8;
-  var s_l = s - 97;
-  var s_L = s - 65;
   repeat (r)
   {
     var c = sl~load_uint(8);
-    if ((c >= 97) & (c <= 122))
-    {
-      b~store_uint(((c + s_l) % 26 + 97), 8);
-    }
-    else
-    {
-      if ((c >= 65) & (c <= 90))
-      {
-        b~store_uint(((c + s_L) % 26 + 65), 8);
-      }
-      else
-      {
-        b~store_uint(c, 8);
-      }
-    }
+    b~store_uint(table.at(c), 8);
   }
 
   if (slice_refs(sl) != 0)
   {
     var ns = sl~load_ref().begin_parse();
-    var nb = entry(begin_cell(), ns, s);
+    var nb = entry(begin_cell(), ns, table);
     b = b.store_ref(nb.end_cell());
   }
 
@@ -42,8 +28,33 @@ builder entry(builder b, slice sl, int s)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
-
-  return entry(b, s, shift).end_cell();
+  
+  var table = empty_tuple();
+  var i = 0;
+  var s_l = shift - 97;
+  var s_L = shift - 65;
+  while (i < 254)
+  {
+    if ((i >= 97) & (i <= 122))
+    {
+      table~tpush(((i + s_l) % 26 + 97));
+    }
+    else
+    {
+      if ((i >= 65) & (i <= 90))
+      {
+        table~tpush(((i + s_L) % 26 + 65));
+      }
+      else
+      {
+        table~tpush(i);
+      }
+    }
+    
+    i += 1;
+  }
+  
+  return entry(b, s, table).end_cell();
 }
 
 ;; testable
@@ -53,5 +64,30 @@ builder entry(builder b, slice sl, int s)
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
 
-  return entry(b, s, 0 - shift).end_cell();
+  var table = empty_tuple();
+  var i = 0;
+  var s_l = 0 - shift - 97;
+  var s_L = 0 - shift - 65;
+  while (i < 255)
+  {
+    if ((i >= 97) & (i <= 122))
+    {
+      table~tpush(((i + s_l) % 26 + 97));
+    }
+    else
+    {
+      if ((i >= 65) & (i <= 90))
+      {
+        table~tpush(((i + s_L) % 26 + 65));
+      }
+      else
+      {
+        table~tpush(i);
+      }
+    }
+
+    i += 1;
+  }
+
+  return entry(b, s, table).end_cell();
 }
