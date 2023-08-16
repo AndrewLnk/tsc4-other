@@ -27,11 +27,11 @@ int ubitsize (int a) asm "UBITSIZE";
   tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
   tempS~load_uint(1);
 
-  var valueT = empty_tuple();
-  repeat (valueL)
-  {
-    valueT~tpush(tempS~load_uint(1));
-  }
+;;   var valueT = empty_tuple();
+;;   repeat (valueL)
+;;   {
+;;     valueT~tpush(tempS~load_uint(1));
+;;   }
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
   var temp = empty_tuple();
@@ -72,12 +72,11 @@ int ubitsize (int a) asm "UBITSIZE";
            {
              builders~tpush(b);
              b = begin_cell();
-           }
-           var i = 0;
+           };
+           var temp_v = slice_last(tempS, valueL);
            repeat (valueL)
            {
-             b~store_uint(valueT.at(i), 1);
-             i += 1;
+             b~store_uint(temp_v~load_uint(1), 1);
            }
            
            temp = empty_tuple();
