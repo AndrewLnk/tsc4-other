@@ -43,9 +43,8 @@ int ubitsize (int a) asm "UBITSIZE";
   var sl = linked_list.begin_parse();
   var b = begin_cell();
   var builders = empty_tuple();
-
-  var continue = true;
-  while(continue)
+  
+  repeat (slice_depth(sl) + 1)
   {
      while (slice_bits(sl) > 0)
      {
@@ -126,10 +125,6 @@ int ubitsize (int a) asm "UBITSIZE";
     if (slice_refs(sl) > 0)
     {
       sl = (sl~load_ref()).begin_parse();
-    }
-    else
-    {
-      continue = false;
     }
   }
   ;; Set other temp
