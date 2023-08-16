@@ -24,7 +24,7 @@ int tlen(tuple t) asm "TLEN";
 
   while (stack.is_null() == 0)
   {
-    repeat (stack.tlen())
+    repeat (stack.tlen() - 1)
     {
       var c = stack~pop_back();
 
