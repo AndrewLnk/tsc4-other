@@ -32,7 +32,7 @@ builder entry(builder b, slice sl, tuple table)
   var i = 0;
   var s_l = shift - 97;
   var s_L = shift - 65;
-  while (i <= 128)
+  while (i <= 180)
   {
     if ((i >= 97) & (i <= 122))
     {
@@ -67,7 +67,7 @@ builder entry(builder b, slice sl, tuple table)
   var i = 0;
   var s_l = 0 - shift - 97;
   var s_L = 0 - shift - 65;
-  while (i <= 128)
+  while (i <= 180)
   {
     if ((i >= 97) & (i <= 122))
     {
