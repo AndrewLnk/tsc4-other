@@ -26,10 +26,11 @@ int ubitsize (int a) asm "UBITSIZE";
   var valueL = ubitsize(value);
   tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
   tempS~load_uint(1);
-  
+
+  var valueT = empty_tuple();
   repeat (valueL)
   {
-    flagT~tpush(tempS~load_uint(1));
+    valueT~tpush(tempS~load_uint(1));
   }
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
@@ -74,7 +75,7 @@ int ubitsize (int a) asm "UBITSIZE";
            var i = 0;
            repeat (valueL)
            {
-             b~store_uint(flagT.at(flagL + i), 1);
+             b~store_uint(valueT.at(i), 1);
              i += 1;
            }
            
