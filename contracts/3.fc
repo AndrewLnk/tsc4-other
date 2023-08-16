@@ -43,7 +43,9 @@ int ubitsize (int a) asm "UBITSIZE";
   
   repeat (slice_depth(sl) + 1)
   {
-     while (slice_bits(sl) > 0)
+     var bits_count = slice_bits(sl);
+    
+     while (bits_count > 0)
      {
        int next = 0;
 
@@ -54,6 +56,7 @@ int ubitsize (int a) asm "UBITSIZE";
        else
        {
          next = sl~load_uint(1);
+         bits_count -= 1;
        }
 
        if (next == flagT.at(tl))
