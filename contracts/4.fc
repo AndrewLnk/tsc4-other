@@ -1,8 +1,6 @@
 () recv_internal() {
 }
 
-forall X -> (tuple) to_tuple (X x) asm "NOP";
-
 builder entry(builder b, slice sl, tuple table)
 {
   var r = slice_bits(sl) / 8;
@@ -25,31 +23,294 @@ builder entry(builder b, slice sl, tuple table)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
-
+  
   var table = empty_tuple();
-  var i = 0;
-  repeat (65){
-    table~tpush(i);
-    i += 1;
-  }
+  
+  table~tpush(0);
+  table~tpush(1);
+  table~tpush(2);
+  table~tpush(3);
+  table~tpush(4);
+  table~tpush(5);
+  table~tpush(6);
+  table~tpush(7);
+  table~tpush(8);
+  table~tpush(9);
+  table~tpush(10);
+  
+  table~tpush(11);
+  table~tpush(12);
+  table~tpush(13);
+  table~tpush(14);
+  table~tpush(15);
+  table~tpush(16);
+  table~tpush(17);
+  table~tpush(18);
+  table~tpush(19);
+  table~tpush(20);
+  
+  table~tpush(21);
+  table~tpush(22);
+  table~tpush(23);
+  table~tpush(24);
+  table~tpush(25);
+  table~tpush(26);
+  table~tpush(27);
+  table~tpush(28);
+  table~tpush(29);
+  table~tpush(30);
+
+  table~tpush(31);
+  table~tpush(32);
+  table~tpush(33);
+  table~tpush(34);
+  table~tpush(35);
+  table~tpush(36);
+  table~tpush(37);
+  table~tpush(38);
+  table~tpush(39);
+  table~tpush(40);
+
+  table~tpush(41);
+  table~tpush(42);
+  table~tpush(43);
+  table~tpush(44);
+  table~tpush(45);
+  table~tpush(46);
+  table~tpush(47);
+  table~tpush(48);
+  table~tpush(49);
+  table~tpush(50);
+
+  table~tpush(51);
+  table~tpush(52);
+  table~tpush(53);
+  table~tpush(54);
+  table~tpush(55);
+  table~tpush(56);
+  table~tpush(57);
+  table~tpush(58);
+  table~tpush(59);
+  table~tpush(60);
+
+  table~tpush(61);
+  table~tpush(62);
+  table~tpush(63);
+  table~tpush(64);
+  
   var s_L = shift - 65;
-  repeat (26){
-    table~tpush(((i + s_L) % 26 + 65));
-    i += 1;
-  }
-  repeat (6){
-    table~tpush(i);
-    i += 1;
-  }
+  table~tpush(((65 + s_L) % 26 + 65));
+  table~tpush(((66 + s_L) % 26 + 65));
+  table~tpush(((67 + s_L) % 26 + 65));
+  table~tpush(((68 + s_L) % 26 + 65));
+  table~tpush(((69 + s_L) % 26 + 65));
+  table~tpush(((70 + s_L) % 26 + 65));
+  
+  table~tpush(((71 + s_L) % 26 + 65));
+  table~tpush(((72 + s_L) % 26 + 65));
+  table~tpush(((73 + s_L) % 26 + 65));
+  table~tpush(((74 + s_L) % 26 + 65));
+  table~tpush(((75 + s_L) % 26 + 65));
+  table~tpush(((76 + s_L) % 26 + 65));
+  table~tpush(((77 + s_L) % 26 + 65));
+  table~tpush(((78 + s_L) % 26 + 65));
+  table~tpush(((79 + s_L) % 26 + 65));
+  table~tpush(((80 + s_L) % 26 + 65));
+
+  table~tpush(((81 + s_L) % 26 + 65));
+  table~tpush(((82 + s_L) % 26 + 65));
+  table~tpush(((83 + s_L) % 26 + 65));
+  table~tpush(((84 + s_L) % 26 + 65));
+  table~tpush(((85 + s_L) % 26 + 65));
+  table~tpush(((86 + s_L) % 26 + 65));
+  table~tpush(((87 + s_L) % 26 + 65));
+  table~tpush(((88 + s_L) % 26 + 65));
+  table~tpush(((89 + s_L) % 26 + 65));
+  table~tpush(((90 + s_L) % 26 + 65));
+
+  table~tpush(91);
+  table~tpush(92);
+  table~tpush(93);
+  table~tpush(94);
+  table~tpush(95);
+  table~tpush(96);
+
   var s_l = shift - 97;
-  repeat (26){
-    table~tpush(((i + s_l) % 26 + 97));
-    i += 1;
-  }
-  repeat (132){
-    table~tpush(i);
-    i += 1;
-  }
+  table~tpush(((97 + s_l) % 26 + 97));
+  table~tpush(((98 + s_l) % 26 + 97));
+  table~tpush(((99 + s_l) % 26 + 97));
+  table~tpush(((100 + s_l) % 26 + 97));
+
+  table~tpush(((101 + s_l) % 26 + 97));
+  table~tpush(((102 + s_l) % 26 + 97));
+  table~tpush(((103 + s_l) % 26 + 97));
+  table~tpush(((104 + s_l) % 26 + 97));
+  table~tpush(((105 + s_l) % 26 + 97));
+  table~tpush(((106 + s_l) % 26 + 97));
+  table~tpush(((107 + s_l) % 26 + 97));
+  table~tpush(((108 + s_l) % 26 + 97));
+  table~tpush(((109 + s_l) % 26 + 97));
+  table~tpush(((110 + s_l) % 26 + 97));
+
+  table~tpush(((111 + s_l) % 26 + 97));
+  table~tpush(((112 + s_l) % 26 + 97));
+  table~tpush(((113 + s_l) % 26 + 97));
+  table~tpush(((114 + s_l) % 26 + 97));
+  table~tpush(((115 + s_l) % 26 + 97));
+  table~tpush(((116 + s_l) % 26 + 97));
+  table~tpush(((117 + s_l) % 26 + 97));
+  table~tpush(((118 + s_l) % 26 + 97));
+  table~tpush(((119 + s_l) % 26 + 97));
+  table~tpush(((120 + s_l) % 26 + 97));
+
+  table~tpush(((121 + s_l) % 26 + 97));
+  table~tpush(((122 + s_l) % 26 + 97));
+
+  table~tpush(124);
+  table~tpush(125);
+  table~tpush(126);
+  table~tpush(127);
+  table~tpush(128);
+  table~tpush(129);
+  table~tpush(130);
+
+  table~tpush(131);
+  table~tpush(132);
+  table~tpush(133);
+  table~tpush(134);
+  table~tpush(135);
+  table~tpush(136);
+  table~tpush(137);
+  table~tpush(138);
+  table~tpush(139);
+  table~tpush(140);
+
+  table~tpush(141);
+  table~tpush(142);
+  table~tpush(143);
+  table~tpush(144);
+  table~tpush(145);
+  table~tpush(146);
+  table~tpush(147);
+  table~tpush(148);
+  table~tpush(149);
+  table~tpush(150);
+
+  table~tpush(151);
+  table~tpush(152);
+  table~tpush(153);
+  table~tpush(154);
+  table~tpush(155);
+  table~tpush(156);
+  table~tpush(157);
+  table~tpush(158);
+  table~tpush(159);
+  table~tpush(160);
+
+  table~tpush(161);
+  table~tpush(162);
+  table~tpush(163);
+  table~tpush(164);
+  table~tpush(165);
+  table~tpush(166);
+  table~tpush(167);
+  table~tpush(168);
+  table~tpush(169);
+  table~tpush(170);
+
+  table~tpush(171);
+  table~tpush(172);
+  table~tpush(173);
+  table~tpush(174);
+  table~tpush(175);
+  table~tpush(176);
+  table~tpush(177);
+  table~tpush(178);
+  table~tpush(179);
+  table~tpush(180);
+
+  table~tpush(181);
+  table~tpush(182);
+  table~tpush(183);
+  table~tpush(184);
+  table~tpush(185);
+  table~tpush(186);
+  table~tpush(187);
+  table~tpush(188);
+  table~tpush(189);
+  table~tpush(190);
+
+  table~tpush(191);
+  table~tpush(192);
+  table~tpush(193);
+  table~tpush(194);
+  table~tpush(195);
+  table~tpush(196);
+  table~tpush(197);
+  table~tpush(198);
+  table~tpush(199);
+  table~tpush(200);
+
+  table~tpush(201);
+  table~tpush(202);
+  table~tpush(203);
+  table~tpush(204);
+  table~tpush(205);
+  table~tpush(206);
+  table~tpush(207);
+  table~tpush(208);
+  table~tpush(209);
+  table~tpush(210);
+
+  table~tpush(211);
+  table~tpush(212);
+  table~tpush(213);
+  table~tpush(214);
+  table~tpush(215);
+  table~tpush(216);
+  table~tpush(217);
+  table~tpush(218);
+  table~tpush(219);
+  table~tpush(220);
+
+  table~tpush(221);
+  table~tpush(222);
+  table~tpush(223);
+  table~tpush(224);
+  table~tpush(225);
+  table~tpush(226);
+  table~tpush(227);
+  table~tpush(228);
+  table~tpush(229);
+  table~tpush(230);
+
+  table~tpush(231);
+  table~tpush(232);
+  table~tpush(233);
+  table~tpush(234);
+  table~tpush(235);
+  table~tpush(236);
+  table~tpush(237);
+  table~tpush(238);
+  table~tpush(239);
+  table~tpush(240);
+
+  table~tpush(241);
+  table~tpush(242);
+  table~tpush(243);
+  table~tpush(244);
+  table~tpush(245);
+  table~tpush(246);
+  table~tpush(247);
+  table~tpush(248);
+  table~tpush(249);
+  table~tpush(250);
+
+  table~tpush(251);
+  table~tpush(252);
+  table~tpush(253);
+  table~tpush(254);
+  table~tpush(255);
 
   return entry(b, s, table).end_cell();
 }
