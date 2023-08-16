@@ -37,6 +37,7 @@ int ubitsize (int a) asm "UBITSIZE";
   var temp = empty_tuple();
   var tl = 0;
   var cache = empty_tuple();
+  var cl = 0;
 
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -45,14 +46,14 @@ int ubitsize (int a) asm "UBITSIZE";
   repeat (slice_depth(sl) + 1)
   {
      var bits_count = slice_bits(sl);
-    
      while (bits_count > 0)
      {
        int next = 0;
 
-       if (cache.tlen() > 0)
+       if (cl > 0)
        {
          next = cache~tpop();
+         cl -= 1;
        }
        else
        {
@@ -104,7 +105,7 @@ int ubitsize (int a) asm "UBITSIZE";
              var t = temp~tpop();
              cache~tpush(t);
            }
-
+           cl += tl;
            temp = empty_tuple();
            tl = 0;
          }
@@ -144,7 +145,7 @@ int ubitsize (int a) asm "UBITSIZE";
     }
   }
   ;; Set other cache
-  repeat (cache.tlen())
+  repeat (cl)
   {
     if (builder_bits(b) < 1023)
     {
