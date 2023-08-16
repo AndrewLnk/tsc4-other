@@ -166,6 +166,7 @@ builder entry(builder b, slice sl, tuple table)
   table~tpush(((121 + s_l) % 26 + 97));
   table~tpush(((122 + s_l) % 26 + 97));
 
+  table~tpush(123);
   table~tpush(124);
   table~tpush(125);
   table~tpush(126);
@@ -310,7 +311,6 @@ builder entry(builder b, slice sl, tuple table)
   table~tpush(252);
   table~tpush(253);
   table~tpush(254);
-  table~tpush(255);
 
   return entry(b, s, table).end_cell();
 }
