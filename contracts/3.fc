@@ -13,27 +13,34 @@ int ubitsize (int a) asm "UBITSIZE";
 
   ;; Setup flag info
   var flagL = ubitsize(flag);
-  var flagS = begin_cell().store_int(flag, flagL + 1).end_cell().begin_parse();
-  flagS~load_uint(1);
+  var tempS = begin_cell().store_int(flag, flagL + 1).end_cell().begin_parse();
+  tempS~load_uint(1);
 
   var flagT = empty_tuple();
   repeat (flagL)
   {
-    flagT~tpush(flagS~load_uint(1));
+    flagT~tpush(tempS~load_uint(1));
   }
 
   ;; Setup value info
   var valueL = ubitsize(value);
-  var valueS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
-  valueS~load_uint(1);
+  tempS = begin_cell().store_uint(value, valueL + 1).end_cell().begin_parse();
+  tempS~load_uint(1);
+
+;;   var valueT = empty_tuple();
+;;   repeat (valueL)
+;;   {
+;;     valueT~tpush(tempS~load_uint(1));
+;;   }
   
-  ;; Create builders !!!!!!!!!!!!!!!!!!!!!
-  (var temp, var tl) = (empty_tuple(), 0);
-  (var cache, var cl) = (empty_tuple(), 0);
-  var b = begin_cell();
-  var bl = 0;
+  ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
+  var temp = empty_tuple();
+  var tl = 0;
+  var cache = empty_tuple();
+  var cl = 0;
 
   var sl = linked_list.begin_parse();
+  var b = begin_cell();
   var builders = empty_tuple();
   
   repeat (slice_depth(sl) + 1)
@@ -61,18 +68,15 @@ int ubitsize (int a) asm "UBITSIZE";
 
          if (tl == flagL)
          {
-           if ((bl + valueL) >= 1023)
+           if ((builder_bits(b) + valueL) >= 1023)
            {
              builders~tpush(b);
              b = begin_cell();
-             bl = 0;
            };
-           
-           var temp_v = slice_last(valueS, valueL);
+           var temp_v = slice_last(tempS, valueL);
            repeat (valueL)
            {
              b~store_uint(temp_v~load_uint(1), 1);
-             bl += 1;
            }
            
            temp = empty_tuple();
@@ -83,16 +87,14 @@ int ubitsize (int a) asm "UBITSIZE";
        {
          if (tl > 0)
          {
-           if (bl < 1023)
+           if (builder_bits(b) < 1023)
            {
              b~store_uint(temp.first(), 1);
-             bl += 1;
            }
            else
            {
              builders~tpush(b);
              b = begin_cell().store_uint(temp.first(), 1);
-             bl = 1;
            }
            
            temp~tpush(next);
@@ -108,16 +110,14 @@ int ubitsize (int a) asm "UBITSIZE";
          }
          else
          {
-           if (bl < 1023)
+           if (builder_bits(b) < 1023)
            {
              b~store_uint(next, 1);
-             bl += 1;
            }
            else
            {
              builders~tpush(b);
              b = begin_cell().store_uint(next, 1);
-             bl = 1;
            }
          }
        }
@@ -131,24 +131,22 @@ int ubitsize (int a) asm "UBITSIZE";
   ;; Set other temp
   if (tl > 0)
   {
-    if ((bl + tl) >= 1023)
+    if ((builder_bits(b) + tl) >= 1023)
     {
       builders~tpush(b);
       b = begin_cell();
-      bl = 0;
     }
     var i = 0;
     repeat (tl)
     {
       b~store_uint(temp.at(i), 1);
       i += 1;
-      bl += 1;
     }
   }
   ;; Set other cache
   repeat (cl)
   {
-    if (bl < 1023)
+    if (builder_bits(b) < 1023)
     {
       b~store_uint(cache~tpop(), 1);
     }
