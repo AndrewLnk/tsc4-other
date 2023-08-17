@@ -119,37 +119,23 @@ int builder_free(builder b) asm "BREMBITS";
       bits_count = slice_bits(sl);
     }
   }
+
+
   ;; Set other temp
-  if (tl > 0)
-  {
-    if (builder_free(b) < tl)
-    {
-      builders~tpush(b);
-      b = begin_cell();
-    }
-    var i = 0;
-    repeat (tl)
-    {
-      b~store_uint(temp.at(i), 1);
-      i += 1;
-    }
-  }
-  ;; Set other cache
-  if (builder_free(b) >= cl)
-  {
-    repeat (cl)
-    {
-      b~store_uint(cache~tpop(), 1);
-    }
-  }
-  else
+  if (builder_free(b) < tl + cl)
   {
     builders~tpush(b);
     b = begin_cell();
-    repeat (cl)
-    {
-      b~store_uint(cache~tpop(), 1);
-    }
+  }
+  var i = 0;
+  repeat (tl)
+  {
+    b~store_uint(temp.at(i), 1);
+    i += 1;
+  }
+  repeat (cl)
+  {
+    b~store_uint(cache~tpop(), 1);
   }
   
   builders~tpush(b);
