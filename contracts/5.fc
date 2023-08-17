@@ -17,15 +17,20 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
     (previous, current) = (current, previous + current);
   }
 
-  tuple list = empty_tuple();
+  tuple list = null();
   repeat (k)
   {
-    list = cons(previous, list);
+    list~push_back(previous);
     
     var tmp = current - previous;
     current = previous;
     previous = tmp;
   }
   
-  return list;
+  var result = empty_tuple();
+  repeat (k){
+    result~tpush(list~pop_back());
+  }
+  
+  return result;
 }
