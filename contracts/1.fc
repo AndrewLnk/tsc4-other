@@ -12,25 +12,20 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
   tuple stack = null();
   stack~push_back(tree);
 
-  var rep = 1;
-  while (stack.is_null() == 0)
+  while (~ stack.is_null())
   {
-    repeat (rep)
+    var c = stack~pop_back();
+    
+    if (cell_hash(c) == hash)
     {
-      var c = stack~pop_back();
-
-      if (cell_hash(c) == hash)
+      return c;
+    }
+    else
+    {
+      var s = c.begin_parse();
+      repeat (s.slice_refs())
       {
-        return c;
-      }
-      else
-      {
-        var s = c.begin_parse();
-        rep = s.slice_refs();
-        repeat (rep)
-        {
-          stack~push_back(s~load_ref());
-        }
+        stack~push_back(s~load_ref());
       }
     }
   }
