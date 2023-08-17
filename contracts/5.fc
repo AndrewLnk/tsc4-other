@@ -2,6 +2,8 @@
 {
 }
 
+forall X -> (tuple) to_tuple (X x) asm "NOP";
+
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id
 {
@@ -20,9 +22,7 @@
     
     if (n <= 0)
     {
-      var list = empty_tuple();
-      list~tpush(p);
-      list~tpush(c);
+      var list = to_tuple([p, c]);
       repeat (k - 2)
       {
         (p, c) = (c, p + c);
