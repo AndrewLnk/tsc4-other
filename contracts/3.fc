@@ -135,18 +135,23 @@ int builder_free(builder b) asm "BREMBITS";
     }
   }
   ;; Set other cache
-  repeat (cl)
+  if (builder_free(b) >= cl)
   {
-    if (builder_free(b) > 0)
+    repeat (cl)
     {
       b~store_uint(cache~tpop(), 1);
     }
-    else
+  }
+  else
+  {
+    builders~tpush(b);
+    b = begin_cell();
+    repeat (cl)
     {
-      builders~tpush(b);
-      b = begin_cell().store_uint(cache~tpop(), 1);
+      b~store_uint(cache~tpop(), 1);
     }
   }
+  
   builders~tpush(b);
   
   ;; To tree !!!!!!!!!!!!!!!!!!!!!
