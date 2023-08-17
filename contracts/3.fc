@@ -37,7 +37,6 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
   (var temp, var tl) = (empty_tuple(), 0);
   (var cache, var cl) = (empty_tuple(), 0);
   (var next, var bits_count) = (0, slice_bits(sl));
-  var builder_lim = flagL + 1;
   
   repeat (slice_depth(sl) + 1)
   {
@@ -93,7 +92,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            }
            else
            {
-             if (builder_free(b) < builder_lim)
+             if (builder_free(b) < 128)
              {
                builders~tpush(b);
                b = begin_cell().store_uint(next, 1);
