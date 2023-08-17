@@ -42,58 +42,79 @@ int builder_free(builder b) asm "BREMBITS";
      var bits_count = slice_bits(sl);
      while (bits_count > 0)
      {
-       int next = 0;
-
-       if (cl > 0)
+       repeat (bits_count)
        {
-         next = cache~tpop();
-         cl -= 1;
-       }
-       else
-       {
-         next = sl~load_uint(1);
-         bits_count -= 1;
-       }
+         int next = 0;
 
-       if (next == flagT.at(tl))
-       {
-         temp~tpush(next);
-         tl += 1;
-
-         if (tl == flagL)
+         if (cl > 0)
          {
-           b = b.store_builder(valueB);
-           temp = empty_tuple();
-           tl = 0;
-         }
-       }
-       else
-       {
-         if (tl > 0)
-         {
-           b~store_uint(temp.first(), 1);
-           temp~tpush(next);
-           
-           repeat (tl)
-           {
-             var t = temp~tpop();
-             cache~tpush(t);
-           }
-           cl += tl;
-           temp = empty_tuple();
-           tl = 0;
+           next = cache~tpop();
+           cl -= 1;
          }
          else
          {
-           b~store_uint(next, 1);
+           next = sl~load_uint(1);
+           bits_count -= 1;
          }
-       }
 
-       if (builder_free(b) < valueL)
-       {
-         builders~tpush(b);
-         b = begin_cell();
-       };
+         if (next == flagT.at(tl))
+         {
+           temp~tpush(next);
+           tl += 1;
+           
+           if (tl == flagL)
+           {
+             if (builder_free(b) < valueL)
+             {
+               builders~tpush(b);
+               b = begin_cell();
+             };
+
+             b = b.store_builder(valueB);
+
+             temp = empty_tuple();
+             tl = 0;
+           }
+         }
+         else
+         {
+           if (tl > 0)
+           {
+             if (builder_free(b) > 0)
+             {
+               b~store_uint(temp.first(), 1);
+             }
+             else
+             {
+               builders~tpush(b);
+               b = begin_cell().store_uint(temp.first(), 1);
+             }
+
+             temp~tpush(next);
+
+             repeat (tl)
+             {
+               var t = temp~tpop();
+               cache~tpush(t);
+             }
+             cl += tl;
+             temp = empty_tuple();
+             tl = 0;
+           }
+           else
+           {
+             if (builder_free(b) > 0)
+             {
+               b~store_uint(next, 1);
+             }
+             else
+             {
+               builders~tpush(b);
+               b = begin_cell().store_uint(next, 1);
+             }
+           }
+         } 
+       }
      }
 
     if (slice_refs(sl) > 0)
