@@ -57,7 +57,6 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
          if (next == flagT.at(tl))
          {
-           temp~tpush(next);
            tl += 1;
            
            if (tl == flagL)
@@ -72,6 +71,10 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
              temp = empty_tuple();
              tl = 0;
+           }
+           else
+           {
+             temp~tpush(next);
            }
          }
          else
