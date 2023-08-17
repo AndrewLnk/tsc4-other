@@ -6,11 +6,13 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
 builder entry(builder b, slice sl, tuple table)
 {
   var r = slice_bits(sl) / 8;
-  repeat (r){
+  repeat (r)
+  {
     b~store_uint(table.at(sl~load_uint(8)), 8);
   }
 
-  if (~ slice_refs_empty?(sl)){
+  if (~ slice_refs_empty?(sl))
+  {
     var ns = sl~load_ref().begin_parse();
     var nb = entry(begin_cell(), ns, table);
     b = b.store_ref(nb.end_cell());
