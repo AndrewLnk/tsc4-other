@@ -10,19 +10,19 @@
     return empty_tuple();
   }
   
-  var previous = 0;
-  var current = 1;
-  
-  repeat (n - 2){
-    (previous, current) = (current, previous + current);
-  }
-  
   var list = empty_tuple();
   var i = 0;
   repeat (2 - n){
     list~tpush(i);
     i += 1;
     k -= 1;
+  }
+
+  var previous = 0;
+  var current = 1;
+
+  repeat (n - 2){
+    (previous, current) = (current, previous + current);
   }
 
   repeat (k){
