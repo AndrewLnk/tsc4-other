@@ -8,29 +8,28 @@ int tlen(tuple t) asm "TLEN";
 {
   var mC_x_lenth = matrixB.at(0).tlen();
   var mA_y_lenth = matrixA.at(0).tlen();
-  (var y, var x, var t, var c) = (-1, 0, 0, 0);
+  (var y, var x, var t, var c) = (0, 0, 0, 0);
   var matrixC = empty_tuple();
  
   repeat(matrixA.tlen())
   {
-    c = -1;
+    var rowC = empty_tuple();
+    var rowA = matrixA.at(y);
     y += 1;
     
-    var rowA = matrixA.at(y);
-    var rowC = empty_tuple();
+    c = 0;
     repeat (mC_x_lenth)
     {
-      x = -1;
+      x = 0;
       t = 0;
-      c += 1;
-      
       repeat(mA_y_lenth)
       {
-        x += 1;
         t += rowA.at(x) * matrixB.at(x).at(c);
+        x += 1;
       }
 
       rowC~tpush(t);
+      c += 1;
     }
 
     matrixC~tpush(rowC);
