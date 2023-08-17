@@ -12,17 +12,17 @@
   
   var previous = 0;
   var current = 1;
-  var list = empty_tuple();
-
+  
   repeat (n - 2){
     (previous, current) = (current, previous + current);
   }
   
-  n -= 2;
-  repeat (0 - n){
-    n += 1;
+  var list = empty_tuple();
+  var i = 0;
+  repeat (2 - n){
+    list~tpush(i);
+    i += 1;
     k -= 1;
-    list~tpush(n + 1);
   }
 
   repeat (k){
