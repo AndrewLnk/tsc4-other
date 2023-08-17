@@ -28,23 +28,20 @@ int builder_free(builder b) asm "BREMBITS";
   var valueB = begin_cell().store_uint(value, valueL);
   
   ;; Create builders !!!!!!!!!!!!!!!!!!!!!
-  (var temp, var tl) = (empty_tuple(), 0);
-  (var cache, var cl) = (empty_tuple(), 0);
-  var next = 0;
-
   var sl = linked_list.begin_parse();
   var b = begin_cell();
   var builders = empty_tuple();
   
+  (var temp, var tl) = (empty_tuple(), 0);
+  (var cache, var cl) = (empty_tuple(), 0);
+  (var next, var bits_count) = (0, slice_bits(sl));
+  
   repeat (slice_depth(sl) + 1)
   {
-     var bits_count = slice_bits(sl);
      while (bits_count > 0)
      {
        repeat (bits_count)
        {
-         next = 0;
-
          if (cl > 0)
          {
            next = cache~tpop();
@@ -119,6 +116,7 @@ int builder_free(builder b) asm "BREMBITS";
     if (~ slice_refs_empty?(sl))
     {
       sl = (sl~load_ref()).begin_parse();
+      bits_count = slice_bits(sl);
     }
   }
   ;; Set other temp
