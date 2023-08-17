@@ -14,10 +14,14 @@ int builder_free(builder b) asm "BREMBITS";
 
   ;; Setup flag info
   var flagL = ubitsize(flag);
-  var flagTemplate = begin_cell().store_int(flag, flagL + 1).end_cell().begin_parse();
-  flagTemplate~load_uint(1);
-  var flagFlow = slice_last(flagTemplate, flagL);
-  var flagCheck = flagFlow~load_uint(1);
+  var tempS = begin_cell().store_int(flag, flagL + 1).end_cell().begin_parse();
+  tempS~load_uint(1);
+
+  var flagT = empty_tuple();
+  repeat (flagL)
+  {
+    flagT~tpush(tempS~load_uint(1));
+  }
 
   ;; Setup value info
   var valueL = ubitsize(value);
@@ -53,7 +57,7 @@ int builder_free(builder b) asm "BREMBITS";
            bits_count -= 1;
          }
 
-         if (next == flagCheck)
+         if (next == flagT.at(tl))
          {
            temp~tpush(next);
            tl += 1;
@@ -69,11 +73,8 @@ int builder_free(builder b) asm "BREMBITS";
              b = b.store_builder(valueB);
 
              temp = empty_tuple();
-             flagFlow = slice_last(flagTemplate, flagL);
              tl = 0;
            }
-
-           flagCheck = flagFlow~load_uint(1);
          }
          else
          {
@@ -98,8 +99,6 @@ int builder_free(builder b) asm "BREMBITS";
              }
              cl += tl;
              temp = empty_tuple();
-             flagFlow = slice_last(flagTemplate, flagL);
-             flagCheck = flagFlow~load_uint(1);
              tl = 0;
            }
            else
