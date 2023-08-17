@@ -62,12 +62,6 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            
            if (tl == flagL)
            {
-             if (builder_free(b) < 256)
-             {
-               builders~tpush(b);
-               b = begin_cell();
-             }
-
              b = b.store_builder(valueB);
 
              temp = empty_tuple();
@@ -92,7 +86,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            }
            else
            {
-             if (builder_free(b) < 128)
+             if (builder_free(b) < 256)
              {
                builders~tpush(b);
                b = begin_cell().store_uint(next, 1);
