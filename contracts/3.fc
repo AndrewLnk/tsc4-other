@@ -62,14 +62,7 @@ int builder_free(builder b) asm "BREMBITS";
 
          if (tl == flagL)
          {
-           if (builder_free(b) < valueL)
-           {
-             builders~tpush(b);
-             b = begin_cell();
-           };
-
            b = b.store_builder(valueB);
-           
            temp = empty_tuple();
            tl = 0;
          }
@@ -78,16 +71,7 @@ int builder_free(builder b) asm "BREMBITS";
        {
          if (tl > 0)
          {
-           if (builder_free(b) > 0)
-           {
-             b~store_uint(temp.first(), 1);
-           }
-           else
-           {
-             builders~tpush(b);
-             b = begin_cell().store_uint(temp.first(), 1);
-           }
-           
+           b~store_uint(temp.first(), 1);
            temp~tpush(next);
            
            repeat (tl)
@@ -101,17 +85,15 @@ int builder_free(builder b) asm "BREMBITS";
          }
          else
          {
-           if (builder_free(b) > 0)
-           {
-             b~store_uint(next, 1);
-           }
-           else
-           {
-             builders~tpush(b);
-             b = begin_cell().store_uint(next, 1);
-           }
+           b~store_uint(next, 1);
          }
        }
+
+       if (builder_free(b) < valueL)
+       {
+         builders~tpush(b);
+         b = begin_cell();
+       };
      }
 
     if (slice_refs(sl) > 0)
