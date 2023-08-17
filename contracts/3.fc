@@ -115,11 +115,6 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
 
   ;; Set other temp
-  if (builder_free(b) < tl + cl)
-  {
-    builders~tpush(b);
-    b = begin_cell();
-  }
   var i = 0;
   repeat (tl)
   {
