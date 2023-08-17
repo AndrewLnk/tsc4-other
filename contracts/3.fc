@@ -95,12 +95,10 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
              if (builder_free(b) < 128)
              {
                builders~tpush(b);
-               b = begin_cell().store_uint(next, 1);
+               b = begin_cell();
              }
-             else
-             {
-               b~store_uint(next, 1);
-             }
+
+             b~store_uint(next, 1);
            }
          } 
        }
@@ -112,8 +110,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
       bits_count = slice_bits(sl);
     }
   }
-
-
+  
   ;; Set other temp
   var i = 0;
   repeat (tl)
