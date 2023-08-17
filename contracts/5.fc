@@ -33,8 +33,7 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
     }
     else
     {
-      var list = empty_tuple();
-      list~tpush(c);
+      var list = to_tuple([c]);
       repeat (k - 1)
       {
         (p, c) = (c, p + c);
