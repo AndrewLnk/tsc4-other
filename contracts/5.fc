@@ -10,22 +10,24 @@
   }
   else
   {
-    var previous = 0;
-    var current = 1;
-    
-    repeat (n - 1){
-      (previous, current) = (current, previous + current);
-    }
-    
-    var list = empty_tuple();
-    
-    if (n <= 0){
+    if (n <= 0)
+    {
+      var previous = 0;
+      var current = 1;
+
+      repeat (n - 1)
+      {
+        (previous, current) = (current, previous + current);
+      }
+      
+      var list = empty_tuple();
       list~tpush(n);
       n += 1;
       k -= 1;
 
       list~tpush(current);
-      repeat (k - 1){
+      repeat (k - 1)
+      {
         (previous, current) = (current, previous + current);
         list~tpush(current);
       }
@@ -34,8 +36,18 @@
     }
     else
     {
+      var previous = 0;
+      var current = 1;
+
+      repeat (n - 1)
+      {
+        (previous, current) = (current, previous + current);
+      }
+      
+      var list = empty_tuple();
       list~tpush(current);
-      repeat (k - 1){
+      repeat (k - 1)
+      {
         (previous, current) = (current, previous + current);
         list~tpush(current);
       }
