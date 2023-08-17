@@ -5,29 +5,22 @@
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id
 {
-  if (k == 0)
-  {
+  if (k == 0){
     return empty_tuple();
   }
   
-  var list = empty_tuple();
-  var i = 0;
-  repeat (2 - n){
-    list~tpush(i);
-    i += 1;
-    k -= 1;
-  }
-
   var previous = 0;
   var current = 1;
 
-  repeat (n - 2){
+  repeat (n){
     (previous, current) = (current, previous + current);
   }
-
-  repeat (k){
-    (previous, current) = (current, previous + current);
+  
+  var list = empty_tuple();
+  list~tpush(previous);
+  repeat (k - 1){
     list~tpush(current);
+    (previous, current) = (current, previous + current);
   }
 
   return list;
