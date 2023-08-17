@@ -18,18 +18,29 @@
     }
     
     var list = empty_tuple();
+    
     if (n <= 0){
       list~tpush(n);
       n += 1;
       k -= 1;
-    }
 
-    list~tpush(current);
-    repeat (k - 1){
-      (previous, current) = (current, previous + current);
       list~tpush(current);
-    }
+      repeat (k - 1){
+        (previous, current) = (current, previous + current);
+        list~tpush(current);
+      }
 
-    return list;
+      return list;
+    }
+    else
+    {
+      list~tpush(current);
+      repeat (k - 1){
+        (previous, current) = (current, previous + current);
+        list~tpush(current);
+      }
+
+      return list;
+    }
   }
 }
