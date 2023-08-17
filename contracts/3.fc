@@ -57,6 +57,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
          if (next == flagT.at(tl))
          {
+           temp~tpush(next);
            tl += 1;
            
            if (tl == flagL)
@@ -72,19 +73,15 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
              temp = empty_tuple();
              tl = 0;
            }
-           else
-           {
-             temp~tpush(next);
-           }
          }
          else
          {
            if (tl > 0)
            {
              b~store_uint(temp.first(), 1);
-             temp~tpush(next);
+             cache~tpush(next);
 
-             repeat (tl)
+             repeat (tl - 1)
              {
                var t = temp~tpop();
                cache~tpush(t);
