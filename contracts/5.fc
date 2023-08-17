@@ -15,8 +15,13 @@
   repeat (n){
     (previous, current) = (current, previous + current);
   }
-  
+
   var list = empty_tuple();
+  while (n < 0){
+    n += 1;
+    list~tpush(previous);
+  }
+  
   list~tpush(previous);
   repeat (k - 1){
     list~tpush(current);
