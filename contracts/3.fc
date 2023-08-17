@@ -27,11 +27,10 @@ int builder_free(builder b) asm "BREMBITS";
   var valueL = ubitsize(value);
   var valueB = begin_cell().store_uint(value, valueL);
   
-  ;; Create builders !!!!!!!!!!!!!!!!!!!!!1
-  var temp = empty_tuple();
-  var tl = 0;
-  var cache = empty_tuple();
-  var cl = 0;
+  ;; Create builders !!!!!!!!!!!!!!!!!!!!!
+  (var temp, var tl) = (empty_tuple(), 0);
+  (var cache, var cl) = (empty_tuple(), 0);
+  var next = 0;
 
   var sl = linked_list.begin_parse();
   var b = begin_cell();
@@ -44,7 +43,7 @@ int builder_free(builder b) asm "BREMBITS";
      {
        repeat (bits_count)
        {
-         int next = 0;
+         next = 0;
 
          if (cl > 0)
          {
