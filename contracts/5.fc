@@ -13,18 +13,19 @@
     var previous = 0;
     var current = 1;
     
-    repeat (n - 2){
+    repeat (n - 1){
       (previous, current) = (current, previous + current);
     }
     
     var list = empty_tuple();
-    repeat (2 - n){
+    if (n <= 0){
       list~tpush(n);
       n += 1;
       k -= 1;
     }
 
-    repeat (k){
+    list~tpush(current);
+    repeat (k - 1){
       (previous, current) = (current, previous + current);
       list~tpush(current);
     }
