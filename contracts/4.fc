@@ -16,6 +16,7 @@ builder entry(builder b, slice sl, tuple table)
     var ns = sl~load_ref().begin_parse();
     var nb = entry(begin_cell(), ns, table);
     b = b.store_ref(nb.end_cell());
+    end_parse(sl);
     return b;
   }
   else
