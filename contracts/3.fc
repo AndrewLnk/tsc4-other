@@ -40,7 +40,7 @@ int builder_free(builder b) asm "BREMBITS";
   {
      while (bits_count > 0)
      {
-       repeat (bits_count)
+       repeat (bits_count + cl)
        {
          if (cl > 0)
          {
