@@ -1,8 +1,6 @@
 () recv_internal() {
 }
 
-int tlen(tuple t) asm "TLEN";
-
 ;; testable
 (tuple) matrix_multiplier(tuple matrixA, tuple matrixB) method_id 
 {
