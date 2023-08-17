@@ -46,7 +46,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
        {
          if (cl > 0)
          {
-           next = cache~pop_back();
+           next = cache~tpop();
            cl -= 1;
          }
          else
@@ -79,12 +79,12 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            if (tl > 0)
            {
              b~store_uint(temp.first(), 1);
-             cache~push_back(next);
+             cache~tpush(next);
 
              repeat (tl - 1)
              {
                var t = temp~tpop();
-               cache~push_back(t);
+               cache~tpush(t);
              }
              cl += tl;
              temp = empty_tuple();
@@ -122,7 +122,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
   }
   repeat (cl)
   {
-    b~store_uint(cache~pop_back(), 1);
+    b~store_uint(cache~tpop(), 1);
   }
   
   builders~tpush(b);
