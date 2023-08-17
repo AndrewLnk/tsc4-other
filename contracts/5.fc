@@ -34,10 +34,11 @@
     else
     {
       var list = empty_tuple();
-      repeat (k)
+      list~tpush(c);
+      repeat (k - 1)
       {
-        list~tpush(c);
         (p, c) = (c, p + c);
+        list~tpush(c);
       }
 
       return list;
