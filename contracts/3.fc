@@ -62,13 +62,19 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            
            if (tl == flagL)
            {
-             if (builder_free(b) < 256)
+             if (builder_free(b) <= 128)
              {
                builders~tpush(b);
                b = begin_cell();
              }
 
              b = b.store_builder(valueB);
+             
+             if (builder_free(b) < cl + bits_count)
+             {
+                builders~tpush(b);
+                b = begin_cell();
+             }
 
              temp = empty_tuple();
              tl = 0;
@@ -92,15 +98,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            }
            else
            {
-             if (builder_free(b) < 128)
-             {
-               builders~tpush(b);
-               b = begin_cell().store_uint(next, 1);
-             }
-             else
-             {
-               b~store_uint(next, 1);
-             }
+             b~store_uint(next, 1);
            }
          } 
        }
@@ -110,7 +108,35 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
     {
       sl = (sl~load_ref()).begin_parse();
       bits_count = slice_bits(sl);
+      
+      if (builders.tlen() > 0)
+      {
+        var last = builders~tpop();
+        if (builder_free(last) >= builder_bits(b))
+        {
+          last = last.store_builder(b);
+          builders~tpush(last);
+          b = begin_cell();
+        }
+        else
+        {
+          builders~tpush(last);
+          builders~tpush(b);
+          b = begin_cell();
+        }
+      }
+      else
+      {
+        builders~tpush(b);
+        b = begin_cell();
+      }
     }
+  }
+  
+  if (builder_free(b) <= tl + cl)
+  {
+    builders~tpush(b);
+    b = begin_cell();
   }
   
   ;; Set other temp
