@@ -68,7 +68,7 @@ int builder_free(builder b) asm "BREMBITS";
              {
                builders~tpush(b);
                b = begin_cell();
-             };
+             }
 
              b = b.store_builder(valueB);
 
@@ -117,7 +117,7 @@ int builder_free(builder b) asm "BREMBITS";
        }
      }
 
-    if (slice_refs(sl) > 0)
+    if (~ slice_refs_empty?(sl))
     {
       sl = (sl~load_ref()).begin_parse();
     }
