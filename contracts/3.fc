@@ -114,7 +114,15 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
            }
            else
            {
-             b~store_uint(next, 1);
+             if (builder_free(b) < 128)
+             {
+               builders~tpush(b);
+               b = begin_cell().store_uint(next, 1);
+             }
+             else
+             {
+               b~store_uint(next, 1);
+             }
            }
          } 
        }
