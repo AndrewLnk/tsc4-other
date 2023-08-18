@@ -24,43 +24,282 @@ builder entry(builder b, slice sl, tuple table)
   }
 }
 
-tuple create_table(int shift)
-{
-  tuple table = empty_tuple();
-
-  var i = 0;
-  repeat (255)
-  {
-    if ((i >= 65) & (i <= 90)) 
-    {
-       table~tpush((i - 65 + shift) % 26 + 65);
-    }
-    else
-    {
-      if ((i >= 97) & (i <= 122))
-      {
-        table~tpush((i - 97 + shift) % 26 + 97);
-      }
-      else
-      {
-        table~tpush(i);
-      }
-    }
-    
-    i += 1;
-  } 
-
-  return table;
-}
-
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id
 {
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
+  
+  tuple table = to_tuple([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
+  
+  table~tpush(15);
+  table~tpush(16);
+  table~tpush(17);
+  table~tpush(18);
+  table~tpush(19);
+  table~tpush(20);
+  
+  table~tpush(21);
+  table~tpush(22);
+  table~tpush(23);
+  table~tpush(24);
+  table~tpush(25);
+  table~tpush(26);
+  table~tpush(27);
+  table~tpush(28);
+  table~tpush(29);
+  table~tpush(30);
 
-  tuple table = create_table(shift);
+  table~tpush(31);
+  table~tpush(32);
+  table~tpush(33);
+  table~tpush(34);
+  table~tpush(35);
+  table~tpush(36);
+  table~tpush(37);
+  table~tpush(38);
+  table~tpush(39);
+  table~tpush(40);
+
+  table~tpush(41);
+  table~tpush(42);
+  table~tpush(43);
+  table~tpush(44);
+  table~tpush(45);
+  table~tpush(46);
+  table~tpush(47);
+  table~tpush(48);
+  table~tpush(49);
+  table~tpush(50);
+
+  table~tpush(51);
+  table~tpush(52);
+  table~tpush(53);
+  table~tpush(54);
+  table~tpush(55);
+  table~tpush(56);
+  table~tpush(57);
+  table~tpush(58);
+  table~tpush(59);
+  table~tpush(60);
+
+  table~tpush(61);
+  table~tpush(62);
+  table~tpush(63);
+  table~tpush(64);
+  
+  table~tpush(shift % 26 + 65);
+  table~tpush(((1 + shift) % 26 + 65));
+  table~tpush(((2 + shift) % 26 + 65));
+  table~tpush(((3 + shift) % 26 + 65));
+  table~tpush(((4 + shift) % 26 + 65));
+  table~tpush(((5 + shift) % 26 + 65));
+  
+  table~tpush(((6 + shift) % 26 + 65));
+  table~tpush(((7 + shift) % 26 + 65));
+  table~tpush(((8 + shift) % 26 + 65));
+  table~tpush(((9 + shift) % 26 + 65));
+  table~tpush(((10 + shift) % 26 + 65));
+  table~tpush(((11 + shift) % 26 + 65));
+  table~tpush(((12 + shift) % 26 + 65));
+  table~tpush(((13 + shift) % 26 + 65));
+  table~tpush(((14 + shift) % 26 + 65));
+  table~tpush(((15 + shift) % 26 + 65));
+
+  table~tpush(((16 + shift) % 26 + 65));
+  table~tpush(((17 + shift) % 26 + 65));
+  table~tpush(((18 + shift) % 26 + 65));
+  table~tpush(((19 + shift) % 26 + 65));
+  table~tpush(((20 + shift) % 26 + 65));
+  table~tpush(((21 + shift) % 26 + 65));
+  table~tpush(((22 + shift) % 26 + 65));
+  table~tpush(((23 + shift) % 26 + 65));
+  table~tpush(((24 + shift) % 26 + 65));
+  table~tpush(((25 + shift) % 26 + 65));
+
+  table~tpush(91);
+  table~tpush(92);
+  table~tpush(93);
+  table~tpush(94);
+  table~tpush(95);
+  table~tpush(96);
+
+  table~tpush(shift % 26 + 97);
+  table~tpush(((1 + shift) % 26 + 97));
+  table~tpush(((2 + shift) % 26 + 97));
+  table~tpush(((3 + shift) % 26 + 97));
+  table~tpush(((4 + shift) % 26 + 97));
+  table~tpush(((5 + shift) % 26 + 97));
+
+  table~tpush(((6 + shift) % 26 + 97));
+  table~tpush(((7 + shift) % 26 + 97));
+  table~tpush(((8 + shift) % 26 + 97));
+  table~tpush(((9 + shift) % 26 + 97));
+  table~tpush(((10 + shift) % 26 + 97));
+  table~tpush(((11 + shift) % 26 + 97));
+  table~tpush(((12 + shift) % 26 + 97));
+  table~tpush(((13 + shift) % 26 + 97));
+  table~tpush(((14 + shift) % 26 + 97));
+  table~tpush(((15 + shift) % 26 + 97));
+
+  table~tpush(((16 + shift) % 26 + 97));
+  table~tpush(((17 + shift) % 26 + 97));
+  table~tpush(((18 + shift) % 26 + 97));
+  table~tpush(((19 + shift) % 26 + 97));
+  table~tpush(((20 + shift) % 26 + 97));
+  table~tpush(((21 + shift) % 26 + 97));
+  table~tpush(((22 + shift) % 26 + 97));
+  table~tpush(((23 + shift) % 26 + 97));
+  table~tpush(((24 + shift) % 26 + 97));
+  table~tpush(((25 + shift) % 26 + 97));
+
+  table~tpush(123);
+  table~tpush(124);
+  table~tpush(125);
+  table~tpush(126);
+  table~tpush(127);
+  table~tpush(128);
+  table~tpush(129);
+  table~tpush(130);
+
+  table~tpush(131);
+  table~tpush(132);
+  table~tpush(133);
+  table~tpush(134);
+  table~tpush(135);
+  table~tpush(136);
+  table~tpush(137);
+  table~tpush(138);
+  table~tpush(139);
+  table~tpush(140);
+
+  table~tpush(141);
+  table~tpush(142);
+  table~tpush(143);
+  table~tpush(144);
+  table~tpush(145);
+  table~tpush(146);
+  table~tpush(147);
+  table~tpush(148);
+  table~tpush(149);
+  table~tpush(150);
+
+  table~tpush(151);
+  table~tpush(152);
+  table~tpush(153);
+  table~tpush(154);
+  table~tpush(155);
+  table~tpush(156);
+  table~tpush(157);
+  table~tpush(158);
+  table~tpush(159);
+  table~tpush(160);
+
+  table~tpush(161);
+  table~tpush(162);
+  table~tpush(163);
+  table~tpush(164);
+  table~tpush(165);
+  table~tpush(166);
+  table~tpush(167);
+  table~tpush(168);
+  table~tpush(169);
+  table~tpush(170);
+
+  table~tpush(171);
+  table~tpush(172);
+  table~tpush(173);
+  table~tpush(174);
+  table~tpush(175);
+  table~tpush(176);
+  table~tpush(177);
+  table~tpush(178);
+  table~tpush(179);
+  table~tpush(180);
+
+  table~tpush(181);
+  table~tpush(182);
+  table~tpush(183);
+  table~tpush(184);
+  table~tpush(185);
+  table~tpush(186);
+  table~tpush(187);
+  table~tpush(188);
+  table~tpush(189);
+  table~tpush(190);
+
+  table~tpush(191);
+  table~tpush(192);
+  table~tpush(193);
+  table~tpush(194);
+  table~tpush(195);
+  table~tpush(196);
+  table~tpush(197);
+  table~tpush(198);
+  table~tpush(199);
+  table~tpush(200);
+
+  table~tpush(201);
+  table~tpush(202);
+  table~tpush(203);
+  table~tpush(204);
+  table~tpush(205);
+  table~tpush(206);
+  table~tpush(207);
+  table~tpush(208);
+  table~tpush(209);
+  table~tpush(210);
+
+  table~tpush(211);
+  table~tpush(212);
+  table~tpush(213);
+  table~tpush(214);
+  table~tpush(215);
+  table~tpush(216);
+  table~tpush(217);
+  table~tpush(218);
+  table~tpush(219);
+  table~tpush(220);
+
+  table~tpush(221);
+  table~tpush(222);
+  table~tpush(223);
+  table~tpush(224);
+  table~tpush(225);
+  table~tpush(226);
+  table~tpush(227);
+  table~tpush(228);
+  table~tpush(229);
+  table~tpush(230);
+
+  table~tpush(231);
+  table~tpush(232);
+  table~tpush(233);
+  table~tpush(234);
+  table~tpush(235);
+  table~tpush(236);
+  table~tpush(237);
+  table~tpush(238);
+  table~tpush(239);
+  table~tpush(240);
+
+  table~tpush(241);
+  table~tpush(242);
+  table~tpush(243);
+  table~tpush(244);
+  table~tpush(245);
+  table~tpush(246);
+  table~tpush(247);
+  table~tpush(248);
+  table~tpush(249);
+  table~tpush(250);
+
+  table~tpush(251);
+  table~tpush(252);
+  table~tpush(253);
+  table~tpush(254);
+
   return entry(b, s, table).end_cell();
 }
 
@@ -70,7 +309,275 @@ tuple create_table(int shift)
   var s = text.begin_parse();
   var sl = s~load_uint(32);
   var b = begin_cell().store_uint(sl, 32);
+
+  tuple table = to_tuple([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]);
   
-  tuple table = create_table(0 - shift);
+  table~tpush(15);
+  table~tpush(16);
+  table~tpush(17);
+  table~tpush(18);
+  table~tpush(19);
+  table~tpush(20);
+
+  table~tpush(21);
+  table~tpush(22);
+  table~tpush(23);
+  table~tpush(24);
+  table~tpush(25);
+  table~tpush(26);
+  table~tpush(27);
+  table~tpush(28);
+  table~tpush(29);
+  table~tpush(30);
+
+  table~tpush(31);
+  table~tpush(32);
+  table~tpush(33);
+  table~tpush(34);
+  table~tpush(35);
+  table~tpush(36);
+  table~tpush(37);
+  table~tpush(38);
+  table~tpush(39);
+  table~tpush(40);
+
+  table~tpush(41);
+  table~tpush(42);
+  table~tpush(43);
+  table~tpush(44);
+  table~tpush(45);
+  table~tpush(46);
+  table~tpush(47);
+  table~tpush(48);
+  table~tpush(49);
+  table~tpush(50);
+
+  table~tpush(51);
+  table~tpush(52);
+  table~tpush(53);
+  table~tpush(54);
+  table~tpush(55);
+  table~tpush(56);
+  table~tpush(57);
+  table~tpush(58);
+  table~tpush(59);
+  table~tpush(60);
+
+  table~tpush(61);
+  table~tpush(62);
+  table~tpush(63);
+  table~tpush(64);
+
+  table~tpush((0 - shift) % 26 + 65);
+  table~tpush(((1 - shift) % 26 + 65));
+  table~tpush(((2 - shift) % 26 + 65));
+  table~tpush(((3 - shift) % 26 + 65));
+  table~tpush(((4 - shift) % 26 + 65));
+  table~tpush(((5 - shift) % 26 + 65));
+
+  table~tpush(((6 - shift) % 26 + 65));
+  table~tpush(((7 - shift) % 26 + 65));
+  table~tpush(((8 - shift) % 26 + 65));
+  table~tpush(((9 - shift) % 26 + 65));
+  table~tpush(((10 - shift) % 26 + 65));
+  table~tpush(((11 - shift) % 26 + 65));
+  table~tpush(((12 - shift) % 26 + 65));
+  table~tpush(((13 - shift) % 26 + 65));
+  table~tpush(((14 - shift) % 26 + 65));
+  table~tpush(((15 - shift) % 26 + 65));
+
+  table~tpush(((16 - shift) % 26 + 65));
+  table~tpush(((17 - shift) % 26 + 65));
+  table~tpush(((18 - shift) % 26 + 65));
+  table~tpush(((19 - shift) % 26 + 65));
+  table~tpush(((20 - shift) % 26 + 65));
+  table~tpush(((21 - shift) % 26 + 65));
+  table~tpush(((22 - shift) % 26 + 65));
+  table~tpush(((23 - shift) % 26 + 65));
+  table~tpush(((24 - shift) % 26 + 65));
+  table~tpush(((25 - shift) % 26 + 65));
+
+  table~tpush(91);
+  table~tpush(92);
+  table~tpush(93);
+  table~tpush(94);
+  table~tpush(95);
+  table~tpush(96);
+
+  table~tpush((0 - shift) % 26 + 97);
+  table~tpush(((1 - shift) % 26 + 97));
+  table~tpush(((2 - shift) % 26 + 97));
+  table~tpush(((3 - shift) % 26 + 97));
+  table~tpush(((4 - shift) % 26 + 97));
+  table~tpush(((5 - shift) % 26 + 97));
+
+  table~tpush(((6 - shift) % 26 + 97));
+  table~tpush(((7 - shift) % 26 + 97));
+  table~tpush(((8 - shift) % 26 + 97));
+  table~tpush(((9 - shift) % 26 + 97));
+  table~tpush(((10 - shift) % 26 + 97));
+  table~tpush(((11 - shift) % 26 + 97));
+  table~tpush(((12 - shift) % 26 + 97));
+  table~tpush(((13 - shift) % 26 + 97));
+  table~tpush(((14 - shift) % 26 + 97));
+  table~tpush(((15 - shift) % 26 + 97));
+
+  table~tpush(((16 - shift) % 26 + 97));
+  table~tpush(((17 - shift) % 26 + 97));
+  table~tpush(((18 - shift) % 26 + 97));
+  table~tpush(((19 - shift) % 26 + 97));
+  table~tpush(((20 - shift) % 26 + 97));
+  table~tpush(((21 - shift) % 26 + 97));
+  table~tpush(((22 - shift) % 26 + 97));
+  table~tpush(((23 - shift) % 26 + 97));
+  table~tpush(((24 - shift) % 26 + 97));
+  table~tpush(((25 - shift) % 26 + 97));
+
+  table~tpush(123);
+  table~tpush(124);
+  table~tpush(125);
+  table~tpush(126);
+  table~tpush(127);
+  table~tpush(128);
+  table~tpush(129);
+  table~tpush(130);
+
+  table~tpush(131);
+  table~tpush(132);
+  table~tpush(133);
+  table~tpush(134);
+  table~tpush(135);
+  table~tpush(136);
+  table~tpush(137);
+  table~tpush(138);
+  table~tpush(139);
+  table~tpush(140);
+
+  table~tpush(141);
+  table~tpush(142);
+  table~tpush(143);
+  table~tpush(144);
+  table~tpush(145);
+  table~tpush(146);
+  table~tpush(147);
+  table~tpush(148);
+  table~tpush(149);
+  table~tpush(150);
+
+  table~tpush(151);
+  table~tpush(152);
+  table~tpush(153);
+  table~tpush(154);
+  table~tpush(155);
+  table~tpush(156);
+  table~tpush(157);
+  table~tpush(158);
+  table~tpush(159);
+  table~tpush(160);
+
+  table~tpush(161);
+  table~tpush(162);
+  table~tpush(163);
+  table~tpush(164);
+  table~tpush(165);
+  table~tpush(166);
+  table~tpush(167);
+  table~tpush(168);
+  table~tpush(169);
+  table~tpush(170);
+
+  table~tpush(171);
+  table~tpush(172);
+  table~tpush(173);
+  table~tpush(174);
+  table~tpush(175);
+  table~tpush(176);
+  table~tpush(177);
+  table~tpush(178);
+  table~tpush(179);
+  table~tpush(180);
+
+  table~tpush(181);
+  table~tpush(182);
+  table~tpush(183);
+  table~tpush(184);
+  table~tpush(185);
+  table~tpush(186);
+  table~tpush(187);
+  table~tpush(188);
+  table~tpush(189);
+  table~tpush(190);
+
+  table~tpush(191);
+  table~tpush(192);
+  table~tpush(193);
+  table~tpush(194);
+  table~tpush(195);
+  table~tpush(196);
+  table~tpush(197);
+  table~tpush(198);
+  table~tpush(199);
+  table~tpush(200);
+
+  table~tpush(201);
+  table~tpush(202);
+  table~tpush(203);
+  table~tpush(204);
+  table~tpush(205);
+  table~tpush(206);
+  table~tpush(207);
+  table~tpush(208);
+  table~tpush(209);
+  table~tpush(210);
+
+  table~tpush(211);
+  table~tpush(212);
+  table~tpush(213);
+  table~tpush(214);
+  table~tpush(215);
+  table~tpush(216);
+  table~tpush(217);
+  table~tpush(218);
+  table~tpush(219);
+  table~tpush(220);
+
+  table~tpush(221);
+  table~tpush(222);
+  table~tpush(223);
+  table~tpush(224);
+  table~tpush(225);
+  table~tpush(226);
+  table~tpush(227);
+  table~tpush(228);
+  table~tpush(229);
+  table~tpush(230);
+
+  table~tpush(231);
+  table~tpush(232);
+  table~tpush(233);
+  table~tpush(234);
+  table~tpush(235);
+  table~tpush(236);
+  table~tpush(237);
+  table~tpush(238);
+  table~tpush(239);
+  table~tpush(240);
+
+  table~tpush(241);
+  table~tpush(242);
+  table~tpush(243);
+  table~tpush(244);
+  table~tpush(245);
+  table~tpush(246);
+  table~tpush(247);
+  table~tpush(248);
+  table~tpush(249);
+  table~tpush(250);
+
+  table~tpush(251);
+  table~tpush(252);
+  table~tpush(253);
+  table~tpush(254);
+
   return entry(b, s, table).end_cell();
 }
