@@ -9,26 +9,33 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
-  tuple stack = null();
-  stack~push_back(tree);
-
-  while (~ stack.is_null())
+  if (cell_hash(tree) == hash)
   {
-    cell c = stack~pop_back();
-    
-    if (cell_hash(c) == hash)
+    return tree;
+  }
+  else
+  {
+    tuple stack = null();
+    stack~push_back(tree);
+
+    while (~ stack.is_null())
     {
-      return c;
-    }
-    else
-    {
-      slice s = c.begin_parse();
+      slice s = (stack~pop_back()).begin_parse();
+      
       repeat (s.slice_refs())
       {
-        stack~push_back(s~load_ref());
+        var next = s~load_ref();
+        if (cell_hash(next) == hash)
+        {
+          return next;
+        }
+        else
+        {
+          stack~push_back(next);
+        }
       }
     }
-  }
 
-  return begin_cell().end_cell();
+    return begin_cell().end_cell();
+  }
 }

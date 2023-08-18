@@ -37,13 +37,13 @@ forall X -> (tuple) to_tuple (X x) asm "NOP";
     }
     else
     {
-      var list = empty_tuple();
-      repeat (k)
+      var list = to_tuple([c]);
+      repeat (k - 1)
       {
-        list~tpush(c);
         t = p + c;
         p = c;
         c = t;
+        list~tpush(c);
       }
 
       return list;
