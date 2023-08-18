@@ -5,27 +5,44 @@
 forall X -> int is_null (X x) asm "ISNULL";
 forall X -> (tuple, ()) push_back (tuple tail, X head) asm "CONS";
 forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
+int tlen(tuple t) asm "TLEN";
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id 
 {
+  var visited = empty_tuple();
   tuple stack = null();
   stack~push_back(tree);
 
   while (~ stack.is_null())
   {
     cell c = stack~pop_back();
+    var newHash = cell_hash(c);
     
-    if (cell_hash(c) == hash)
+    if (newHash == hash)
     {
       return c;
     }
     else
     {
-      slice s = c.begin_parse();
-      repeat (s.slice_refs())
+      var i = 0;
+      var checked = false;
+      repeat (visited.tlen())
       {
-        stack~push_back(s~load_ref());
+        if (newHash == visited.at(i))
+        {
+            checked = true;
+        }
+        i += 1;
+      }
+      
+      if (~ checked)
+      {
+        slice s = c.begin_parse();
+        repeat (s.slice_refs())
+        {
+          stack~push_back(s~load_ref());
+        }    
       }
     }
   }
